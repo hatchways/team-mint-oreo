@@ -7,9 +7,15 @@ const logger = require("morgan");
 const indexRouter = require("./routes/index");
 const pingRouter = require("./routes/ping");
 
+// DB connection
+const connectDB = require("./config/db");
+
 const { json, urlencoded } = express;
 
 var app = express();
+
+// Start the DB
+connectDB();
 
 app.use(logger("dev"));
 app.use(json());
