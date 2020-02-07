@@ -8,6 +8,8 @@ node_modules/
 /build/
 
 # misc
+**.env
+server/.env
 .DS_Store
 .env.local
 .env.development.local
