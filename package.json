@@ -1,0 +1,22 @@
+{
+  "name": "team-mint-oreo",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "cd client && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hatchways/team-mint-oreo.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/hatchways/team-mint-oreo/issues"
+  },
+  "homepage": "https://github.com/hatchways/team-mint-oreo#readme",
+  "dependencies": {
+    "concurrently": "^5.1.0"
+  }
+}
