@@ -1,17 +1,35 @@
 import React from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route } from 'react-router-dom';
+import io from 'socket.io-client';
 
 import theme from './themes/theme';
 import LandingPage from './pages/Landing';
 
 import './App.css';
 
+const socket = io('http://localhost:3001');
+
+socket.on('connect', () => {
+  console.log('socket connected');
+});
+
+socket.on('pong', latency => {
+  console.log('test received', latency);
+});
+
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <Route path="/" component={LandingPage} />
+        <button
+          onClick={() => {
+            socket.emit('ping');
+          }}
+        >
+          PING SOCKET
+        </button>
       </BrowserRouter>
     </MuiThemeProvider>
   );
