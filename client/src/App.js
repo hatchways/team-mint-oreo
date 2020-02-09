@@ -5,7 +5,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import theme from './themes/theme';
 import LandingPage from './pages/Landing';
 
-import { UserStateProvider } from './store/user/user.provider'
+import { UserStateProvider } from './store/user/user.provider';
 
 import './App.css';
 

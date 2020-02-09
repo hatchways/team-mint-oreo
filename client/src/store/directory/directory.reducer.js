@@ -1,15 +1,12 @@
-import DirectoryActionTypes from './directory.types'
-import UserActionTypes from '../user/user.types'
+import DirectoryActionTypes from './directory.types';
 
-export const initialState = {
-
-}
+export const initialState = {};
 
 export const directoryReducer = (state, action) => {
-	switch(action.type) {
-		// TODO: case DirectoryActionTypes.SOMETYPE: 
-		default: {
-			return state
-		}
-	}
-}
+  switch (action.type) {
+    // TODO: case DirectoryActionTypes.SOMETYPE:
+    default: {
+      return state;
+    }
+  }
+};

@@ -1,5 +1,5 @@
 const DirectoryActionTypes = {
-	// TODO: add actions like friends status etc.
-}
+  // TODO: add actions like friends status etc.
+};
 
-export default DirectoryActionTypes
+export default DirectoryActionTypes;
