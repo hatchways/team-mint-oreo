@@ -5,15 +5,19 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import theme from './themes/theme';
 import LandingPage from './pages/Landing';
 
+import { UserStateProvider } from './store/user/user.provider'
+
 import './App.css';
 
 function App() {
   return (
-    <MuiThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Route path="/" component={LandingPage} />
-      </BrowserRouter>
-    </MuiThemeProvider>
+    <UserStateProvider>
+      <MuiThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Route path="/" component={LandingPage} />
+        </BrowserRouter>
+      </MuiThemeProvider>
+    </UserStateProvider>
   );
 }
 
