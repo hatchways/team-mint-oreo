@@ -1,4 +1,5 @@
 // example and usage
+/*
 import React, {createContext, useReducer} from 'react'
 
 const initialState = {}
@@ -24,7 +25,7 @@ const StateProvider = ({ children }) => {
 }
 
 export {store, StateProvider}
-
+*/
 /*
 usage: 
 
