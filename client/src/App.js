@@ -14,10 +14,6 @@ socket.on('connect', () => {
   console.log('socket connected');
 });
 
-socket.on('pong', latency => {
-  console.log('test received', latency);
-});
-
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
@@ -25,7 +21,7 @@ function App() {
         <Route path="/" component={LandingPage} />
         <button
           onClick={() => {
-            socket.emit('ping');
+            socket.emit('login', { user: 'name', pass: 'pass' });
           }}
         >
           PING SOCKET
