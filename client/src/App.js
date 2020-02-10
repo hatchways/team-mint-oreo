@@ -5,6 +5,7 @@ import io from 'socket.io-client';
 
 import theme from './themes/theme';
 import LandingPage from './pages/Landing';
+import Dashboard from './pages/dashboard/dashboard.component';
 
 import './App.css';
 
@@ -18,7 +19,8 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <Route path="/" component={LandingPage} />
+        <Route exact path="/dashboard" component={Dashboard} />
+        <Route exact path="/" component={LandingPage} />
         <button
           onClick={() => {
             socket.emit('login', { user: 'name', pass: 'pass' });
