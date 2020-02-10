@@ -1,19 +1,26 @@
 import React from 'react';
 import { Avatar, Box, Grid, Paper } from '@material-ui/core';
 
-const Profile = () => {
+const Profile = ({ name, secondaryText = '' }) => {
   return (
     <Box my={4}>
-      <Paper>
-        <Box m={2}>
-          <Grid container spacing={2}>
-            <Grid item>
-              <Avatar>N</Avatar>
-            </Grid>
-            <Grid item>Name</Grid>
+      <Box m={2}>
+        <Grid container spacing={2}>
+          <Grid item>
+            <Avatar>A</Avatar>
           </Grid>
-        </Box>
-      </Paper>
+          <Grid item>
+            {secondaryText === '' ? (
+              name
+            ) : (
+              <div>
+                <Grid container>{name}</Grid>
+                <Grid container>secondaryText</Grid>
+              </div>
+            )}
+          </Grid>
+        </Grid>
+      </Box>
     </Box>
   );
 };

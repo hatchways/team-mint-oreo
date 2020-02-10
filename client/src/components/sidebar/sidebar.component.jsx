@@ -3,12 +3,13 @@ import { Box, Grid, Typography, makeStyles, withStyles } from '@material-ui/core
 
 import Profile from '../../components/profile/profile.component';
 import { default as Tabs } from '../../components/tabs/tabs.component';
+import ProfileWithBorder from '../../components/profile/profile-with-border.container';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <Typography
+    <Box
       component="div"
       role="tabpanel"
       hidden={value !== index}
@@ -16,7 +17,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
+    </Box>
   );
 }
 
@@ -30,7 +31,7 @@ const Sidebar = () => {
   return (
     <Box>
       <Grid item>
-        <Profile />
+        <Profile name={'name'} />
       </Grid>
       <Grid item>
         <Tabs value={tab} onChange={changeTab}></Tabs>
@@ -38,12 +39,15 @@ const Sidebar = () => {
       <Grid item>
         <TabPanel value={tab} index={'Chats'}>
           Chats
+          <ProfileWithBorder name={'name'} secondaryText={'Secondary Text'} />
         </TabPanel>
         <TabPanel value={tab} index={'Contacts'}>
           Contacts
+          <ProfileWithBorder name={'name'} />
         </TabPanel>
         <TabPanel value={tab} index={'Invites'}>
           Invites
+          <ProfileWithBorder name={'name'} />
         </TabPanel>
       </Grid>
     </Box>

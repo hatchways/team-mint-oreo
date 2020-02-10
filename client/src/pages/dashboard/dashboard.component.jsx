@@ -12,7 +12,9 @@ const Dashboard = () => {
         <Grid container spacing={4}>
           <Hidden smDown>
             <Grid item>
-              <Sidebar />
+              <Box minWidth={400} maxWidth={400}>
+                <Sidebar />
+              </Box>
             </Grid>
           </Hidden>
           <Grid item md>
