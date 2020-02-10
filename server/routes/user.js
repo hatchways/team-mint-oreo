@@ -30,25 +30,42 @@ router.post('/login', (req, res) => {
   });
 });
 
-router.post('/register', async (req, res) => {
-  console.log(req.body);
-  const user = new User({
-    username: req.body.username,
-    password: req.body.password,
-  });
+router.post('/register', (req, res, next) => {
+  passport.authenticate('register', async (err, user, msg) => {
+    try {
+      if (err) throw err;
 
-  try {
-    const savedUser = await user.save();
-    res.status(200).json({
-      success: true,
-      user: savedUser,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: 'Server Error',
-    });
-  }
+      if (msg) {
+        console.log(msg.message);
+        return res.status(401).json({
+          error: msg.message,
+        });
+      } else {
+        // req.logIn(user, async (err) => {
+        // if(err) throw err;
+        const filter = { email: req.body.email };
+        const data = {
+          displayName: req.body.displayName,
+          language: req.body.language,
+        };
+
+        const foundUser = await User.findOneAndUpdate(filter, data, {
+          new: true,
+        });
+        console.log(foundUser);
+        console.log('User created in db');
+        return res.status(200).json({
+          success: true,
+          foundUser,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({
+        error: 'Something went wrong',
+      });
+    }
+  })(req, res, next);
 });
 
 router.get('/path', passport.authenticate('jwt', { session: false }), (req, res) => {
