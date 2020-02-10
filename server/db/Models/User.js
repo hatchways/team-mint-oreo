@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-  friends: [{ type: ObjectId, ref: 'User' }],
+  displayName: String,
+  friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   language: {
     type: String,
     required: true,
     default: 'english',
   },
-  chatrooms: [{ type: ObjectId, ref: 'Chatroom' }],
+  chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],
   socketId: {
     type: String,
     default: undefined,
@@ -16,4 +17,6 @@ const userSchema = new Schema({
   lastActivity: Date,
 });
 
-module.exports = userSchema;
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
