@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema(
+const { Schema } = mongoose;
+const userSchema = new Schema(
   {
     email: {
       unique: true,
@@ -24,10 +25,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: undefined,
     },
-    pendingInvitations: [{
+    pendingInvitations: [
+      {
         type: Schema.Types.ObjectId,
-        ref: "Invitation"
-    }],
+        ref: 'Invitation',
+      },
+    ],
     lastActivity: Date,
   },
   { timestamps: true }
