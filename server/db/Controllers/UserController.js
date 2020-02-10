@@ -1,8 +1,6 @@
 const User = require('../Models/User');
-const db = require('../connection');
 
 const createUser = (userData) => {
-  console.log('createUser hit');
   const newUser = new User(userData);
   newUser.save((err) => {
     if (err) throw err;
