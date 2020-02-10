@@ -1,19 +1,26 @@
 import React from 'react';
-import Container from '@material-ui/core/Container';
-import Typography from '@material-ui/core/Typography';
+import { useTheme, Box, Grid, Typography, Container, Hidden } from '@material-ui/core';
 
-import Box from '@material-ui/core/Box';
-import { useTheme } from '@material-ui/core';
+import Sidebar from '../../components/sidebar/sidebar.component';
 
 const Dashboard = () => {
   const theme = useTheme();
   console.log(theme);
   return (
-    <Container maxWidth="sm">
-      <Box my={4}>
-        <Typography gutterBottom>Create React App v4-beta example</Typography>
+    <Box height="100vh">
+      <Box mx={2} py={2}>
+        <Grid container>
+          <Hidden smDown>
+            <Grid item>
+              <Sidebar />
+            </Grid>
+          </Hidden>
+          <Grid item md>
+            // chat
+          </Grid>
+        </Grid>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
