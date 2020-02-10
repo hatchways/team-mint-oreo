@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
+<<<<<<< HEAD
 
 const { Schema } = mongoose;
 const userSchema = new Schema(
+=======
+const { Schema } = mongoose;
+const userSchema = Schema(
+>>>>>>> message controller started
   {
     email: {
       unique: true,
