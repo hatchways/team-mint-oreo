@@ -1,17 +1,34 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
-    username: {
-        required: true,
-        type: String,
-        max: 255
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      unique: true,
+      type: String,
+      required: true,
     },
     password: {
-        required: true,
-        type: String,
-        min: 6
-    }
-}, {timestamps: true});
+      type: String,
+      required: true,
+      min: 6,
+    },
+    displayName: String,
+    friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    language: {
+      type: String,
+      required: true,
+      default: 'english',
+    },
+    chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],
+    socketId: {
+      type: String,
+      default: undefined,
+    },
+    lastActivity: Date,
+  },
+  { timestamps: true }
+);
 
-// Named the collection as "demo_user" temporarily
-module.exports = mongoose.model('demo_user', userSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
