@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// require("dotenv").config();
 
 // Connect to Mongo
 const connectDB = async () => {
@@ -17,5 +16,7 @@ const connectDB = async () => {
     process.exit(1); // Exit out of the app with a failure
   }
 };
+
+connectDB();
 
 module.exports = connectDB;
