@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router();
+const userRoutes = require('./userRoutes');
 const UserController = require('../db/Controllers/UserController');
 
-router.get('/welcome', (req, res, next) => {
-  res.status(200).send({ welcomeMessage: 'Step 1 (completed)' });
-});
+const router = express.Router();
+
+router.use('/user', userRoutes);
 
 router.get('/test', (req, res) => {
   console.log('route hit');
@@ -13,7 +13,5 @@ router.get('/test', (req, res) => {
   };
   UserController.createUser(mockUser);
 });
-
-router.get('/getuser', (req, res) => {});
 
 module.exports = router;
