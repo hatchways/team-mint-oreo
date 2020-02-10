@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 
 const chatroomSchema = new Schema({
   users: {
-    type: Map,
-    of: ObjectId,
+    type: [Schema.Types.ObjectId],
     ref: 'User',
   },
 });
 
-const Chatroom = mongoose.model('User', chatroomSchema);
+const Chatroom = mongoose.model('Chatroom', chatroomSchema);
 
 module.exports = Chatroom;

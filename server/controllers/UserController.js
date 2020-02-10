@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
 
 const createUser = async (userData, done) => {
@@ -26,7 +27,7 @@ const getUserById = async id => {
 };
 
 const getUserFriendsById = async id => {
-  const friends = await (await User.findById(id)).populate('User');
+  const friends = await User.findById(id).populate('User');
   return friends;
 };
 

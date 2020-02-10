@@ -12,22 +12,28 @@ const userLogin = (id, userInfo) => {
   // return info to frontend
 };
 
-const userDisconnect = () => {
+const userDisconnect = socketId => {
   // remove socket.id from user document
 };
 
-const handleSocket = (server) => {
+const sendMessage = body => {
+  const { token, content } = body;
+  const timestamp = Date.now();
+};
+
+const handleSocket = server => {
   const io = socketio.listen(server);
-  io.on('connection', (socket) => {
+  io.on('connection', socket => {
     console.log(`${socket.id} has connected to the site.`);
 
-    socket.on('login', (userInfo) => {
+    socket.on('login', userInfo => {
       userLogin(socket.id, userInfo);
     });
   });
 
-  io.on('disconnect', (socket) => {
+  io.on('disconnect', socket => {
     console.log(`${socket.id} has left the site.`);
+    userDisconnect(socket.id);
   });
 };
 
