@@ -13,7 +13,7 @@
     "socket.io-client": "^2.3.0"
   },
   "scripts": {
-    "dev": "concurrently --names \"FRONTEND,BACKEND\" -c \"red,blue\" --prefix \"{name} \" \"npm run start\" \"npm run start:server\" ",
+    "dev": "concurrently -i --default-input-target \"BACKEND\" --names \"FRONTEND,BACKEND\" -c \"red,blue\" --prefix \"{name} \" \"npm:start\" \"npm:start:server\" ",
     "start": "react-scripts start",
     "start:server": "cd .. && cd server && npm run dev",
     "build": "react-scripts build",
