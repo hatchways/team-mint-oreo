@@ -9,7 +9,7 @@ const Dashboard = () => {
   return (
     <Box height="100vh">
       <Box mx={2} py={2}>
-        <Grid container>
+        <Grid container spacing={4}>
           <Hidden smDown>
             <Grid item>
               <Sidebar />

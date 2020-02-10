@@ -41,7 +41,9 @@ const Sidebar = () => {
 
   return (
     <Box>
-      <Grid item>// profile</Grid>
+      <Grid item>
+        <Profile />
+      </Grid>
       <Grid item>
         <StyledTabs value={tab} onChange={changeTab} aria-label="styled tabs">
           <StyledTab value="Chats" label="Chats" />
