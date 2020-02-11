@@ -1,7 +1,22 @@
 import UserActionTypes from './user.types';
 
+/*
+user: {
+  id: number/string, 
+  name: string, 
+  avatar: {
+    url: string, 
+    alt: string, 
+  }
+}
+*/
 export const initialState = {
-  // TODO: states go here
+  name: 'The Ultimate Legend',
+  id: 123123124,
+  avatar: {
+    url: '',
+    alt: 'L',
+  },
 };
 
 export const userReducer = (state, action) => {
