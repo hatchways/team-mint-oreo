@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-export default {
+module.exports = {
   encrypt: async (plaintextPassword) => {
     try {
       const SALT_ROUNDS = 10;
