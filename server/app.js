@@ -18,8 +18,8 @@ const app = express();
 connectDB();
 
 // initialize passport
-app.use(passport.initialize());
-passportConfig(passport);
+// app.use(passport.initialize());
+// passportConfig(passport);
 
 app.use(logger('dev'));
 app.use(json());
