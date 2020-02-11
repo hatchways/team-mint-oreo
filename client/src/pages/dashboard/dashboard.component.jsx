@@ -1,10 +1,9 @@
 import React from 'react';
 import { Box, Grid, Hidden } from '@material-ui/core';
+import WithChatStates from '../../components/with-chat-states/with-chat-states.component';
 
 import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
-
-import { DirectoryStateProvider } from '../../store/directory/directory.provider';
 
 const Dashboard = () => {
   return (
@@ -14,9 +13,7 @@ const Dashboard = () => {
           <Hidden smDown>
             <Grid item>
               <Box minWidth={450} maxWidth={450} minHeight={'100vh'} bgcolor="grey.200">
-                <DirectoryStateProvider>
-                  <Sidebar />
-                </DirectoryStateProvider>
+                <Sidebar />
               </Box>
             </Grid>
           </Hidden>
@@ -31,4 +28,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default WithChatStates(Dashboard, props => props);
