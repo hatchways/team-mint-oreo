@@ -32,10 +32,12 @@ const StyledTab = withStyles(theme => ({
 
 const TabsComponent = ({ value, onChange }) => (
   <StyledTabs value={value} onChange={onChange} aria-label="styled tabs">
-    <StyledTab value="Chats" label="Chats" />
-    <StyledTab value="Contacts" label="Contacts" />
-    <StyledTab value="Invites" label="Invites" />
+    <StyledTab value={TabNames.CHATS} label={TabNames.CHATS} />
+    <StyledTab value={TabNames.CONTACTS} label={TabNames.CONTACTS} />
+    <StyledTab value={TabNames.INVITES} label={TabNames.INVITES} />
   </StyledTabs>
 );
+
+export const TabNames = { CHATS: 'Chats', CONTACTS: 'Contacts', INVITES: 'Invites' };
 
 export default TabsComponent;

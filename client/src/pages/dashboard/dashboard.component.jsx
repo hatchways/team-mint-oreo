@@ -4,6 +4,8 @@ import { Box, Grid, Hidden } from '@material-ui/core';
 import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
 
+import { DirectoryStateProvider } from '../../store/directory/directory.provider';
+
 const Dashboard = () => {
   return (
     <Box>
@@ -12,7 +14,9 @@ const Dashboard = () => {
           <Hidden smDown>
             <Grid item>
               <Box minWidth={450} maxWidth={450} minHeight={'100vh'} bgcolor="grey.200">
-                <Sidebar />
+                <DirectoryStateProvider>
+                  <Sidebar />
+                </DirectoryStateProvider>
               </Box>
             </Grid>
           </Hidden>

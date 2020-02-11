@@ -120,6 +120,8 @@ export const initialState = {
 export const directoryReducer = (state, action) => {
   switch (action.type) {
     // TODO: case DirectoryActionTypes.SOMETYPE:
+    case DirectoryActionTypes.DO_SOME_ACTION:
+    // just do default for now
     default: {
       return state;
     }
