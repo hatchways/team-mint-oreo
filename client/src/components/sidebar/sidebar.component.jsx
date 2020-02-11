@@ -16,8 +16,8 @@ const Sidebar = () => {
   };
 
   return (
-    <Box p={4}>
-      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={0}>
+    <Box p={2}>
+      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
         <Grid item>
           <Profile name={'name'} moreOptions={{ exists: true }} />
         </Grid>

@@ -12,7 +12,7 @@ const TabPanel = props => {
       id={`simple-tabpanel-${index}`}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </Box>
   );
 };
