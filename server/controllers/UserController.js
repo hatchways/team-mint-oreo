@@ -27,7 +27,7 @@ const getUserById = async id => {
 };
 
 const getUserFriendsById = async id => {
-  const friends = await User.findById(id).populate('User');
+  const friends = await User.findById(id).populate('users');
   return friends;
 };
 

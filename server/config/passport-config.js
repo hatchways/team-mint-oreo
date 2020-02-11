@@ -8,7 +8,6 @@ const JwtStrategy = passportJWT.Strategy;
 const secret = 'some secret';
 
 const opts = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: secret,
 };
 
@@ -33,9 +32,8 @@ const strategy = new JwtStrategy(opts, (payload, done) => {
   });
 });
 
-//this sets how we handle tokens coming from the requests that come
+// this sets how we handle tokens coming from the requests that come
 // and also defines the key to be used when verifying the token.
 module.exports = passport => {
-  passport.use('register', strategy_register);
   passport.use('jwt', strategy);
 };
