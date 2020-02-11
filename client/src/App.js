@@ -8,7 +8,6 @@ import Dashboard from './pages/dashboard/dashboard.component';
 import Login from './pages/login/Login';
 
 import './App.css';
-
 function App() {
   return (
     <MuiThemeProvider theme={theme}>

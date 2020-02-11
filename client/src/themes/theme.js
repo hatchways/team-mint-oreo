@@ -11,10 +11,10 @@ const theme = createMuiTheme({
     },
     palette: {
       primary: {
-        main: '#556cd6',
+        main: '#3A8DFF',
       },
       secondary: {
-        main: '#19857b',
+        main: '#808080',
       },
       error: {
         main: red.A400,
