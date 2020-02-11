@@ -1,5 +1,4 @@
 import React from 'react';
-// import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
@@ -9,28 +8,34 @@ import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-// import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import TextsmsOutlinedIcon from '@material-ui/icons/TextsmsOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-const defaultColor = "rgb(37, 152, 236)";
+const defaultColor = "#2598EC";
 
 const useStyles = makeStyles(theme => ({
   root: {
     height: '100vh'
   },
   image: {
-    backgroundImage: 'url(https://source.unsplash.com/random)',
-    backgroundRepeat: 'no-repeat',
-    backgroundColor:
-      theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
+    background: 'linear-gradient(#4098EC 40%, #99C6FF 90%)',
+    color: '#FFF',
+    alignItems: 'center',
+    display: 'flex',
+    // flexDirection: 'column'
+    // backgroundImage: 'url(https://source.unsplash.com/random)',
+    // backgroundRepeat: 'no-repeat',
+    // backgroundColor:
+    //   theme.palette.type === 'dark' ? theme.palette.grey[900] : theme.palette.grey[50],
+    // backgroundSize: 'cover',
+    // backgroundPosition: 'center',
   },
-  createAccount: {
-    justifyContent: 'right',
-    margin: theme.spacing(4, 4, 6),
-    display: 'inline-flex'
+  converseBox: {
+    width: '80%',
+    height: '40%',
+    textAlign: 'center',
+    margin: theme.spacing(12)
   },
   alignCenter: {
     alignItems: 'center',
@@ -38,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     height: '100%',
-    width: '60%',
+    width: '70%',
     // margin: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
@@ -48,28 +53,39 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(6, 4, 6),
       padding: theme.spacing(0, 6)
   },
-  // avatar: {
-  //   margin: theme.spacing(1),
-  //   backgroundColor: theme.palette.secondary.main,
-  // },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: '100%',
     marginTop: theme.spacing(1)
+  },
+  rememberMe: {
+      fontSize: 14
   },
   submit: {
       margin: theme.spacing(3, 0, 2),
       padding: theme.spacing(1, 5, 1),
       fontSize: 14,
-      backgroundColor: defaultColor
+      backgroundColor: defaultColor,
+      textTransform: 'none'
+  },
+  createAccount: {
+    justifyContent: 'right',
+    margin: theme.spacing(4, 4, 6),
+    display: 'inline-flex'
+  },
+  accountText: {
+    padding: theme.spacing(1, 3, 0),
+    fontSize: 13,
+    color: "#bdbdbd"
   },
   switch: {
       backgroundColor: 'white',
       fontSize: 12,
       padding: theme.spacing(1, 2, 1),
-      color: defaultColor
+      color: defaultColor,
+      textTransform: 'none'
   },
   label: {
-      fontSize: 14,
+      fontSize: 16,
       "&$focusedLabel": {
           color: defaultColor
       }
@@ -88,14 +104,20 @@ export default function Login() {
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Grid container xs={false} sm={4} md={5} className={classes.image} />
+      <Grid container xs={false} sm={4} md={5} className={classes.image}>
+        <Box mx="auto" className={classes.converseBox}>
+            <TextsmsOutlinedIcon fontSize='large' />
+            <Typography variant="h6">
+                Converse with anyone<br/>with any language
+            </Typography>
+        </Box>
+      </Grid>
       <Grid container xs={12} sm={8} md={7} component={Paper} elevation={6} className={classes.alignCenter} square>
         <div className={classes.paper}>
-          {/*<Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>*/}
           <Grid container className={classes.createAccount}>
-            Don't have an account?
+            <Grid className={classes.accountText}>
+                Don't have an account?
+            </Grid>
             <Button
               type="submit"
               variant="contained"
@@ -156,7 +178,7 @@ export default function Login() {
                 />
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
+                  label={<Typography class={classes.rememberMe}>Remember Me</Typography>}
                 />
                 <Grid container className={classes.alignCenter}>
                   <Button
