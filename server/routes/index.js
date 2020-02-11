@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const UserController = require('../db/Controllers/UserController');
+const UserController = require('../controllers/UserController');
 
 router.get('/welcome', (req, res, next) => {
   res.status(200).send({ welcomeMessage: 'Step 1 (completed)' });
