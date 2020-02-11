@@ -11,31 +11,35 @@ import Profile from '../../components/profile/profile.component';
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
+import { useEffect } from 'react';
 
 const Sidebar = ({ size }) => {
   const [upperRect, upperRef] = useClientRect();
+  const [height, setHeight] = useState(0);
 
   const [tab, setTab] = useState(TabNames.CHATS);
   const userState = useContext(userStore);
-  console.log(`userState: `, userState);
   const directoryState = useContext(directoryStore);
-  console.log(`directoryState: `, directoryState);
 
   const changeTab = (event, newValue) => {
     setTab(newValue);
   };
 
-  const calculateHeight = () => {
-    const list = [size.height, upperRect !== null ? -upperRect.height : null];
-    return list.reduce(
+  useEffect(() => {
+    const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
+    console.log('list', list);
+    const sum = list.reduce(
       (accumulator, currentElement) =>
         currentElement !== null && accumulator + Math.round(currentElement),
       0
     );
-  };
+
+    console.log('sum', sum);
+    setHeight(sum);
+  }, [upperRect, size]);
 
   return (
-    <Box p={2}>
+    <Box p={2} paddingBottom={0} height={'98vh'}>
       <Box paddingBottom={2} ref={upperRef}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
@@ -51,28 +55,27 @@ const Sidebar = ({ size }) => {
           </Grid>
         </Grid>
       </Box>
-      <SidebarTabPanel
-        value={tab}
-        index={TabNames.CHATS}
-        profilesList={directoryState.state.commsList}
-        maxHeight={calculateHeight}
-      />
-      <SidebarTabPanel
-        value={tab}
-        index={TabNames.CONTACTS}
-        profilesList={directoryState.state.contactsList.map(
-          ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-        )}
-        maxHeight={calculateHeight}
-      />
-      <SidebarTabPanel
-        value={tab}
-        index={TabNames.INVITES}
-        profilesList={directoryState.state.invitesList.map(
-          ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-        )}
-        maxHeight={calculateHeight}
-      />
+      <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
+        <SidebarTabPanel
+          value={tab}
+          index={TabNames.CHATS}
+          profilesList={directoryState.state.commsList}
+        />
+        <SidebarTabPanel
+          value={tab}
+          index={TabNames.CONTACTS}
+          profilesList={directoryState.state.contactsList.map(
+            ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+          )}
+        />
+        <SidebarTabPanel
+          value={tab}
+          index={TabNames.INVITES}
+          profilesList={directoryState.state.invitesList.map(
+            ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+          )}
+        />
+      </Box>
     </Box>
   );
 };

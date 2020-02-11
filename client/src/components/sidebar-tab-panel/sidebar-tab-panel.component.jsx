@@ -4,13 +4,12 @@ import TabPanel from '../tabs-panel/tabs-panel.component';
 import ProfileWithBorder from '../profile/profile-with-border.container';
 import { Grid, Box } from '@material-ui/core';
 
-const SidebarTabPanel = ({ value, index, profilesList, maxHeight }) => {
+const SidebarTabPanel = ({ value, index, profilesList }) => {
   return (
-    <TabPanel {...{ value, index }}>
-      <Box {...{ maxHeight }} style={{ overflow: 'auto' }}>
-        <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
-          {profilesList.map(profile => (
-            /*
+    <TabPanel {...{ value, index }} p={1} paddingBottom={0}>
+      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
+        {profilesList.map(profile => (
+          /*
         profileFormat: {
           id: string/integer, 
           name: string, 
@@ -19,12 +18,11 @@ const SidebarTabPanel = ({ value, index, profilesList, maxHeight }) => {
           ...others
         }
         */
-            <Grid item key={profile.id}>
-              <ProfileWithBorder id={profile.id} {...profile} />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+          <Grid item key={profile.id}>
+            <ProfileWithBorder id={profile.id} {...profile} />
+          </Grid>
+        ))}
+      </Grid>
     </TabPanel>
   );
 };
