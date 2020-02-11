@@ -44,6 +44,36 @@ export const initialState = {
         fallback: 'PK',
       },
     },
+    {
+      id: 234,
+      name: 'uncreative name',
+      secondary: '101010101',
+      notifications: 6,
+      avatar: {
+        url: null,
+        fallback: 'UN',
+      },
+    },
+    {
+      id: 222,
+      name: 'Creative Circle',
+      secondary: 'CCCCCCC',
+      notifications: 90,
+      avatar: {
+        url: null,
+        fallback: 'CC',
+      },
+    },
+    {
+      id: 68,
+      name: 'Old timers',
+      secondary: 'old old old',
+      notifications: 0,
+      avatar: {
+        url: null,
+        fallback: 'OT',
+      },
+    },
   ],
   /*
   Contacts/Friends:{
