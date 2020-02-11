@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
 
-const createUser = async (userData, done) => {
+const createUser = async userData => {
   console.log('createUser hit');
   const newUser = new User(userData);
   try {
@@ -12,7 +12,7 @@ const createUser = async (userData, done) => {
   }
 };
 
-const getUserByEmail = async email => {
+const getByEmail = async email => {
   try {
     const user = await User.findOne({ email });
     if (user) return user;
@@ -21,19 +21,19 @@ const getUserByEmail = async email => {
   }
 };
 
-const getUserById = async id => {
+const getById = async id => {
   const data = await User.findById(id);
   return data;
 };
 
-const getUserFriendsById = async id => {
+const getFriendsById = async id => {
   const friends = await User.findById(id).populate('users');
   return friends;
 };
 
 module.exports = {
   createUser,
-  getUserByEmail,
-  getUserById,
-  getUserFriendsById,
+  getByEmail,
+  getById,
+  getFriendsById,
 };

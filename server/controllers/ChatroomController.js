@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Chatroom = require('../models/Chatroom');
 
-const addUserToChat = async (userId, chatId) => {
+const addUser = async (userId, chatId) => {
   Chatroom.findByIdAndUpdate(chatId, { $push: { users: userId } });
 };
 
@@ -33,7 +33,7 @@ const getLanguagesInChatroom = chatId => {
 };
 
 module.exports = {
-  addUserToChat,
+  addUser,
   createChatroom,
   getUsersInChatroom,
   getLanguagesInChatroom,
