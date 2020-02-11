@@ -16,7 +16,7 @@ const createInvitation = async (fromUser, toUser) => {
   }
 };
 
-const getPendingInvitations = async email => {
+const getInvitations = async email => {
   try {
     const incoming = await Invitation.find({ toUser: { $eq: { email } } });
     console.log(incoming);
@@ -35,6 +35,6 @@ const deleteInvitation = (fromUser, toUser) => {
 
 module.exports = {
   createInvitation,
-  getPendingInvitations,
+  getInvitations,
   deleteInvitation,
 };

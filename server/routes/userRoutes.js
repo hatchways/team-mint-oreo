@@ -2,7 +2,9 @@ const express = require('express');
 const bcrypt = require('../services/bcryptService');
 const userController = require('../controllers/UserController');
 const jwt = require('../services/jwtService');
-const isAuthorized = require('../middleware/isAuthorized');
+const { getInvitations } = require('../controllers/InvitationController');
+const { isAuthorized } = require('../middleware/isAuthorized');
+const { promiseWrapper } = require('../utils/promiseWrapper');
 
 const router = express.Router();
 
@@ -49,7 +51,20 @@ router.get('/verify', (req, res) => {
   res.send(!!res.locals.userId);
 });
 
-router.get('/test', isAuthorized, async (req, res) => {
+router.get('/data', isAuthorized, async (req, res) => {
+  const { id } = res.locals;
+
+  const { getChatsById, getFrindsById } = userController;
+  const queries = [
+    promiseWrapper(getChatsById, id),
+    promiseWrapper(getFrindsById),
+    promiseWrapper(getInvitations),
+  ];
+  const userData = Promise.all(queries);
+  console.log(userData);
+});
+
+router.get('/test', async (req, res) => {
   console.log('hello');
   console.log(res.locals.userId);
   res.redirect('http://localhost:3000/dashboard');
