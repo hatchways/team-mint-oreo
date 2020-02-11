@@ -5,18 +5,17 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
-import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import TextsmsOutlinedIcon from '@material-ui/icons/TextsmsOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import Container from '@material-ui/core/Container';
 
-const defaultColor = "#2598EC";
+const defaultColor = '#2598EC';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    height: '100vh'
+    height: '100vh',
   },
   image: {
     background: 'linear-gradient(#4098EC 40%, #99C6FF 90%)',
@@ -35,11 +34,11 @@ const useStyles = makeStyles(theme => ({
     width: '80%',
     height: '40%',
     textAlign: 'center',
-    margin: theme.spacing(12)
+    margin: theme.spacing(12),
   },
   alignCenter: {
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: 'center',
   },
   paper: {
     height: '100%',
@@ -47,54 +46,55 @@ const useStyles = makeStyles(theme => ({
     // margin: theme.spacing(8, 4),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'left',
   },
-  mainContent: {
-      margin: theme.spacing(6, 4, 6),
-      padding: theme.spacing(0, 6)
+  alignCenter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%',
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   rememberMe: {
-      fontSize: 14
+    fontSize: 14,
   },
   submit: {
-      margin: theme.spacing(3, 0, 2),
-      padding: theme.spacing(1, 5, 1),
-      fontSize: 14,
-      backgroundColor: defaultColor,
-      textTransform: 'none'
+    margin: theme.spacing(3, 0, 2),
+    padding: theme.spacing(1, 5, 1),
+    fontSize: 14,
+    backgroundColor: defaultColor,
+    textTransform: 'none',
   },
   createAccount: {
     justifyContent: 'right',
     margin: theme.spacing(4, 4, 6),
-    display: 'inline-flex'
+    display: 'inline-flex',
   },
   accountText: {
     padding: theme.spacing(1, 3, 0),
     fontSize: 13,
-    color: "#bdbdbd"
+    color: '#bdbdbd',
   },
   switch: {
-      backgroundColor: 'white',
-      fontSize: 12,
-      padding: theme.spacing(1, 2, 1),
-      color: defaultColor,
-      textTransform: 'none'
+    backgroundColor: 'white',
+    fontSize: 12,
+    padding: theme.spacing(1, 2, 1),
+    color: defaultColor,
+    textTransform: 'none',
   },
   label: {
-      fontSize: 16,
-      "&$focusedLabel": {
-          color: defaultColor
-      }
+    fontSize: 16,
+    '&$focusedLabel': {
+      color: defaultColor,
+    },
   },
-  focusedLabel: {},
-  underline: {
-    "&:after": {
-      borderBottom: '2px solid ' + defaultColor
-    }
+  input: {
+    color: defaultColor,
   },
 }));
 
@@ -102,106 +102,109 @@ export default function Login() {
   const classes = useStyles();
 
   return (
-    <Grid container component="main" className={classes.root}>
+    <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Grid container xs={false} sm={4} md={5} className={classes.image}>
         <Box mx="auto" className={classes.converseBox}>
-            <TextsmsOutlinedIcon fontSize='large' />
-            <Typography variant="h6">
-                Converse with anyone<br/>with any language
-            </Typography>
+          <TextsmsOutlinedIcon fontSize="large" />
+          <Typography variant="h6">
+            Converse with anyone
+            <br />
+            with any language
+          </Typography>
         </Box>
       </Grid>
-      <Grid container xs={12} sm={8} md={7} component={Paper} elevation={6} className={classes.alignCenter} square>
+      <Grid
+        container
+        xs={12}
+        sm={8}
+        md={7}
+        component={Paper}
+        elevation={6}
+        className={classes.alignCenter}
+        square
+      >
         <div className={classes.paper}>
           <Grid container className={classes.createAccount}>
-            <Grid className={classes.accountText}>
-                Don't have an account?
-            </Grid>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              className={classes.switch}
-            >
+            <Grid className={classes.accountText}>Don't have an account?</Grid>
+            <Button type="submit" variant="contained" color="primary" className={classes.switch}>
               Create Account
             </Button>
           </Grid>
           <Grid container className={classes.mainContent}>
-              <Grid container alignItems="left">
-                  <Typography component="h1" variant="h5">
-                    Welcome Back!
-                  </Typography>
-              </Grid>
-              <form className={classes.form} noValidate>
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  autoFocus
-                  InputLabelProps={{
-                      classes: {
-                          root: classes.label,
-                          focused: classes.focusedLabel
-                      }
-                  }}
-                  InputProps={{
-                      classes: {
-                          root: classes.underline
-                      }
-                  }}
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  InputLabelProps={{
-                      classes: {
-                          root: classes.label,
-                          focused: classes.focusedLabel
-                      }
-                  }}
-                  InputProps={{
-                      classes: {
-                          root: classes.underline
-                      }
-                  }}
-                />
-                <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label={<Typography class={classes.rememberMe}>Remember Me</Typography>}
-                />
-                <Grid container className={classes.alignCenter}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                  >
-                    Sign Up
-                  </Button>
-                </Grid>
-                <Grid container>
-                  <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
-                  </Grid>
-
-                </Grid>
-              </form>
+            <Grid container alignItems="left">
+              <Typography component="h1" variant="h5">
+                Welcome Back!
+              </Typography>
             </Grid>
+            <form className={classes.form} noValidate>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                InputLabelProps={{
+                  classes: {
+                    root: classes.label,
+                    focused: classes.focusedLabel,
+                  },
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.underline,
+                  },
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                InputLabelProps={{
+                  classes: {
+                    root: classes.label,
+                    focused: classes.focusedLabel,
+                  },
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.underline,
+                  },
+                }}
+              />
+              <FormControlLabel
+                control={<Checkbox value="remember" color="primary" />}
+                label={<Typography class={classes.rememberMe}>Remember Me</Typography>}
+              />
+              <Grid container className={classes.alignCenter}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Sign Up
+                </Button>
+              </Grid>
+              <Grid container>
+                <Grid item xs>
+                  <Link href="#" variant="body2">
+                    Forgot password?
+                  </Link>
+                </Grid>
+              </Grid>
+            </form>
+          </Grid>
         </div>
       </Grid>
-    </Grid>
+    </Container>
   );
 }
