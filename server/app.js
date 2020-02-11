@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require('passport');
 const routes = require('./routes');
-const passportConfig = require('./config/passport-config');
+const strategy = require('./config/passport-config');
 
 // DB connection
 const connectDB = require('./db/connection');
@@ -18,14 +18,14 @@ const app = express();
 connectDB();
 
 // initialize passport
-// app.use(passport.initialize());
-// passportConfig(passport);
 
 app.use(logger('dev'));
 app.use(json());
 app.use(urlencoded({ extended: false }));
+app.use(passport.initialize());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(join(__dirname, 'public')));
+passport.use('jwt', strategy);
 
 app.use(routes);
 

@@ -1,3 +1,4 @@
+const passport = require('passport');
 const express = require('express');
 const bcrypt = require('../services/bcryptService');
 const userController = require('../controllers/UserController');
@@ -45,7 +46,11 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/test', async (req, res) => {
+  await passport.authenticate('jwt', (err, user, info) => {
+    console.log('**', err, user, info);
+  });
   console.log('hello');
+  console.log(req.signedCookies.user);
   res.redirect('http://localhost:3000/dashboard');
 });
 
