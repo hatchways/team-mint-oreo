@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: undefined,
     },
+    pendingInvitations: [{
+        type: Schema.Types.ObjectId,
+        ref: "Invitation"
+    }],
     lastActivity: Date,
   },
   { timestamps: true }
