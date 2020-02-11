@@ -2,7 +2,7 @@ import React from 'react';
 
 import TabPanel from '../tabs-panel/tabs-panel.component';
 import ProfileWithBorder from '../profile/profile-with-border.container';
-import { Grid, Box } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 const SidebarTabPanel = ({ value, index, profilesList }) => {
   return (
