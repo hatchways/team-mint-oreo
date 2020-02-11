@@ -1,11 +1,8 @@
 const express = require('express');
 const bcrypt = require('../services/bcryptService');
-
-const router = express.Router();
-
 const userController = require('../controllers/UserController');
 
-// Require all models here
+const router = express.Router();
 
 router.post('/register', async (req, res) => {
   console.log(req.body);
@@ -15,7 +12,7 @@ router.post('/register', async (req, res) => {
       .status(201)
       .cookie('user', id, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 180,
+        maxAge: 1000 * 60 * 60 * 24 * 180, // 180days
         // secure: true
         signed: true,
       })
@@ -47,6 +44,10 @@ router.post('/login', async (req, res) => {
   } catch (err) {
     res.sendStatus(err.code);
   }
+});
+
+router.get('/test', async (req, res) => {
+  res.status(301).redirect('/messages');
 });
 
 module.exports = router;

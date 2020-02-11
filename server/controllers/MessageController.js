@@ -22,6 +22,7 @@ const getMessagesByChatId = async (chatId, limit = 50, skip = 0) => {
     return { error };
   }
 };
+
 module.exports = {
   createMessage,
   getMessagesByChatId,
