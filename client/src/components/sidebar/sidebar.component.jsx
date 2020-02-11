@@ -6,6 +6,7 @@ import ProfileWithBorder from '../../components/profile/profile-with-border.cont
 
 import { default as Tabs } from '../../components/tabs/tabs.component';
 import TabPanel from '../tabs-panel/tabs-panel.component';
+import SearchField from '../search-field/search-field.component';
 
 const Sidebar = () => {
   const [tab, setTab] = useState('Chats');
@@ -16,12 +17,15 @@ const Sidebar = () => {
 
   return (
     <Box p={4}>
-      <Grid container direction="column">
+      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
         <Grid item>
           <Profile name={'name'} />
         </Grid>
         <Grid item>
           <Tabs value={tab} onChange={changeTab}></Tabs>
+        </Grid>
+        <Grid item spacing={3}>
+          <SearchField />
         </Grid>
         <Grid item>
           <TabPanel value={tab} index={'Chats'}>
