@@ -19,7 +19,7 @@ const Sidebar = () => {
     <Box p={4}>
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={0}>
         <Grid item>
-          <Profile name={'name'} />
+          <Profile name={'name'} moreOptions={{ exists: true }} />
         </Grid>
         <Grid item>
           <Tabs value={tab} onChange={changeTab}></Tabs>

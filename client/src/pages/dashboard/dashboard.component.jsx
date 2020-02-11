@@ -18,7 +18,7 @@ const Dashboard = () => {
               </Box>
             </Grid>
           </Hidden>
-          <Grid item md>
+          <Grid item xs={12} sm={12} md>
             <Box minHeight={'99vh'}>
               <ChatFrame />
             </Box>

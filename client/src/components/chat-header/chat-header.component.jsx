@@ -25,7 +25,7 @@ const ChatHeader = () => {
                     value="checkedA"
                   />
                 }
-                label="Original Language"
+                label="Original"
               />
             </Grid>
             <Grid item>
