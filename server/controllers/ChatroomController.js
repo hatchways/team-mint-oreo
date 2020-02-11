@@ -19,16 +19,22 @@ const createChatroom = async userIds => {
   }
 };
 
-const getUsersInChatroom = chatId => {
-  const users = Chatroom.findById(chatId)
+const getUsersInChatroom = async chatId => {
+  const users = await Chatroom.findById(chatId)
     .populate('users')
     .exec((err, data) => {
       console.log(data);
     });
 };
 
+const getLanguagesInChatroom = chatId => {
+  const languages = getUsersInChatroom(chatId).map(user => user.language);
+  return languages;
+};
+
 module.exports = {
   addUserToChat,
   createChatroom,
   getUsersInChatroom,
+  getLanguagesInChatroom,
 };
