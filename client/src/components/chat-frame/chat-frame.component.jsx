@@ -26,7 +26,9 @@ const ChatFrame = ({ size }) => {
     <Box height={'100vh'} paddingLeft={1} paddingRight={1}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
-          <ChatHeader getChildRect={hRef} />
+          <Box ref={hRef}>
+            <ChatHeader />
+          </Box>
         </Grid>
         <Grid item>
           <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
@@ -34,7 +36,9 @@ const ChatFrame = ({ size }) => {
               <ChatMessages heights={makeHeightsList()} />
             </Grid>
             <Grid item>
-              <MessageField getChildRect={mRef} />
+              <Box ref={mRef}>
+                <MessageField />
+              </Box>
             </Grid>
           </Grid>
         </Grid>

@@ -2,10 +2,9 @@ import React from 'react';
 import { Box, Grid, Switch, Typography, FormControlLabel, IconButton } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 
-const ChatHeader = ({ getChildRect }) => {
-  // get child bound used by parnt to pass a ref down
+const ChatHeader = () => {
   return (
-    <Box boxShadow={1} py={3} px={5} ref={getChildRect}>
+    <Box boxShadow={1} py={3} px={5}>
       <Grid container direction="row" justify="space-between" alignItems="center">
         <Grid item>
           <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>

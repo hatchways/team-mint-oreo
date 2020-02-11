@@ -24,8 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MessageField = ({ getChildRect }) => {
-  // get child bound used by parnt to pass a ref down
+const MessageField = () => {
   const classes = useStyles();
 
   const handleChange = e => {
@@ -38,7 +37,6 @@ const MessageField = ({ getChildRect }) => {
       className={classes.root}
       onChange={handleChange}
       onSubmit={handleChange}
-      ref={getChildRect}
     >
       <InputBase
         className={classes.input}
