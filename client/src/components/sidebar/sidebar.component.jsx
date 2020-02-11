@@ -2,24 +2,10 @@ import React, { useState } from 'react';
 import { Box, Grid, Typography, makeStyles, withStyles } from '@material-ui/core';
 
 import Profile from '../../components/profile/profile.component';
-import { default as Tabs } from '../../components/tabs/tabs.component';
 import ProfileWithBorder from '../../components/profile/profile-with-border.container';
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Box
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Box>
-  );
-}
+import { default as Tabs } from '../../components/tabs/tabs.component';
+import TabPanel from '../tabs-panel/tabs-panel.component';
 
 const Sidebar = () => {
   const [tab, setTab] = useState('Chats');
@@ -29,26 +15,25 @@ const Sidebar = () => {
   };
 
   return (
-    <Box>
-      <Grid item>
-        <Profile name={'name'} />
-      </Grid>
-      <Grid item>
-        <Tabs value={tab} onChange={changeTab}></Tabs>
-      </Grid>
-      <Grid item>
-        <TabPanel value={tab} index={'Chats'}>
-          Chats
-          <ProfileWithBorder name={'name'} secondaryText={'Secondary Text'} />
-        </TabPanel>
-        <TabPanel value={tab} index={'Contacts'}>
-          Contacts
-          <ProfileWithBorder name={'name'} />
-        </TabPanel>
-        <TabPanel value={tab} index={'Invites'}>
-          Invites
-          <ProfileWithBorder name={'name'} />
-        </TabPanel>
+    <Box p={4}>
+      <Grid container direction="column">
+        <Grid item>
+          <Profile name={'name'} />
+        </Grid>
+        <Grid item>
+          <Tabs value={tab} onChange={changeTab}></Tabs>
+        </Grid>
+        <Grid item>
+          <TabPanel value={tab} index={'Chats'}>
+            <ProfileWithBorder name={'name'} secondaryText={'Secondary Text'} notifications={2} />
+          </TabPanel>
+          <TabPanel value={tab} index={'Contacts'}>
+            <ProfileWithBorder name={'contact 1'} />
+          </TabPanel>
+          <TabPanel value={tab} index={'Invites'}>
+            <ProfileWithBorder name={'invite 1'} />
+          </TabPanel>
+        </Grid>
       </Grid>
     </Box>
   );

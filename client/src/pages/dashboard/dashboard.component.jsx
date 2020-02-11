@@ -7,18 +7,18 @@ const Dashboard = () => {
   const theme = useTheme();
   console.log(theme);
   return (
-    <Box height="100vh">
-      <Box mx={2} py={2}>
-        <Grid container spacing={4}>
+    <Box>
+      <Box>
+        <Grid container spacing={4} alignItems="stretch">
           <Hidden smDown>
             <Grid item>
-              <Box minWidth={400} maxWidth={400}>
+              <Box minWidth={450} maxWidth={450} minHeight={'99vh'} bgcolor="grey.200">
                 <Sidebar />
               </Box>
             </Grid>
           </Hidden>
           <Grid item md>
-            // chat
+            <Box minHeight={'99vh'}>asdf</Box>
           </Grid>
         </Grid>
       </Box>

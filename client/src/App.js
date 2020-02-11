@@ -11,23 +11,25 @@ import './App.css';
 
 const socket = io('http://localhost:3001');
 
+/*
 socket.on('connect', () => {
   console.log('socket connected');
 });
-
+*/
 function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
         <Route exact path="/dashboard" component={Dashboard} />
         <Route exact path="/" component={LandingPage} />
+        {/*
         <button
           onClick={() => {
             socket.emit('login', { user: 'name', pass: 'pass' });
           }}
         >
           PING SOCKET
-        </button>
+        </button> */}
       </BrowserRouter>
     </MuiThemeProvider>
   );
