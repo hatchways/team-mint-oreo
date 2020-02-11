@@ -7,7 +7,7 @@ import ChatMessages from '../chat-messages/chat-messages.component';
 
 const ChatFrame = () => {
   return (
-    <Box height={'100vh'} bgcolor="grey.200">
+    <Box height={'100vh'} bgcolor="grey.200" paddingRight={1}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
           <ChatHeader />
