@@ -16,6 +16,7 @@ const opts = {
 };
 
 const strategy = new JwtStrategy(opts, (payload, done) => {
+  console.log('strategy firing');
   userController.getById({ id: payload.id }, (err, user) => {
     if (err) {
       return done(err, false);

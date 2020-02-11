@@ -11,6 +11,16 @@ const sign = async userData => {
   }
 };
 
+const verify = async encryptedToken => {
+  try {
+    const { id } = await jwt.verify(encryptedToken, process.env.JWT_SECRET);
+    return id;
+  } catch (err) {
+    console.error('token decrypt error', err);
+  }
+};
+
 module.exports = {
   sign,
+  verify,
 };
