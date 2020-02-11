@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Grid, Typography, makeStyles, withStyles } from '@material-ui/core';
+import React from 'react';
+import { Box } from '@material-ui/core';
 
 const TabPanel = props => {
   const { children, value, index, ...other } = props;
@@ -12,7 +12,7 @@ const TabPanel = props => {
       id={`simple-tabpanel-${index}`}
       {...other}
     >
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </Box>
   );
 };

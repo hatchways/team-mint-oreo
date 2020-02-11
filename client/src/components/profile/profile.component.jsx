@@ -1,31 +1,51 @@
 import React from 'react';
-import { Avatar, Box, Grid, Paper, chip, Chip } from '@material-ui/core';
+import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/core';
+import MoreHoriz from '@material-ui/icons/MoreHoriz';
 
-const Profile = ({ name, secondaryText = '', notifications = 0 }) => {
+const Profile = ({
+  name,
+  secondary = '',
+  notifications = 0,
+  moreOptions = null,
+  avatar: { url, fallback },
+}) => {
   return (
     <Box>
       <Box p={2}>
         <Grid container spacing={2}>
           <Grid item>
-            <Avatar>A</Avatar>
+            <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
           </Grid>
           <Grid item xs>
-            {secondaryText === '' ? (
-              name
+            {secondary === '' ? (
+              <Typography>{name}</Typography>
             ) : (
               <div>
                 <Grid container direction="column">
-                  <Grid item>{name}</Grid>
-                  <Grid item>{secondaryText}</Grid>
+                  <Grid item>
+                    <Typography>{name}</Typography>
+                  </Grid>
+                  <Grid item>{secondary}</Grid>
                 </Grid>
               </div>
             )}
           </Grid>
           {notifications > 0 && (
-            <Grid item xs>
+            <Grid item xs={1}>
               <Grid container justify="flex-end">
-                <Grid item> 
+                <Grid item>
                   <Chip label={notifications} />
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
+          {moreOptions !== null && (
+            <Grid item xs={2}>
+              <Grid container justify="flex-end">
+                <Grid item>
+                  <IconButton>
+                    <MoreHoriz />
+                  </IconButton>
                 </Grid>
               </Grid>
             </Grid>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, InputBase, IconButton } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
+import { Paper, InputBase, Divider, IconButton } from '@material-ui/core';
+import Send from '@material-ui/icons/Send';
+import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -23,7 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const SearchField = () => {
+const MessageField = () => {
   const classes = useStyles();
 
   const handleChange = e => {
@@ -37,16 +38,20 @@ const SearchField = () => {
       onChange={handleChange}
       onSubmit={handleChange}
     >
-      <IconButton type="submit" className={classes.iconButton} aria-label="search">
-        <SearchIcon />
-      </IconButton>
       <InputBase
         className={classes.input}
-        placeholder="Search"
+        placeholder="Type Something ... "
         inputProps={{ 'aria-label': 'search listing' }}
       />
+      <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
+        <InsertEmoticon />
+      </IconButton>
+      <Divider className={classes.divider} orientation="vertical" />
+      <IconButton type="submit" className={classes.iconButton} aria-label="send">
+        <Send />
+      </IconButton>
     </Paper>
   );
 };
 
-export default SearchField;
+export default MessageField;

@@ -11,6 +11,7 @@
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.0.1",
+    "react-sizeme": "^2.6.12",
     "socket.io-client": "^2.3.0"
   },
   "scripts": {
