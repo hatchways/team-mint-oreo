@@ -7,6 +7,7 @@ import ChatFrame from '../../components/chat-frame/chat-frame.component';
 import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite-friend-backdrop.component';
 
 const Dashboard = () => {
+  console.log('HIT');
   return (
     <Box>
       <InviteFriendBackdrop />
