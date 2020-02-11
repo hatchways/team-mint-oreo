@@ -4,7 +4,7 @@ export const initialState = {
   /*
   Comms: {
     id: integer/string, 
-    title: string, 
+    name: string, 
     secondary: string, 
     numUnread: integer,
     avatar: {
@@ -16,7 +16,7 @@ export const initialState = {
   commsList: [
     {
       id: 1,
-      title: 'The First',
+      name: 'The First',
       secondary: 'lala land',
       numUnread: 9,
       avatar: {
@@ -26,7 +26,7 @@ export const initialState = {
     },
     {
       id: 2,
-      title: 'Second Group',
+      name: 'Second Group',
       secondary: 'you memers',
       numUnread: 2,
       avatar: {

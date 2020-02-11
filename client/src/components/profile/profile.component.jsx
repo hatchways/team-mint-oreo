@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 
-const Profile = ({ name, secondaryText = '', notifications = 0, moreOptions = null }) => {
+const Profile = ({ name, secondary = '', notifications = 0, moreOptions = null }) => {
   return (
     <Box>
       <Box p={2}>
@@ -11,7 +11,7 @@ const Profile = ({ name, secondaryText = '', notifications = 0, moreOptions = nu
             <Avatar>A</Avatar>
           </Grid>
           <Grid item xs>
-            {secondaryText === '' ? (
+            {secondary === '' ? (
               <Typography>{name}</Typography>
             ) : (
               <div>
@@ -19,7 +19,7 @@ const Profile = ({ name, secondaryText = '', notifications = 0, moreOptions = nu
                   <Grid item>
                     <Typography>{name}</Typography>
                   </Grid>
-                  <Grid item>{secondaryText}</Grid>
+                  <Grid item>{secondary}</Grid>
                 </Grid>
               </div>
             )}
