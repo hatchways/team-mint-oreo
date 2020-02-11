@@ -7,6 +7,15 @@ import { Route, Link } from "react-router-dom";
 import Example from '../components/example/example.component'
 
 import Ping from "./Ping";
+import io from 'socket.io-client';
+
+// SOCKET TESTING
+const socket = io('http://localhost:3001');
+
+socket.on('connect', () => {
+  console.log('socket connected');
+});
+//
 
 const landinPageStyle = theme => ({
   landingContainer: {
@@ -66,6 +75,14 @@ class LandingPage extends Component {
         {this.state.step >= 3 && (
           <Typography>All done! Now go make a pull request!</Typography>
         )}
+        <br /><br />
+        <button
+          onClick={() => {
+            socket.emit('login', { user: 'name', pass: 'pass' });
+          }}
+        >
+          PING SOCKET
+        </button>
       </div>
     );
   }
