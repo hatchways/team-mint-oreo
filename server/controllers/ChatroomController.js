@@ -23,8 +23,9 @@ const getUsersInChatroom = async chatId => {
   const users = await Chatroom.findById(chatId)
     .populate('users')
     .exec((err, data) => {
-      console.log(data);
+      return data;
     });
+  console.log(users);
 };
 
 const getLanguagesInChatroom = chatId => {

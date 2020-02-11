@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const User = require('../models/User');
 
 const createUser = async userData => {
@@ -9,6 +8,7 @@ const createUser = async userData => {
     return savedUser;
   } catch (err) {
     console.error('create user error', err);
+    throw err;
   }
 };
 
@@ -31,9 +31,21 @@ const getFriendsById = async id => {
   return friends;
 };
 
+const getChatsById = async (id, limit = 50, skip = 0) => {
+  const chatrooms = await User.find({ id }, 'chatrooms', { limit, skip, sort: 'desc' });
+  return chatrooms;
+};
+
+const getFieldById = async (field, id) => {
+  const data = await User.findById(id, `${field}`);
+  return data;
+};
+
 module.exports = {
   createUser,
   getByEmail,
   getById,
   getFriendsById,
+  getChatsById,
+  getFieldById,
 };
