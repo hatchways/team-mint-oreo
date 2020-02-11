@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const User = require('../models/User');
 
 const createUser = async userData => {
@@ -9,6 +8,7 @@ const createUser = async userData => {
     return savedUser;
   } catch (err) {
     console.error('create user error', err);
+    throw err;
   }
 };
 

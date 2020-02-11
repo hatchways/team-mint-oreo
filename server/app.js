@@ -24,7 +24,7 @@ connectDB();
 app.use(logger('dev'));
 app.use(json());
 app.use(urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.static(join(__dirname, 'public')));
 
 app.use(routes);
