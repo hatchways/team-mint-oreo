@@ -1,13 +1,9 @@
 import React from 'react';
 import { Box, Typography } from '@material-ui/core';
 
-const ChatMessages = ({ heights = [300] }) => {
+const ChatMessages = ({ height }) => {
   return (
-    <Box
-      minHeight={combineHeight(heights)}
-      maxHeight={combineHeight(heights)}
-      style={{ overflow: 'auto' }}
-    >
+    <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
       <Box>
         {list.map(item => (
           <Typography key={item}>text</Typography>
@@ -18,13 +14,6 @@ const ChatMessages = ({ heights = [300] }) => {
 };
 
 export default ChatMessages;
-
-const combineHeight = heights =>
-  heights.reduce(
-    (accumulator, currentElement) =>
-      currentElement !== null && accumulator + Math.round(currentElement),
-    0
-  );
 
 const list = [
   0,

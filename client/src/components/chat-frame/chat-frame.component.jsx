@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 import sizeMe from 'react-sizeme';
 
+import { useClientRect } from '../../utils/react-utils';
+
 import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
@@ -22,6 +24,13 @@ const ChatFrame = ({ size }) => {
     return list;
   };
 
+  const calculateHeights = heights =>
+    heights.reduce(
+      (accumulator, currentElement) =>
+        currentElement !== null && accumulator + Math.round(currentElement),
+      0
+    );
+
   return (
     <Box height={'100vh'} paddingLeft={1} paddingRight={1}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
@@ -33,7 +42,7 @@ const ChatFrame = ({ size }) => {
         <Grid item>
           <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
             <Grid item>
-              <ChatMessages heights={makeHeightsList()} />
+              <ChatMessages height={calculateHeights(makeHeightsList())} />
             </Grid>
             <Grid item>
               <Box ref={mRef}>
@@ -45,16 +54,6 @@ const ChatFrame = ({ size }) => {
       </Grid>
     </Box>
   );
-};
-
-const useClientRect = () => {
-  const [rect, setRect] = React.useState(null);
-  const ref = React.useCallback(node => {
-    if (node !== null) {
-      setRect(node.getBoundingClientRect());
-    }
-  }, []);
-  return [rect, ref];
 };
 
 export default sizeMe({ monitorHeight: true })(ChatFrame);
