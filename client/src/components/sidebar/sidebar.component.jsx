@@ -17,15 +17,17 @@ const Sidebar = () => {
 
   return (
     <Box p={4}>
-      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
+      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={0}>
         <Grid item>
           <Profile name={'name'} />
         </Grid>
         <Grid item>
           <Tabs value={tab} onChange={changeTab}></Tabs>
         </Grid>
-        <Grid item spacing={3}>
-          <SearchField />
+        <Grid item>
+          <Box marginTop={1}>
+            <SearchField />
+          </Box>
         </Grid>
         <Grid item>
           <TabPanel value={tab} index={'Chats'}>
