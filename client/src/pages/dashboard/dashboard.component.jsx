@@ -6,6 +6,7 @@ import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
 
 const Dashboard = () => {
+  console.log('HIT');
   return (
     <Box>
       <Box>
