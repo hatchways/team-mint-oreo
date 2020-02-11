@@ -6,7 +6,7 @@ user: {
   name: string, 
   avatar: {
     url: string, 
-    alt: string, 
+    fallback: string, 
   }
 }
 */
@@ -15,7 +15,7 @@ export const initialState = {
   id: 123123124,
   avatar: {
     url: '',
-    alt: 'L',
+    fallback: 'L',
   },
 };
 

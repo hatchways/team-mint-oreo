@@ -2,13 +2,19 @@ import React from 'react';
 import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 
-const Profile = ({ name, secondary = '', notifications = 0, moreOptions = null }) => {
+const Profile = ({
+  name,
+  secondary = '',
+  notifications = 0,
+  moreOptions = null,
+  avatar: { url, fallback },
+}) => {
   return (
     <Box>
       <Box p={2}>
         <Grid container spacing={2}>
           <Grid item>
-            <Avatar>A</Avatar>
+            <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
           </Grid>
           <Grid item xs>
             {secondary === '' ? (

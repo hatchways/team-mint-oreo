@@ -9,7 +9,7 @@ export const initialState = {
     notifications: integer, // number of notifications
     avatar: {
       url: string, 
-      alt: string // basically what to render if url is blank
+      fallback: string // basically what to render if url is blank
     }
   }
   */
@@ -21,7 +21,7 @@ export const initialState = {
       notifications: 9,
       avatar: {
         url: null,
-        alt: 'F',
+        fallback: 'F',
       },
     },
     {
@@ -31,7 +31,7 @@ export const initialState = {
       notifications: 2,
       avatar: {
         url: null,
-        alt: 'SG',
+        fallback: 'SG',
       },
     },
     {
@@ -41,7 +41,7 @@ export const initialState = {
       notifications: 690,
       avatar: {
         url: null,
-        alt: 'PK',
+        fallback: 'PK',
       },
     },
   ],
@@ -58,7 +58,7 @@ export const initialState = {
         name: 'Bob Ross',
         avatar: {
           url: null,
-          alt: 'BR',
+          fallback: 'BR',
         },
       },
       isOnline: true,
@@ -69,7 +69,7 @@ export const initialState = {
         name: 'Rober Onwards',
         avatar: {
           url: null,
-          alt: 'RO',
+          fallback: 'RO',
         },
       },
       isOnline: false,
@@ -80,7 +80,7 @@ export const initialState = {
         name: 'THE LEGEND',
         avatar: {
           url: null,
-          alt: 'TL',
+          fallback: 'TL',
         },
       },
       isOnline: false,
@@ -99,7 +99,7 @@ export const initialState = {
         name: 'Rober Onwards',
         avatar: {
           url: null,
-          alt: 'RO',
+          fallback: 'RO',
         },
         isRecipiant: true,
       },
@@ -110,7 +110,7 @@ export const initialState = {
         name: 'Bob Ross',
         avatar: {
           url: null,
-          alt: 'BR',
+          fallback: 'BR',
         },
       },
       isRecipiant: false,

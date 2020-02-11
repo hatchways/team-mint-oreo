@@ -5,10 +5,8 @@ import { store as userStore } from '../../store/user/user.provider';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 
 import Profile from '../../components/profile/profile.component';
-import ProfileWithBorder from '../../components/profile/profile-with-border.container';
 
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
-import TabPanel from '../tabs-panel/tabs-panel.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
 
