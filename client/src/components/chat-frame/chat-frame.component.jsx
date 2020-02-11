@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Grid } from '@material-ui/core';
-import sizeMe, { SizeMe } from 'react-sizeme';
+import sizeMe from 'react-sizeme';
 
 import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';

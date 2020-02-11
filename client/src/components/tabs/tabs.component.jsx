@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Grid, Typography, Tabs, Tab, makeStyles, withStyles } from '@material-ui/core';
+import React from 'react';
+import { Tabs, Tab, withStyles } from '@material-ui/core';
 
 const StyledTabs = withStyles({
   indicator: {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Typography, makeStyles, withStyles } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 
 import Profile from '../../components/profile/profile.component';
 import ProfileWithBorder from '../../components/profile/profile-with-border.container';

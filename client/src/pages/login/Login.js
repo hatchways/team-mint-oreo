@@ -7,12 +7,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+// eslint-disable-next-line
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -26,18 +26,18 @@ function Copyright() {
   );
 }
 
-const defaultColor = "rgb(37, 152, 236)";
+const defaultColor = 'rgb(37, 152, 236)';
 
 const useStyles = makeStyles(theme => ({
   paper: {
     marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'left'
+    alignItems: 'left',
   },
   alignCenter: {
-    alignItems: "center",
-    justifyContent: "center"
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
@@ -51,14 +51,14 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(3, 0, 2),
     padding: theme.spacing(1, 5, 1),
     fontSize: 14,
-    backgroundColor: defaultColor
+    backgroundColor: defaultColor,
   },
   rememberMe: {
-      fontSize: 10
+    fontSize: 10,
   },
   input: {
-      color: defaultColor
-  }
+    color: defaultColor,
+  },
 }));
 
 export default function Login() {
@@ -105,14 +105,9 @@ export default function Login() {
             </Grid>
           </Grid>
           <Grid container className={classes.alignCenter}>
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-              >
-                Sign Up
-              </Button>
+            <Button type="submit" variant="contained" color="primary" className={classes.submit}>
+              Sign Up
+            </Button>
           </Grid>
           <Grid container className={classes.alignCenter}>
             <Grid item>

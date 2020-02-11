@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme, Box, Grid, Typography, Container, Hidden } from '@material-ui/core';
+import { useTheme, Box, Grid, Hidden } from '@material-ui/core';
 
 import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
