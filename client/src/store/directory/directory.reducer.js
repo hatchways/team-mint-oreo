@@ -6,7 +6,7 @@ export const initialState = {
     id: integer/string, 
     name: string, 
     secondary: string, 
-    numUnread: integer,
+    notifications: integer, // number of notifications
     avatar: {
       url: string, 
       alt: string // basically what to render if url is blank
@@ -18,7 +18,7 @@ export const initialState = {
       id: 1,
       name: 'The First',
       secondary: 'lala land',
-      numUnread: 9,
+      notifications: 9,
       avatar: {
         url: null,
         alt: 'F',
@@ -28,7 +28,7 @@ export const initialState = {
       id: 2,
       name: 'Second Group',
       secondary: 'you memers',
-      numUnread: 2,
+      notifications: 2,
       avatar: {
         url: null,
         alt: 'SG',
@@ -36,9 +36,9 @@ export const initialState = {
     },
     {
       id: 123,
-      title: 'Perfect Kittens',
+      name: 'Perfect Kittens',
       secondary: 'purrrrrr',
-      numUnread: 690,
+      notifications: 690,
       avatar: {
         url: null,
         alt: 'PK',

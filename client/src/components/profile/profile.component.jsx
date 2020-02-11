@@ -25,7 +25,7 @@ const Profile = ({ name, secondary = '', notifications = 0, moreOptions = null }
             )}
           </Grid>
           {notifications > 0 && (
-            <Grid item xs>
+            <Grid item xs={1}>
               <Grid container justify="flex-end">
                 <Grid item>
                   <Chip label={notifications} />
@@ -34,7 +34,7 @@ const Profile = ({ name, secondary = '', notifications = 0, moreOptions = null }
             </Grid>
           )}
           {moreOptions !== null && (
-            <Grid item xs>
+            <Grid item xs={2}>
               <Grid container justify="flex-end">
                 <Grid item>
                   <IconButton>

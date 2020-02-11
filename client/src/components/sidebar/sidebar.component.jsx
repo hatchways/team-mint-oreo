@@ -9,6 +9,7 @@ import ProfileWithBorder from '../../components/profile/profile-with-border.cont
 
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
 import TabPanel from '../tabs-panel/tabs-panel.component';
+import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
 
 const Sidebar = () => {
@@ -26,7 +27,7 @@ const Sidebar = () => {
     <Box p={2}>
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
         <Grid item>
-          <Profile name={'name'} moreOptions={{ exists: true }} />
+          <Profile {...userState.state} moreOptions={{ exists: true }} />
         </Grid>
         <Grid item>
           <Tabs value={tab} onChange={changeTab}></Tabs>
@@ -37,15 +38,25 @@ const Sidebar = () => {
           </Box>
         </Grid>
         <Grid item>
-          <TabPanel value={tab} index={TabNames.CHATS}>
-            <ProfileWithBorder name={'name'} secondaryText={'Secondary Text'} notifications={2} />
-          </TabPanel>
-          <TabPanel value={tab} index={TabNames.CONTACTS}>
-            <ProfileWithBorder name={'contact 1'} />
-          </TabPanel>
-          <TabPanel value={tab} index={TabNames.INVITES}>
-            <ProfileWithBorder name={'invite 1'} />
-          </TabPanel>
+          <SidebarTabPanel
+            value={tab}
+            index={TabNames.CHATS}
+            profilesList={directoryState.state.commsList}
+          />
+          <SidebarTabPanel
+            value={tab}
+            index={TabNames.CONTACTS}
+            profilesList={directoryState.state.contactsList.map(
+              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+            )}
+          />
+          <SidebarTabPanel
+            value={tab}
+            index={TabNames.INVITES}
+            profilesList={directoryState.state.invitesList.map(
+              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+            )}
+          />
         </Grid>
       </Grid>
     </Box>
