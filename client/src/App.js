@@ -8,10 +8,10 @@ import LandingPage from './pages/Landing';
 import Dashboard from './pages/dashboard/dashboard.component';
 
 import './App.css';
-
+/*
 const socket = io('http://localhost:3001');
 
-/*
+
 socket.on('connect', () => {
   console.log('socket connected');
 });
