@@ -6,7 +6,7 @@ const tokenAuth = async (req, res, next) => {
     if (!user) return next();
     res.locals.userId = await jwt.verify(user);
   }
-  next();
+  return next();
 };
 
 module.exports = tokenAuth;

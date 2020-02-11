@@ -45,6 +45,10 @@ router.post('/login', async (req, res) => {
   }
 });
 
+router.get('/verify', (req, res) => {
+  res.send(!!res.locals.userId);
+});
+
 router.get('/test', isAuthorized, async (req, res) => {
   console.log('hello');
   console.log(res.locals.userId);
