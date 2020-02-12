@@ -1,4 +1,5 @@
 import React from 'react';
+
 export const useClientRect = () => {
   const [rect, setRect] = React.useState(null);
   const ref = React.useCallback(node => {
