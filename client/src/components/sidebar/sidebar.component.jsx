@@ -18,8 +18,8 @@ const Sidebar = ({ size }) => {
   const [height, setHeight] = useState(0);
 
   const [tab, setTab] = useState(TabNames.CHATS);
-  const userState = useContext(userStore);
-  const directoryState = useContext(directoryStore);
+  const { state: userState } = useContext(userStore);
+  const { state: directoryState, dispatch } = useContext(directoryStore);
 
   const changeTab = (event, newValue) => {
     setTab(newValue);
@@ -43,7 +43,7 @@ const Sidebar = ({ size }) => {
       <Box paddingBottom={2} ref={upperRef}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
-            <Profile {...userState.state} moreOptions={{ exists: true }} />
+            <Profile {...userState} moreOptions={{ exists: true }} />
           </Grid>
           <Grid item>
             <Tabs value={tab} onChange={changeTab}></Tabs>
@@ -59,19 +59,19 @@ const Sidebar = ({ size }) => {
         <SidebarTabPanel
           value={tab}
           index={TabNames.CHATS}
-          profilesList={directoryState.state.commsList}
+          profilesList={directoryState.commsList}
         />
         <SidebarTabPanel
           value={tab}
           index={TabNames.CONTACTS}
-          profilesList={directoryState.state.contactsList.map(
+          profilesList={directoryState.contactsList.map(
             ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
           )}
         />
         <SidebarTabPanel
           value={tab}
           index={TabNames.INVITES}
-          profilesList={directoryState.state.invitesList.map(
+          profilesList={directoryState.invitesList.map(
             ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
           )}
         />

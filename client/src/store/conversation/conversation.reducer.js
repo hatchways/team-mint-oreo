@@ -15,6 +15,27 @@ export const initialState = {
 			}
 		]
 	*/
+  1: [
+    {
+      id: 1234,
+      texts: {
+        en: 'The First Message Ever Rendered',
+      },
+      original: 'en',
+      timeStamp: 1234678,
+      senderId: 1,
+    },
+    {
+      id: 1234,
+      texts: {
+        en: 'The First Message Ever Rendered',
+      },
+      original: 'en',
+      timeStamp: 1234679,
+      senderId: 1234,
+    },
+    {},
+  ],
 };
 
 export const conversationReducer = (state, action) => {

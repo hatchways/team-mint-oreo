@@ -1,9 +1,12 @@
 import React from 'react';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@material-ui/core';
 
 const ChatMessages = ({ height }) => {
   return (
     <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
+      <Grid container direction="column" justify="flex-start" alignItems="stretch">
+        <Grid item></Grid>
+      </Grid>
       <Box>
         {list.map(item => (
           <Typography key={item}>text</Typography>
