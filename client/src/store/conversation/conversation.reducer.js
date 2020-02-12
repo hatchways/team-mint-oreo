@@ -12,13 +12,13 @@ const makeMeows = () => {
   const list = [];
   for (let i = 0; i < 20; i++) {
     list.push({
-      id: 1000 + i,
+      id: 2000 + i,
       texts: {
         en: meowStringMaker(i + 1),
       },
       original: 'en',
       timeStamp: `14:${i < 10 ? '0' + i : i}`,
-      senderId: 1 + 'i',
+      senderId: 2 + 'i',
     });
   }
   return list;
@@ -80,15 +80,17 @@ export const initialState = {
     },
   ],
   123: [
-    {
-      id: 1000,
-      texts: {
-        en: 'meow?',
+    ...[
+      {
+        id: 1000,
+        texts: {
+          en: 'meow?',
+        },
+        original: 'en',
+        timeStamp: '14:00',
+        senderId: 1,
       },
-      original: 'en',
-      timeStamp: '14:00',
-      senderId: 1,
-    },
+    ],
     ...makeMeows(),
   ],
 };

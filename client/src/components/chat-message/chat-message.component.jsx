@@ -40,7 +40,7 @@ const ChatMessage = ({ currentUserId, message: { senderId, texts, original, time
           >
             <Grid item> {timeStamp}</Grid>
             <Grid item>
-              <Paper className={isSender ? classes.senderPaper : classes.chatPaper} maxWidth="60%">
+              <Paper className={isSender ? classes.senderPaper : classes.chatPaper}>
                 <Box p={2}>
                   <Typography>{texts[original]}</Typography>
                 </Box>
