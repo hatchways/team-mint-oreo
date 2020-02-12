@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
-import { BrowserRouter, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import Client from './utils/HTTPClient';
+import WebsocketTesting from './websocketTesting';
 
 import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
@@ -11,28 +13,32 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
     const checkToken = async () => {
-      const isVerified = await (await fetch('/user/verify')).json();
-      await setTokenVerified(isVerified);
-      setIsLoading(false);
+      const isVerified = await Client.request('/user/verify');
+      // TODO: handle error for isVerified
+      if (isMounted) {
+        await setTokenVerified(isVerified);
+        setIsLoading(false);
+      }
     };
     checkToken();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   return (
     <MuiThemeProvider theme={theme}>
       {!isLoading && (
         <BrowserRouter>
-          {
-            // <Redirect to={tokenVerified ? '/dashboard' : '/login'} />
-          }
-          <Route exact path="/dashboard" component={Dashboard} />
-          <Route path="/login" component={Login} />
+          <Switch>
+            <Route exact path="/" component={tokenVerified ? Dashboard : Login} />
+            <Route path="/testing" component={WebsocketTesting} />
+          </Switch>
         </BrowserRouter>
       )}
-      {
-        //        <div>{`TOKEN IS VERFIED: ${tokenVerified}`}</div>
-      }
     </MuiThemeProvider>
   );
 }
