@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import { store as conversationStore } from '../../store/conversation/conversation.provider';
