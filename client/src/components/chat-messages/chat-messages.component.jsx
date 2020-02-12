@@ -26,7 +26,7 @@ const ChatMessages = ({ height }) => {
   }, [currentlyActive]);
 
   useEffect(() => {
-    console.log(messagesList);
+    //    console.log(messagesList);
   }, [messagesList]);
   return (
     <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
