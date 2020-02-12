@@ -34,7 +34,24 @@ function App() {
       {!isLoading && (
         <BrowserRouter>
           <Switch>
-            <Route exact path="/" component={tokenVerified ? Dashboard : Login} />
+            <Route
+              exact
+              path="/"
+              render={() =>
+                tokenVerified ? <Redirect to="/dashboard" /> : <Redirect to="/login" />
+              }
+            />
+            <Route
+              exact
+              path="/login"
+              render={() => (tokenVerified ? <Redirect to="/dashboard" /> : <Login />)}
+            />
+            <Route
+              exact
+              path="/dashboard"
+              render={() => (tokenVerified ? Dashboard : <Redirect to="/login" />)}
+            />
+
             <Route path="/testing" component={WebsocketTesting} />
           </Switch>
         </BrowserRouter>
