@@ -18,6 +18,6 @@ const messageSchema = new Schema(
   { timestamps: true }
 );
 
-const Message = mongoose('Message', messageSchema);
+const Message = mongoose.model('Message', messageSchema);
 
 module.exports = Message;

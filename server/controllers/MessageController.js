@@ -1,7 +1,10 @@
+const mongoose = require('mongoose');
 const Message = require('../models/Message');
 
 const createMessage = async msg => {
-  const newMessage = new Message(msg);
+  const { userId, chatId, ...rest } = msg;
+  const { ObjectId } = mongoose.Types;
+  const newMessage = new Message({ userId: ObjectId(userId), chatId: ObjectId(chatId), ...rest });
   try {
     const savedMsg = await newMessage.save();
     console.log('creating message', savedMsg);
