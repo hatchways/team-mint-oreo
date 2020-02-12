@@ -2,10 +2,11 @@ const socketio = require('socket.io');
 const userController = require('../controllers/UserController');
 const chatController = require('../controllers/ChatroomController');
 const messageController = require('../controllers/MessageController');
+const { cache } = require('../utils/Cache');
 
 /* SOCKET METHODS */
 
-// On Login
+// On Login---------------------------------------------
 const registerSocketId = (socket, userId) => {
   userController.setSocketIdById(userId, socket.id);
 };
@@ -20,23 +21,30 @@ const notifyFriends = async (socket, userId) => {
   friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
 };
 
-// On send message
+// On send message ------------------------------------------------------------
 const cacheActiveChatInfo = msgObject => {
+  // const {chatId, }
   // cache info here
 };
 
 const translateMessage = async msgObject => {
-  //check cache for active chat languages
-  const listOfLanguages = await chatController.getLanguagesInChatroom(msgObject.chatId);
-  // call translate api
-  // return translations
+  // check cache for active chat languages
+  const { text } = msgObject;
+  const idAndLanguageList = await chatController.getLanguagesInChatroom(msgObject.chatId);
+
+  const translationAPI = {};
+  const translatedText = await Promise.all(
+    idAndLanguageList.map(language => translationAPI.translate(text, language))
+  );
+  const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
+  return translationAndIds;
 };
 
 const sendMessage = async (socket, outgoingMsg) => {
   socket.to(outgoingMsg.chatId).emit('receiveMsg', outgoingMsg);
 };
 
-// User disconnects
+// User disconnects -----------------------------------------------------
 const userDisconnect = socketId => {
   console.log(`${socketId} has left the site.`);
   userController.clearSocketId(socketId);
