@@ -32,7 +32,7 @@ const getFriendsById = async id => {
 };
 
 const getFriendsSocketsById = async id => {
-  const onlineFriends = await User.findById(id, 'friends')
+  const onlineFriends = await User.findById(id)
     .populate('users')
     .exec((err, users) => {
       return users.filter(user => user.socketId).map(user => user.socketId);
@@ -50,7 +50,7 @@ const getFieldById = async (field, id) => {
   return data;
 };
 
-const setSocketIdById = async (userId, socketId) => {
+const setSocketIdById = (userId, socketId) => {
   User.findByIdAndUpdate(userId, { socketId });
 };
 

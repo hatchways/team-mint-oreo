@@ -22,14 +22,17 @@ const createChatroom = async userIds => {
 const getUsersInChatroom = async chatId => {
   const users = await Chatroom.findById(chatId)
     .populate('users')
-    .exec((err, data) => {
-      return data;
+    .exec((err, users) => {
+      return users;
     });
   console.log(users);
 };
 
-const getLanguagesInChatroom = chatId => {
-  const languages = getUsersInChatroom(chatId).map(user => user.language);
+const getLanguagesAndIdsInChatroom = chatId => {
+  const languages = getUsersInChatroom(chatId).map(({ id, language }) => ({
+    to: id,
+    language,
+  }));
   return languages;
 };
 
@@ -37,5 +40,5 @@ module.exports = {
   addUser,
   createChatroom,
   getUsersInChatroom,
-  getLanguagesInChatroom,
+  getLanguagesAndIdsInChatroom,
 };
