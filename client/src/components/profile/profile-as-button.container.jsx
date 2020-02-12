@@ -1,53 +1,32 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 import { Card, CardActionArea } from '@material-ui/core';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/styles';
 
 import Profile from './profile.component';
 
-const ProfileAsButton = ({ id, ...props }) => {
-  const { state: directoryState, dispatch } = useContext(directoryStore);
-  const [theme, setTheme] = useState({
-    palette: {
-      background: {
-        paper: '#ffffff',
-        default: '#000',
-      },
-    },
-  });
-  useEffect(() => {
-    if (
-      id !== null &&
-      directoryState.currentlyActive !== null &&
-      directoryState.currentlyActive === id.toString()
-    ) {
-      setTheme({
-        ...theme,
-        palette: {
-          background: {
-            paper: '#ffffff',
-            default: '#000',
-          },
-        },
-      });
-    } else {
-      setTheme({
-        ...theme,
-        palette: {
-          background: {
-            paper: '#f3f5f3',
-            default: '#000',
-          },
-        },
-      });
-    }
-  }, [directoryState.currentlyActive]);
+const useStyles = makeStyles(theme => ({
+  unselected: {
+    backgroundColor: '#f3f5f3',
+  },
+  selected: {
+    backgroundColor: '#fff',
+  },
+}));
 
-  // we generate a MUI-theme from state's theme object
-  const muiTheme = createMuiTheme(theme);
+const ProfileAsButton = ({ id, ...props }) => {
+  const classes = useStyles();
+  const [className, setClassName] = useState(classes.unselected);
+  const { state: directoryState, dispatch } = useContext(directoryStore);
+
+  useEffect(() => {
+    if (directoryState.currentlyActive != null && directoryState.currentlyActive == id.toString())
+      setClassName(classes.selected);
+    else setClassName(classes.unselected);
+  }, [directoryState.currentlyActive]);
 
   const handleClick = event => {
     dispatch({
@@ -57,13 +36,11 @@ const ProfileAsButton = ({ id, ...props }) => {
   };
 
   return (
-    <MuiThemeProvider theme={muiTheme}>
-      <Card>
-        <CardActionArea onClick={handleClick} id={id} disableTouchRipple>
-          <Profile {...props} id={id} />
-        </CardActionArea>
-      </Card>
-    </MuiThemeProvider>
+    <Card className={className}>
+      <CardActionArea onClick={handleClick} id={id} disableTouchRipple>
+        <Profile {...props} id={id} />
+      </CardActionArea>
+    </Card>
   );
 };
 export default ProfileAsButton;
