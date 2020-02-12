@@ -1,12 +1,12 @@
 import React from 'react';
-import sizeMe from 'react-sizeme';
 
 import TabPanel from '../tabs-panel/tabs-panel.component';
 import { TabNames } from '../../components/tabs/tabs.component';
 import ProfileWithBorder from '../profile/profile-with-border.container';
+import ProfileAsButton from '../profile/profile-as-button.container';
 import { Grid, Box } from '@material-ui/core';
 
-const SidebarTabPanel = ({ value, index, profilesList, size }) => {
+const SidebarTabPanel = ({ value, index, profilesList }) => {
   const handleClick = () => {};
 
   return (
@@ -26,7 +26,7 @@ const SidebarTabPanel = ({ value, index, profilesList, size }) => {
           if (value === TabNames.CHATS)
             return (
               <Grid item key={profile.id}>
-                <ProfileWithBorder id={profile.id} {...profile} />
+                <ProfileAsButton id={profile.id} {...profile} />
               </Grid>
             );
           else
@@ -41,4 +41,4 @@ const SidebarTabPanel = ({ value, index, profilesList, size }) => {
   );
 };
 
-export default sizeMe({ monitorHeight: true })(SidebarTabPanel);
+export default SidebarTabPanel;
