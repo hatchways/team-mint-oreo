@@ -49,7 +49,7 @@ function App() {
             <Route
               exact
               path="/dashboard"
-              render={() => (tokenVerified ? Dashboard : <Redirect to="/login" />)}
+              render={() => (tokenVerified ? <Dashboard /> : <Redirect to="/login" />)}
             />
 
             <Route path="/testing" component={WebsocketTesting} />
