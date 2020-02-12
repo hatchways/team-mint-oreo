@@ -3,17 +3,26 @@ import React, { useContext, useState, useEffect } from 'react';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-import { Card, CardActionArea } from '@material-ui/core';
+import { Card, CardActionArea, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import Profile from './profile.component';
 
 const useStyles = makeStyles(theme => ({
   unselected: {
-    backgroundColor: '#f3f5f3',
+    backgroundColor: '#F5F8FA',
+    '&:hover': {
+      backgroundColor: '#fff',
+    },
   },
   selected: {
     backgroundColor: '#fff',
+  },
+  rounded: {
+    borderRadius: 16,
+  },
+  padddd: {
+    padding: 10,
   },
 }));
 
@@ -36,11 +45,17 @@ const ProfileAsButton = ({ id, ...props }) => {
   };
 
   return (
-    <Card className={className}>
-      <CardActionArea onClick={handleClick} id={id} disableTouchRipple>
+    <CardActionArea
+      onClick={handleClick}
+      id={id}
+      disableTouchRipple
+      className={` ${classes.rounded}`}
+      disableElevation
+    >
+      <Box className={`${className} ${classes.padddd}  ${classes.rounded}`}>
         <Profile {...props} id={id} />
-      </CardActionArea>
-    </Card>
+      </Box>
+    </CardActionArea>
   );
 };
 export default ProfileAsButton;
