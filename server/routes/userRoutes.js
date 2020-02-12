@@ -1,49 +1,44 @@
 const express = require('express');
 const bcrypt = require('../services/bcryptService');
-const userController = require('../controllers/UserController');
+const db = require('../controllers');
 const jwt = require('../services/jwtService');
-const { getInvitations } = require('../controllers/InvitationController');
 const { isAuthorized } = require('../middleware/isAuthorized');
+const { validateCredentials } = require('../services/validationService');
+const Error = require('../utils/Error');
+
 // const { promiseWrapper } = require('../utils/promiseWrapper');
 
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
+  validateCredentials(email, password);
   const hashedPassword = await bcrypt.encrypt(password);
-  try {
-    const { id } = await userController.createUser({ email, password: hashedPassword });
-    console.log(id);
-    if (id) res.sendStatus(201);
-  } catch (err) {
-    console.error(err);
-    // insert error handling here
-  }
+  const { id = null } = await db.user.createUser({ email, password: hashedPassword });
+  if (id) res.sendStatus(201);
 });
 
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    if (!email || !password) throw Error(401);
-    const userData = await userController.getByEmail(email);
-    const match = await bcrypt.checkPassword(password, userData.password);
-    if (!match) throw Error(403);
-    console.log(userData);
-    const { _id: id } = userData;
+    validateCredentials(email, password);
+    const userData = await db.user.getByEmail(email);
+    if (!userData) throw new Error(401, 'User not found');
+    await bcrypt.checkPassword(password, userData.password);
+    const { id } = userData;
     const encodedToken = await jwt.sign({ id });
 
     res
       .cookie('user', encodedToken, {
         httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 180,
+        maxAge: 1000 * 60 * 60 * 24 * 180, // 6months
         // secure: true
         signed: true,
       })
       .sendStatus(200);
   } catch (err) {
     console.log(err);
-    res.sendStatus(401);
+    res.sendStatus(err.code || 500);
   }
 });
 
@@ -53,10 +48,13 @@ router.get('/verify', (req, res) => {
 
 router.get('/data', isAuthorized, async (req, res) => {
   const { id } = res.locals;
-
-  const { getChatsById, getFriendsById, getFieldById } = userController;
+  const { getChatsById, getFriendsById, getFieldById } = db.user;
   const email = await getFieldById('email', id);
-  const data = await Promise.all([getChatsById(id), getFriendsById(id), getInvitations(email)]);
+  const data = await Promise.all([
+    getChatsById(id),
+    getFriendsById(id),
+    db.invitation.getInvitations(email),
+  ]);
   console.log(data);
   res.status(200).json({ data });
 });
@@ -66,8 +64,11 @@ router.get('/logout', isAuthorized, async (req, res) => {
 });
 
 router.get('/test', async (req, res) => {
-  console.log('hello');
+  console.log('hello**********');
   console.log(res.locals.userId);
+  const result = await db.user.getByEmail('testmail1');
+  const { _id } = result;
+  console.log(result, _id);
   res.redirect('http://localhost:3000/dashboard');
 });
 

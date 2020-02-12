@@ -1,24 +1,22 @@
 const socketio = require('socket.io');
-const userController = require('../controllers/UserController');
-const chatController = require('../controllers/ChatroomController');
-const messageController = require('../controllers/MessageController');
+const db = require('../controllers');
 const { cache } = require('../utils/Cache');
 
 /* SOCKET METHODS */
 
 // On Login---------------------------------------------
 const registerSocketId = (socket, userId) => {
-  userController.setSocketIdById(userId, socket.id);
+  db.user.setSocketIdById(userId, socket.id);
 };
 
 const joinChatrooms = async (socket, userId) => {
-  const chatroomList = await userController.getChatsById(userId);
+  const chatroomList = await db.user.getChatsById(userId);
   if (!chatroomList || !chatroomList.length) return;
   chatroomList.forEach(room => socket.join(room));
 };
 
 const notifyFriends = async (socket, userId) => {
-  const friendSocketList = await userController.getFriendsSocketsById(userId);
+  const friendSocketList = await db.user.getFriendsSocketsById(userId);
   if (!friendSocketList || !friendSocketList.length) return;
   friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
 };
@@ -30,17 +28,17 @@ const cacheActiveChatInfo = msgObject => {
 };
 
 const translateMessage = async msgObject => {
-  // check cache for active chat languages
+  // ⚠️ check cache for active chat languages
   const { text } = msgObject;
-  const idAndLanguageList = await chatController.getLanguagesndIdsInChatroom(msgObject.chatId);
+  const idAndLanguageList = await db.chatroom.getLanguagesAndIdsInChatroom(msgObject.chatId);
 
-  // filter out same language for translation
-
+  //  ⚠️ filter out same language for translation
   const translationAPI = {};
   const translatedText = await Promise.all(
     idAndLanguageList.map(({ language }) => translationAPI.translate(text, language))
   );
   const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
+  // ⚠️ cache translation
   return translationAndIds;
 };
 
@@ -51,7 +49,7 @@ const sendMessage = async (socket, outgoingMsg) => {
 // User disconnects -----------------------------------------------------
 const userDisconnect = socketId => {
   console.log(`${socketId} has left the site.`);
-  userController.clearSocketId(socketId);
+  db.user.clearSocketId(socketId);
 };
 
 /* SOCKET HANLDER */
@@ -70,22 +68,19 @@ const handleSocket = server => {
 
     socket.on('sendMsg', async msgObject => {
       const translations = await translateMessage(msgObject);
-      cacheActiveChatInfo(msgObject, Object.keys(translations));
-      const { userId, chatId, text } = msgObject;
-      const outgoingMsg = {
-        userId,
-        chatId,
-        translations, // translated message,
-        originalText: text,
-        timestamp: Date.now(),
-      };
-      sendMessage(socket, { ...msgObject, translations });
-      messageController.createMessage(outgoingMsg);
+      const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
+      sendMessage(socket, outgoingMsg);
+      db.message.createMessage(outgoingMsg);
     });
 
+    socket.on('friendRequestSent', () => {});
     socket.on('friendRequestReceived', () => {});
 
     socket.on('friendRequestAccepted', () => {});
+
+    socket.on('test', () => {
+      console.log('Connected sockets');
+    });
   });
 
   io.on('disconnect', socket => {

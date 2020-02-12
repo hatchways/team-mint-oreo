@@ -14,7 +14,7 @@ const createUser = async userData => {
 const getByEmail = async email => {
   try {
     const user = await User.findOne({ email });
-    if (user) return user;
+    return user;
   } catch (err) {
     throw new Error(500, 'Get User - Email', err);
   }

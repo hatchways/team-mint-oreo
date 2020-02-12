@@ -12,9 +12,11 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <BrowserRouter>
-        <Switch>{/* <Route path="/" component={tokenVerified ? Dashboard : Login} /> */}</Switch>
+        <Switch>
+          <Route exact path="/" component={Dashboard} />
+          <Route path="/testing" component={WebsocketTesting} />
+        </Switch>
       </BrowserRouter>
-      <WebsocketTesting />
     </MuiThemeProvider>
   );
 }
