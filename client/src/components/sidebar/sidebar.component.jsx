@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import sizeMe from 'react-sizeme';
 import { useClientRect } from '../../utils/react-utils';
@@ -11,7 +11,6 @@ import Profile from '../../components/profile/profile.component';
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
-import { useEffect } from 'react';
 
 const Sidebar = ({ size }) => {
   const [upperRect, upperRef] = useClientRect();
@@ -19,7 +18,7 @@ const Sidebar = ({ size }) => {
 
   const [tab, setTab] = useState(TabNames.CHATS);
   const { state: userState } = useContext(userStore);
-  const { state: directoryState, dispatch } = useContext(directoryStore);
+  const { state: directoryState } = useContext(directoryStore);
 
   const changeTab = (event, newValue) => {
     setTab(newValue);

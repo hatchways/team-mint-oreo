@@ -152,7 +152,7 @@ export const initialState = {
 export const directoryReducer = (state, action) => {
   switch (action.type) {
     case DirectoryActionTypes.SET_CURRENTLY_ACTIVE:
-      return { currentlyActive: action.payload, ...state };
+      return { ...state, currentlyActive: action.payload };
     default: {
       return state;
     }

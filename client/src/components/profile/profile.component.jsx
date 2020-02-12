@@ -8,7 +8,7 @@ const Profile = (
 ) => {
   return (
     <Box minWidth={width} maxWidth={width}>
-      <Box p={2} bgcolor="grey.100">
+      <Box p={2}>
         <Grid container spacing={2}>
           <Grid item>
             <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
