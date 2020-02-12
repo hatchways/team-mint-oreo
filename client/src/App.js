@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 
 import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
-import Login from './pages/login/Login';
+import UserForm from './pages/userform/UserForm';
 
 function App() {
   const [tokenVerified, setTokenVerified] = useState(false);
@@ -25,7 +25,7 @@ function App() {
         <BrowserRouter>
           <Redirect to={tokenVerified ? '/dashboard' : '/login'} />
           <Route exact path="/dashboard" component={Dashboard} />
-          <Route path="/login" component={Login} />
+          <Route path="/login" component={UserForm} />
         </BrowserRouter>
       )}
       <div>{`TOKEN IS VERFIED: ${tokenVerified}`}</div>
