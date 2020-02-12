@@ -1,6 +1,9 @@
 import DirectoryActionTypes from './directory.types';
 
 export const initialState = {
+  // currently active conversation to display
+  currentlyActive: null,
+  showBackdrop: false,
   /*
   Comms: {
     id: integer/string, 
@@ -149,9 +152,12 @@ export const initialState = {
 };
 export const directoryReducer = (state, action) => {
   switch (action.type) {
-    // TODO: case DirectoryActionTypes.SOMETYPE:
-    case DirectoryActionTypes.DO_SOME_ACTION:
-    // just do default for now
+    case DirectoryActionTypes.SET_CURRENTLY_ACTIVE:
+      return { ...state, currentlyActive: action.payload };
+    case DirectoryActionTypes.TOGGLE_BACKDROP:
+      return { ...state, showBackdrop: !state.showBackdrop };
+    case DirectoryActionTypes.CLOSE_BACKDROP:
+      return { ...state, showBackdrop: false };
     default: {
       return state;
     }

@@ -1,14 +1,32 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 
 import TabPanel from '../tabs-panel/tabs-panel.component';
+import { TabNames } from '../../components/tabs/tabs.component';
 import ProfileWithBorder from '../profile/profile-with-border.container';
-import { Grid } from '@material-ui/core';
+import ProfileAsButton from '../profile/profile-as-button.container';
+import { Grid, Button } from '@material-ui/core';
+
+import { store as directoryStore } from '../../store/directory/directory.provider';
+import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const SidebarTabPanel = ({ value, index, profilesList }) => {
+  const { dispatch } = useContext(directoryStore);
+  const handleToggle = () => {
+    dispatch({
+      type: DirectoryActionTypes.TOGGLE_BACKDROP,
+    });
+  };
   return (
     <TabPanel {...{ value, index }} p={1} paddingBottom={0}>
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
-        {profilesList.map(profile => (
+        {(value === TabNames.CONTACTS || value === TabNames.INVITES) && (
+          <Grid item>
+            <Button color="primary" onClick={handleToggle}>
+              + Invite Friends
+            </Button>
+          </Grid>
+        )}
+        {profilesList.map(profile => {
           /*
         profileFormat: {
           id: string/integer, 
@@ -18,10 +36,20 @@ const SidebarTabPanel = ({ value, index, profilesList }) => {
           ...others
         }
         */
-          <Grid item key={profile.id}>
-            <ProfileWithBorder id={profile.id} {...profile} />
-          </Grid>
-        ))}
+
+          if (value === TabNames.CHATS) {
+            return (
+              <Grid item key={profile.id}>
+                <ProfileAsButton key={profile.id} id={profile.id} {...profile} />
+              </Grid>
+            );
+          } else
+            return (
+              <Grid item key={profile.id}>
+                <ProfileWithBorder id={profile.id} {...profile} />
+              </Grid>
+            );
+        })}
       </Grid>
     </TabPanel>
   );

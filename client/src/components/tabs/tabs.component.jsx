@@ -19,7 +19,7 @@ const StyledTab = withStyles(theme => ({
     textTransform: 'none',
     color: '#000',
     fontWeight: theme.typography.fontWeightRegular,
-    //    fontSize: theme.typography.pxToRem(18),
+    fontSize: theme.typography.pxToRem(18),
     maxWidth: 100,
     minWidth: 90,
     marginRight: theme.spacing(1),

@@ -23,12 +23,16 @@ function App() {
     <MuiThemeProvider theme={theme}>
       {!isLoading && (
         <BrowserRouter>
-          <Redirect to={tokenVerified ? '/dashboard' : '/login'} />
+          {
+            // <Redirect to={tokenVerified ? '/dashboard' : '/login'} />
+          }
           <Route exact path="/dashboard" component={Dashboard} />
           <Route path="/login" component={Login} />
         </BrowserRouter>
       )}
-      <div>{`TOKEN IS VERFIED: ${tokenVerified}`}</div>
+      {
+        //        <div>{`TOKEN IS VERFIED: ${tokenVerified}`}</div>
+      }
     </MuiThemeProvider>
   );
 }

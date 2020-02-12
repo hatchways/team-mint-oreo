@@ -1,11 +1,16 @@
 import React from 'react';
 
-import { Paper } from '@material-ui/core';
+import { Paper, Box } from '@material-ui/core';
 
-const WithBorder = WrappedComponent => props => {
+const WithBorder = WrappedComponent => ({ highlight = 'white', ...props }) => {
   return (
     <Paper>
-      <WrappedComponent {...props} />
+      {
+        // use grey.100 for inactive
+      }
+      <Box bgcolor={highlight} borderRadius="borderRadius">
+        <WrappedComponent {...props} />
+      </Box>
     </Paper>
   );
 };

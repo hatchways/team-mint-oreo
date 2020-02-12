@@ -8,6 +8,7 @@
     "concurrently": "^5.1.0",
     "react": "^16.8.6",
     "react-cookie": "^4.0.3",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.0.1",
