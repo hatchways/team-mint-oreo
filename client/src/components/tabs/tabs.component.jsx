@@ -19,7 +19,7 @@ const StyledTab = withStyles(theme => ({
     textTransform: 'none',
     color: '#000',
     fontWeight: theme.typography.fontWeightRegular,
-    //    fontSize: theme.typography.pxToRem(18),
+    fontSize: theme.typography.pxToRem(18),
     maxWidth: 100,
     minWidth: 90,
     marginRight: theme.spacing(1),
@@ -31,7 +31,12 @@ const StyledTab = withStyles(theme => ({
 }))(props => <Tab disableRipple {...props} />);
 
 const TabsComponent = ({ value, onChange }) => (
-  <StyledTabs value={value} onChange={onChange} aria-label="styled tabs">
+  <StyledTabs
+    value={value}
+    onChange={onChange}
+    aria-label="styled tabs"
+    inkBarStyle={{ background: 'blue' }}
+  >
     <StyledTab value={TabNames.CHATS} label={TabNames.CHATS} />
     <StyledTab value={TabNames.CONTACTS} label={TabNames.CONTACTS} />
     <StyledTab value={TabNames.INVITES} label={TabNames.INVITES} />

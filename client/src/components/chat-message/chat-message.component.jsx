@@ -5,9 +5,11 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles(theme => ({
   chatPaper: {
     backgroundColor: '#86B9FF',
+    borderRadius: 12,
   },
   senderPaper: {
     backgroundColor: '#dfdfdf',
+    borderRadius: 12,
   },
 }));
 const ChatMessage = ({ currentUserId, message: { senderId, texts, original, timeStamp } }) => {
@@ -23,12 +25,14 @@ const ChatMessage = ({ currentUserId, message: { senderId, texts, original, time
         container
         direction="row"
         justify={isSender ? 'flex-end' : 'flex-start'}
-        alignItems="center"
+        alignItems="flex-start"
         spacing={1}
       >
         {!isSender && (
           <Grid item>
-            <Avatar {...{ src: '', alt: 'name' }}>A</Avatar>
+            <Box paddingTop={3}>
+              <Avatar {...{ src: '', alt: 'name' }}>A</Avatar>
+            </Box>
           </Grid>
         )}
         <Grid item xs>
