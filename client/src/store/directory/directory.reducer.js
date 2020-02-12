@@ -156,6 +156,8 @@ export const directoryReducer = (state, action) => {
       return { ...state, currentlyActive: action.payload };
     case DirectoryActionTypes.TOGGLE_BACKDROP:
       return { ...state, showBackdrop: !state.showBackdrop };
+    case DirectoryActionTypes.CLOSE_BACKDROP:
+      return { ...state, showBackdrop: false };
     default: {
       return state;
     }

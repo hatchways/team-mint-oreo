@@ -4,8 +4,7 @@ import TabPanel from '../tabs-panel/tabs-panel.component';
 import { TabNames } from '../../components/tabs/tabs.component';
 import ProfileWithBorder from '../profile/profile-with-border.container';
 import ProfileAsButton from '../profile/profile-as-button.container';
-import { Grid, Button, Backdrop } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { Grid, Button } from '@material-ui/core';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';

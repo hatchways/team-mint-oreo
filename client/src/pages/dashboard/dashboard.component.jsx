@@ -1,38 +1,15 @@
-import React, { useContext } from 'react';
-import { Box, Grid, Hidden, Backdrop } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import React from 'react';
+import { Box, Grid, Hidden } from '@material-ui/core';
 import WithChatStates from '../../components/with-chat-states/with-chat-states.component';
 
 import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
-
-import { store as directoryStore } from '../../store/directory/directory.provider';
-import DirectoryActionTypes from '../../store/directory/directory.types';
-
-const useStyles = makeStyles(theme => ({
-  backdrop: {
-    zIndex: 999,
-    color: '#fff',
-  },
-}));
+import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite-friend-backdrop.component';
 
 const Dashboard = () => {
-  const classes = useStyles();
-  const {
-    state: { showBackdrop },
-    dispatch,
-  } = useContext(directoryStore);
-
-  const handleClose = () => {
-    dispatch({
-      type: DirectoryActionTypes.TOGGLE_BACKDROP,
-    });
-  };
   return (
     <Box>
-      <Backdrop className={classes.backdrop} open={showBackdrop} onClick={handleClose}>
-        BACK DROP
-      </Backdrop>
+      <InviteFriendBackdrop />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>
