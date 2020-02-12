@@ -30,7 +30,9 @@ function App() {
           <Route path="/login" component={Login} />
         </BrowserRouter>
       )}
-      <div>{`TOKEN IS VERFIED: ${tokenVerified}`}</div>
+      {
+        //        <div>{`TOKEN IS VERFIED: ${tokenVerified}`}</div>
+      }
     </MuiThemeProvider>
   );
 }
