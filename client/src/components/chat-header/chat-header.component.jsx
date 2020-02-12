@@ -11,11 +11,8 @@ const ChatHeader = () => {
   const [title, setTitle] = useState('Group Chat');
 
   useEffect(() => {
-    console.log(commsList);
     if (commsList !== null && currentlyActive != null) {
-      console.log(currentlyActive);
       const found = commsList.find(e => e.id == currentlyActive);
-      console.log(found);
       setTitle(found.name);
     }
   }, [currentlyActive]);
