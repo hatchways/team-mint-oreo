@@ -50,7 +50,6 @@ const ProfileAsButton = ({ id, ...props }) => {
       id={id}
       disableTouchRipple
       className={` ${classes.rounded}`}
-      disableElevation
     >
       <Box className={`${className} ${classes.padddd}  ${classes.rounded}`}>
         <Profile {...props} id={id} />

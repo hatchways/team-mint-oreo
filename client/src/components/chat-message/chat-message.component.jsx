@@ -5,11 +5,11 @@ import { makeStyles } from '@material-ui/styles';
 const useStyles = makeStyles(theme => ({
   chatPaper: {
     backgroundColor: '#86B9FF',
-    borderRadius: 12,
+    borderRadius: 20,
   },
   senderPaper: {
     backgroundColor: '#dfdfdf',
-    borderRadius: 12,
+    borderRadius: 20,
   },
 }));
 const ChatMessage = ({ currentUserId, message: { senderId, texts, original, timeStamp } }) => {
