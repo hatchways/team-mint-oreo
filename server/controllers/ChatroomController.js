@@ -1,44 +1,64 @@
 const mongoose = require('mongoose');
 const Chatroom = require('../models/Chatroom');
+const Error = require('../utils/Error');
 
 const addUser = async (userId, chatId) => {
-  Chatroom.findByIdAndUpdate(chatId, { $push: { users: userId } });
+  try {
+    Chatroom.findByIdAndUpdate(chatId, { $push: { users: userId } });
+  } catch (err) {
+    throw new Error(500, 'Add User To Chat', err);
+  }
 };
 
 const createChatroom = async userIds => {
   try {
     console.log('creating chatroom');
     const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
-    const newChat = Chatroom.create({ $push: { users: { $each: objectIdList } } });
-
-    (await newChat).save();
-    const chatId = (await newChat).id;
-    return chatId;
+    const newChat = await Chatroom.create({ $push: { users: { $each: objectIdList } } });
+    return newChat.id;
   } catch (err) {
-    console.error('create chatroom err', err);
+    throw new Error(500, 'Create Chat', err);
   }
 };
 
 const getUsersInChatroom = async chatId => {
-  const users = await Chatroom.findById(chatId)
-    .populate('users')
-    .exec((err, users) => {
-      return users;
-    });
-  console.log(users);
+  try {
+    const usersInChat = await Chatroom.findById(chatId)
+      .populate('users')
+      .exec((err, users) => {
+        console.log(users);
+        return users;
+      });
+    console.log(usersInChat);
+  } catch (err) {
+    throw new Error(500, 'Get Users In Chat', err);
+  }
+};
+
+const removeUserFromChat = async (userId, chatId) => {
+  try {
+    Chatroom.findByIdAndUpdate(chatId, { $pull: { users: userId } });
+  } catch (err) {
+    throw new Error(500, 'Remove User', err);
+  }
 };
 
 const getLanguagesAndIdsInChatroom = chatId => {
-  const languages = getUsersInChatroom(chatId).map(({ id, language }) => ({
-    to: id,
-    language,
-  }));
-  return languages;
+  try {
+    const data = getUsersInChatroom(chatId).map(({ id, language }) => ({
+      id,
+      language,
+    }));
+    return data;
+  } catch (err) {
+    throw new Error(500, 'Get Language & ID from Chat', err);
+  }
 };
 
 module.exports = {
   addUser,
   createChatroom,
   getUsersInChatroom,
+  removeUserFromChat,
   getLanguagesAndIdsInChatroom,
 };

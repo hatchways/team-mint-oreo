@@ -1,14 +1,13 @@
 const User = require('../models/User');
 
 const createUser = async userData => {
-  console.log('createUser hit');
+  console.log(`Creating User...${userData.email}`);
   const newUser = new User(userData);
   try {
     const savedUser = await newUser.save();
     return savedUser;
   } catch (err) {
-    console.error('create user error', err);
-    throw err;
+    throw new Error(500, 'Create User', err);
   }
 };
 
@@ -17,45 +16,75 @@ const getByEmail = async email => {
     const user = await User.findOne({ email });
     if (user) return user;
   } catch (err) {
-    console.error('get user by email error', err);
+    throw new Error(500, 'Get User - Email', err);
   }
 };
 
 const getById = async id => {
-  const data = await User.findById(id);
-  return data;
+  try {
+    const data = await User.findById(id);
+    return data;
+  } catch (err) {
+    throw new Error(500, 'Get User - ID', err);
+  }
 };
 
 const getFriendsById = async id => {
-  const friends = await User.findById(id, 'friends').populate('users');
-  return friends;
+  try {
+    const friends = await User.findById(id, 'friends').populate('users');
+    return friends;
+  } catch (err) {
+    throw new Error(500, 'Get Friends - ID', err);
+  }
 };
 
 const getFriendsSocketsById = async id => {
-  const onlineFriends = await User.findById(id)
-    .populate('users')
-    .exec((err, users) => {
-      return users.filter(user => user.socketId).map(user => user.socketId);
-    });
-  console.log('online friends', onlineFriends);
+  try {
+    const onlineFriends = await User.findById(id)
+      .populate('users')
+      .exec((err, users) => {
+        if (!users || !users.length) return null;
+        return users.filter(user => user.socketId).map(user => user.socketId);
+      });
+    console.log('online friends', onlineFriends);
+  } catch (err) {
+    throw new Error(500, 'Get Friends Sockets - ID', err);
+  }
 };
 
 const getChatsById = async (id, limit = 50, skip = 0) => {
-  const chatrooms = await User.findById(id, 'chatrooms', { limit, skip, sort: 'desc' });
-  return chatrooms;
+  try {
+    const chatrooms = await User.findById(id, 'chatrooms', { limit, skip, sort: 'desc' });
+    return chatrooms;
+  } catch (err) {
+    throw new Error(500, 'Get Chats - ID', err);
+  }
 };
 
 const getFieldById = async (field, id) => {
-  const data = await User.findById(id, `${field}`);
-  return data;
+  try {
+    const data = await User.findById(id, `${field}`);
+    return data;
+  } catch (err) {
+    throw new Error(500, 'Get (Field) - ID', err);
+  }
 };
 
-const setSocketIdById = (userId, socketId) => {
-  User.findByIdAndUpdate(userId, { socketId });
+const setSocketIdById = async (userId, socketId) => {
+  try {
+    const result = await User.findByIdAndUpdate(userId, { socketId }, { new: true });
+    console.log(result);
+  } catch (err) {
+    throw new Error(500, 'Get SocketID - ID', err);
+  }
 };
 
 const clearSocketId = socketId => {
-  User.findOneAndUpdate({ socketId }, { socketId: undefined });
+  try {
+    User.findOneAndUpdate({ socketId }, { socketId: undefined });
+  } catch (err) {
+    throw new Error(500, 'Clear SocketID', err);
+  }
 };
 
 module.exports = {

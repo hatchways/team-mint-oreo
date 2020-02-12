@@ -61,6 +61,10 @@ router.get('/data', isAuthorized, async (req, res) => {
   res.status(200).json({ data });
 });
 
+router.get('/logout', isAuthorized, async (req, res) => {
+  res.clearCookie().end();
+});
+
 router.get('/test', async (req, res) => {
   console.log('hello');
   console.log(res.locals.userId);
