@@ -26,14 +26,12 @@ const Sidebar = ({ size }) => {
 
   useEffect(() => {
     const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
-    console.log('list', list);
     const sum = list.reduce(
       (accumulator, currentElement) =>
         currentElement !== null && accumulator + Math.round(currentElement),
       0
     );
 
-    console.log('sum', sum);
     setHeight(sum);
   }, [upperRect, size]);
 
