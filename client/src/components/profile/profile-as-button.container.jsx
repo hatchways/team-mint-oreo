@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-import { Card, CardActionArea, Paper } from '@material-ui/core';
+import { Card, CardActionArea } from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import Profile from './profile.component';
@@ -25,6 +25,7 @@ const ProfileAsButton = ({ id, ...props }) => {
       directoryState.currentlyActive === id.toString()
     ) {
       setTheme({
+        ...theme,
         palette: {
           background: {
             paper: '#ffffff',
@@ -34,6 +35,7 @@ const ProfileAsButton = ({ id, ...props }) => {
       });
     } else {
       setTheme({
+        ...theme,
         palette: {
           background: {
             paper: '#f3f5f3',
@@ -55,15 +57,13 @@ const ProfileAsButton = ({ id, ...props }) => {
   };
 
   return (
-    <Card>
-      <CardActionArea onClick={handleClick} id={id} disableTouchRipple>
-        <MuiThemeProvider theme={muiTheme}>
-          <Paper>
-            <Profile {...props} id={id} />
-          </Paper>
-        </MuiThemeProvider>
-      </CardActionArea>
-    </Card>
+    <MuiThemeProvider theme={muiTheme}>
+      <Card>
+        <CardActionArea onClick={handleClick} id={id} disableTouchRipple>
+          <Profile {...props} id={id} />
+        </CardActionArea>
+      </Card>
+    </MuiThemeProvider>
   );
 };
 export default ProfileAsButton;
