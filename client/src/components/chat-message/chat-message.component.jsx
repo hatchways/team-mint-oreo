@@ -6,8 +6,11 @@ const useStyles = makeStyles(theme => ({
   chatPaper: {
     backgroundColor: '#86B9FF',
   },
+  senderPaper: {
+    backgroundColor: '#dfdfdf',
+  },
 }));
-const ChatMessage = ({ currentUserId, message: { senderId, texts, original } }) => {
+const ChatMessage = ({ currentUserId, message: { senderId, texts, original, timeStamp } }) => {
   const [isSender, setIsSender] = useState();
   useEffect(() => {
     setIsSender(senderId === currentUserId);
@@ -28,12 +31,22 @@ const ChatMessage = ({ currentUserId, message: { senderId, texts, original } }) 
             <Avatar {...{ src: '', alt: 'name' }}>A</Avatar>
           </Grid>
         )}
-        <Grid item>
-          <Paper className={classes.chatPaper}>
-            <Box p={2}>
-              <Typography>{texts[original]}</Typography>
-            </Box>
-          </Paper>
+        <Grid item xs>
+          <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems={isSender ? 'flex-end' : 'flex-start'}
+          >
+            <Grid item> {timeStamp}</Grid>
+            <Grid item>
+              <Paper className={isSender ? classes.senderPaper : classes.chatPaper} maxWidth="60%">
+                <Box p={2}>
+                  <Typography>{texts[original]}</Typography>
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Box>

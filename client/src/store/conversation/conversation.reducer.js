@@ -1,5 +1,29 @@
 import ConversationActionTypes from './conversation.types';
 
+const meowStringMaker = count => {
+  let text = '';
+  for (let i = 0; i < count; i++) {
+    text += 'meow ';
+  }
+  return text + '?';
+};
+
+const makeMeows = () => {
+  const list = [];
+  for (let i = 0; i < 20; i++) {
+    list.push({
+      id: 1000 + i,
+      texts: {
+        en: meowStringMaker(i + 1),
+      },
+      original: 'en',
+      timeStamp: `14:${i < 10 ? '0' + i : i}`,
+      senderId: 1 + 'i',
+    });
+  }
+  return list;
+};
+
 export const initialState = {
   /*
 		conversationId: [
@@ -22,7 +46,7 @@ export const initialState = {
         en: 'The First Message Ever Rendered',
       },
       original: 'en',
-      timeStamp: 1234678,
+      timeStamp: '1:50',
       senderId: 1,
     },
     {
@@ -31,7 +55,7 @@ export const initialState = {
         en: 'The Second Message Ever Rendered',
       },
       original: 'en',
-      timeStamp: 1234679,
+      timeStamp: '2:10',
       senderId: 1234,
     },
   ],
@@ -42,7 +66,7 @@ export const initialState = {
         en: 'Second Chat is better than the first ',
       },
       original: 'en',
-      timeStamp: 1234678,
+      timeStamp: '10:50',
       senderId: 12,
     },
     {
@@ -51,9 +75,21 @@ export const initialState = {
         en: 'definately',
       },
       original: 'en',
-      timeStamp: 1234679,
+      timeStamp: '10:51',
       senderId: 1,
     },
+  ],
+  123: [
+    {
+      id: 1000,
+      texts: {
+        en: 'meow?',
+      },
+      original: 'en',
+      timeStamp: '14:00',
+      senderId: 1,
+    },
+    ...makeMeows(),
   ],
 };
 
