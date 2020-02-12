@@ -10,11 +10,21 @@ const addUser = async (userId, chatId) => {
   }
 };
 
+const getChatroom = async chatId => {
+  try {
+    const { id = null } = await Chatroom.findById(chatId);
+    return id;
+  } catch (err) {
+    throw new Error(500, 'Get Chatroom', err);
+  }
+};
+
 const createChatroom = async userIds => {
   try {
     console.log('creating chatroom');
-    const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
-    const newChat = await Chatroom.create({ $push: { users: { $each: objectIdList } } });
+    // const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
+    const newChat = await Chatroom.create({ users: userIds });
+    console.log(newChat);
     return newChat.id;
   } catch (err) {
     throw new Error(500, 'Create Chat', err);
@@ -58,6 +68,7 @@ const getLanguagesAndIdsInChatroom = chatId => {
 module.exports = {
   addUser,
   createChatroom,
+  getChatroom,
   getUsersInChatroom,
   removeUserFromChat,
   getLanguagesAndIdsInChatroom,

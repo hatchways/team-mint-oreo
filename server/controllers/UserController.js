@@ -20,6 +20,10 @@ const getByEmail = async email => {
   }
 };
 
+const getAllUsers = () => {
+  return User.find();
+};
+
 const getById = async id => {
   try {
     const data = await User.findById(id);
@@ -97,4 +101,5 @@ module.exports = {
   setSocketIdById,
   clearSocketId,
   getFriendsSocketsById,
+  getAllUsers,
 };

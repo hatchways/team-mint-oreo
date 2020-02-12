@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
-import socket from 'socket.io-client';
+import Client from './utils/HTTPClient';
 import WebsocketTesting from './websocketTesting';
 
 import theme from './themes/theme';
@@ -9,16 +9,36 @@ import Dashboard from './pages/dashboard/dashboard.component';
 import Login from './pages/login/Login';
 
 function App() {
+  const [tokenVerified, setTokenVerified] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    const checkToken = async () => {
+      const isVerified = await Client.request('/user/verify');
+      // TODO: handle error for isVerified
+      if (isMounted) {
+        await setTokenVerified(isVerified);
+        setIsLoading(false);
+      }
+    };
+    checkToken();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <MuiThemeProvider theme={theme}>
       {!isLoading && (
         <BrowserRouter>
           <Switch>
-            <Route path="/" component={tokenVerified ? Dashboard : Login} />
+            <Route exact path="/" component={tokenVerified ? Dashboard : Login} />
+            <Route path="/testing" component={WebsocketTesting} />
           </Switch>
         </BrowserRouter>
       )}
-      {}
     </MuiThemeProvider>
   );
 }
