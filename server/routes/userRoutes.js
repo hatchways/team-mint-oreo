@@ -4,9 +4,9 @@ const db = require('../controllers');
 const jwt = require('../services/jwtService');
 const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
-const Error = require('../utils/Error');
+const seedService = require('../services/seedDataService');
 
-// const { promiseWrapper } = require('../utils/promiseWrapper');
+const Error = require('../utils/Error');
 
 const router = express.Router();
 
@@ -64,12 +64,22 @@ router.get('/logout', isAuthorized, async (req, res) => {
 });
 
 router.get('/test', async (req, res) => {
-  console.log('hello**********');
-  console.log(res.locals.userId);
-  const result = await db.user.getByEmail('testmail1');
-  const { _id } = result;
-  console.log(result, _id);
-  res.redirect('http://localhost:3000/dashboard');
+  console.log('************************');
+  console.log('***TEST RESULTS HERE****');
+  console.log('************************');
+
+  // seedService.createUsers();
+  const users = await seedService.getAllUsers();
+  console.log(users, users.length);
+  for (let i = 0; i <= users.length / 2; i++) {
+    const random = Math.floor(Math.random() * users.length);
+    const { id } = db.chatroom.createChatroom([users[random].id, users.pop().id]);
+    console.log('new chat id', id);
+  }
+
+  console.log('************************');
+  console.log('***TEST RESULTS HERE****');
+  console.log('************************');
 });
 
 module.exports = router;

@@ -4,7 +4,7 @@ class _Error extends Error {
     this.status = status;
     this.message = message;
     this.err = err;
-    console.error(err);
+    if (err) console.error(err);
   }
 }
 

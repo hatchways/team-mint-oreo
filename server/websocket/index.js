@@ -33,13 +33,17 @@ const translateMessage = async msgObject => {
   const idAndLanguageList = await db.chatroom.getLanguagesAndIdsInChatroom(msgObject.chatId);
 
   //  ⚠️ filter out same language for translation
-  const translationAPI = {};
+  const translationAPI = { translate: (x, y) => x };
   const translatedText = await Promise.all(
     idAndLanguageList.map(({ language }) => translationAPI.translate(text, language))
   );
-  const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
+  // const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
+  const idTranslationMap = idAndLanguageList.reduce(
+    (a, b, i) => ({ ...a, [b.id]: translatedText[i] }),
+    {}
+  );
   // ⚠️ cache translation
-  return translationAndIds;
+  return idTranslationMap;
 };
 
 const sendMessage = async (socket, outgoingMsg) => {
@@ -67,6 +71,7 @@ const handleSocket = server => {
     });
 
     socket.on('sendMsg', async msgObject => {
+      // ⚠️ Check if first message, if first message, create chatroom
       const translations = await translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
       sendMessage(socket, outgoingMsg);
