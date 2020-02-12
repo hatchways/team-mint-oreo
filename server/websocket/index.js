@@ -13,11 +13,13 @@ const registerSocketId = (socket, userId) => {
 
 const joinChatrooms = async (socket, userId) => {
   const chatroomList = await userController.getChatsById(userId);
+  if (!chatroomList || !chatroomList.length) return;
   chatroomList.forEach(room => socket.join(room));
 };
 
 const notifyFriends = async (socket, userId) => {
   const friendSocketList = await userController.getFriendsSocketsById(userId);
+  if (!friendSocketList || !friendSocketList.length) return;
   friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
 };
 
@@ -30,11 +32,13 @@ const cacheActiveChatInfo = msgObject => {
 const translateMessage = async msgObject => {
   // check cache for active chat languages
   const { text } = msgObject;
-  const idAndLanguageList = await chatController.getLanguagesInChatroom(msgObject.chatId);
+  const idAndLanguageList = await chatController.getLanguagesndIdsInChatroom(msgObject.chatId);
+
+  // filter out same language for translation
 
   const translationAPI = {};
   const translatedText = await Promise.all(
-    idAndLanguageList.map(language => translationAPI.translate(text, language))
+    idAndLanguageList.map(({ language }) => translationAPI.translate(text, language))
   );
   const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
   return translationAndIds;
@@ -58,6 +62,7 @@ const handleSocket = server => {
     console.log(`${socket.id} has connected to the site.`);
 
     socket.on('login', userId => {
+      console.log('login ping');
       registerSocketId(socket, userId);
       joinChatrooms(socket, userId);
       notifyFriends(socket, userId);
@@ -77,6 +82,10 @@ const handleSocket = server => {
       sendMessage(socket, { ...msgObject, translations });
       messageController.createMessage(outgoingMsg);
     });
+
+    socket.on('friendRequestReceived', () => {});
+
+    socket.on('friendRequestAccepted', () => {});
   });
 
   io.on('disconnect', socket => {

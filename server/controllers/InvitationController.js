@@ -1,3 +1,5 @@
+const Error = require('../utils/Error');
+
 const Invitation = require('../models/Invitation');
 
 const createInvitation = async (fromUser, toUser) => {
@@ -11,17 +13,16 @@ const createInvitation = async (fromUser, toUser) => {
     const savedInvitation = await invitation.save();
     console.log('New invitation is created', savedInvitation);
   } catch (err) {
-    // Failed to create an invitation
-    console.error(err);
+    throw new Error(500, 'Create Invitation', err);
   }
 };
 
 const getInvitations = async email => {
   try {
-    const incoming = await Invitation.find({ toUser: { $eq: { email } } });
+    const incoming = await Invitation.find({ toUser: email });
     console.log(incoming);
   } catch (err) {
-    console.error('error getting invites', err);
+    throw new Error(500, 'Get Invitation', err);
   }
 };
 
@@ -29,7 +30,7 @@ const deleteInvitation = (fromUser, toUser) => {
   try {
     Invitation.findOneAndDelete({ fromUser, toUser });
   } catch (err) {
-    console.error('del. inv fail', err);
+    throw new Error(500, 'Delete Invitation', err);
   }
 };
 
