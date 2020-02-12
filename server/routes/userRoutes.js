@@ -4,7 +4,7 @@ const userController = require('../controllers/UserController');
 const jwt = require('../services/jwtService');
 const { getInvitations } = require('../controllers/InvitationController');
 const { isAuthorized } = require('../middleware/isAuthorized');
-const { promiseWrapper } = require('../utils/promiseWrapper');
+// const { promiseWrapper } = require('../utils/promiseWrapper');
 
 const router = express.Router();
 
@@ -54,14 +54,11 @@ router.get('/verify', (req, res) => {
 router.get('/data', isAuthorized, async (req, res) => {
   const { id } = res.locals;
 
-  const { getChatsById, getFrindsById } = userController;
-  const queries = [
-    promiseWrapper(getChatsById, id),
-    promiseWrapper(getFrindsById),
-    promiseWrapper(getInvitations),
-  ];
-  const userData = Promise.all(queries);
-  console.log(userData);
+  const { getChatsById, getFriendsById, getFieldById } = userController;
+  const email = await getFieldById('email', id);
+  const data = await Promise.all([getChatsById(id), getFriendsById(id), getInvitations(email)]);
+  console.log(data);
+  res.status(200).json({ data });
 });
 
 router.get('/test', async (req, res) => {
