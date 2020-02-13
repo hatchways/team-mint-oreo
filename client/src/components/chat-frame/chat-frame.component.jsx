@@ -32,7 +32,7 @@ const ChatFrame = ({ size }) => {
     );
 
   return (
-    <Box height={'100vh'} paddingLeft={1} paddingRight={1}>
+    <Box height={'100vh'} paddingRight={1}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
           <Box ref={hRef}>
@@ -40,16 +40,18 @@ const ChatFrame = ({ size }) => {
           </Box>
         </Grid>
         <Grid item>
-          <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-            <Grid item>
-              <ChatMessages height={calculateHeights(makeHeightsList())} />
+          <Box paddingLeft={1}>
+            <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
+              <Grid item>
+                <ChatMessages height={calculateHeights(makeHeightsList())} />
+              </Grid>
+              <Grid item>
+                <Box ref={mRef}>
+                  <MessageField />
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Box ref={mRef}>
-                <MessageField />
-              </Box>
-            </Grid>
-          </Grid>
+          </Box>
         </Grid>
       </Grid>
     </Box>

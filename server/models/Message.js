@@ -4,8 +4,16 @@ const { Schema } = mongoose;
 
 const messageSchema = new Schema(
   {
-    chatId: Schema.Types.ObjectId,
-    userId: Schema.Types.ObjectId,
+    chatId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Chatroom',
+    },
+
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+
     originalText: {
       type: String,
       required: true,
@@ -18,6 +26,8 @@ const messageSchema = new Schema(
   { timestamps: true }
 );
 
-const Message = mongoose('Message', messageSchema);
+messageSchema.index({ createdAt: -1 });
+messageSchema.index({ updatedAt: -1 });
+const Message = mongoose.model('Message', messageSchema);
 
 module.exports = Message;

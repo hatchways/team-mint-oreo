@@ -1,18 +1,34 @@
 import React from 'react';
 import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
+import Check from '@material-ui/icons/Check';
+import Clear from '@material-ui/icons/Clear';
+import { makeStyles } from '@material-ui/styles';
 
-const Profile = ({
-  name,
-  secondary = '',
-  notifications = 0,
-  moreOptions = null,
-  avatar: { url, fallback },
-}) => {
+const useStyles = makeStyles(theme => ({
+  chipStyle: {
+    backgroundColor: '#3A8DFF',
+    color: '#fff',
+  },
+}));
+
+const Profile = (
+  {
+    name,
+    secondary = '',
+    notifications = 0,
+    moreOptions = null,
+    avatar: { url, fallback },
+    handleApproval = null,
+    handleDisapproval = null,
+  },
+  width = 400
+) => {
+  const classes = useStyles();
   return (
-    <Box>
+    <Box minWidth={width} maxWidth={width}>
       <Box p={2}>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} alignItems="center">
           <Grid item>
             <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
           </Grid>
@@ -34,7 +50,7 @@ const Profile = ({
             <Grid item xs={1}>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <Chip label={notifications} />
+                  <Chip label={notifications} className={classes.chipStyle} />
                 </Grid>
               </Grid>
             </Grid>
@@ -45,6 +61,22 @@ const Profile = ({
                 <Grid item>
                   <IconButton>
                     <MoreHoriz />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
+          {handleApproval !== null && handleDisapproval !== null && (
+            <Grid item xs>
+              <Grid container direction="row" justify="flex-end" alignItems="center">
+                <Grid item>
+                  <IconButton>
+                    <Check />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <IconButton>
+                    <Clear />
                   </IconButton>
                 </Grid>
               </Grid>

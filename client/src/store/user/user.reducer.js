@@ -12,7 +12,7 @@ user: {
 */
 export const initialState = {
   name: 'The Ultimate Legend',
-  id: 123123124,
+  id: 1,
   avatar: {
     url: '',
     fallback: 'L',
