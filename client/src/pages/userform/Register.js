@@ -12,7 +12,8 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import { useStyles } from './loginStyles';
-import { register } from './userFunctions';
+// import { register } from './userFunctions';
+import Client from '../../utils/HTTPClient';
 
 export default function Register() {
     const [values, setValues] = useState({email: '', password: '', confirmPassword: '', language: ''});
@@ -26,9 +27,18 @@ export default function Register() {
     const onSubmitRegister = async (event) => {
       event.preventDefault();
 
-      register(values).then(res => {
+      const response = await Client.request('/user/register', 'POST', values);
+      if(response.status === 201) {
+          alert('Account created successfully');
           history.push('/login');
-      });
+      } else {
+          // Temporary error handling
+          alert('Failed to create account');
+          window.location.reload();
+      }
+      // register(values).then(res => {
+      //     history.push('/login');
+      // });
     };
 
     const classes = useStyles();

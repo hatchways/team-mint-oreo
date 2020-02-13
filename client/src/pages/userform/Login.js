@@ -11,7 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import { useStyles } from './loginStyles';
-import { login } from './userFunctions';
+import Client from '../../utils/HTTPClient';
 
 
 export default function Login() {
@@ -31,15 +31,15 @@ export default function Login() {
   const onSubmitLogin = async (event) => {
       event.preventDefault();
 
-      login(values).then(res => {
-          if(res) {
-              alert('login successful')
-              window.location.reload();
-          } else {
-              alert('login unsuccessful');
-              window.location.reload();
-          }
-      });
+      const response = await Client.request('/user/login', 'POST', values);
+
+      if(response.status !== 200) {
+          alert('Login unsuccessful');
+      }
+      else {
+          alert('Login successful');
+          window.location.reload();
+      }
   }
 
   return (
