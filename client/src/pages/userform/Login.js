@@ -1,29 +1,31 @@
 import React from "react";
+import { Route, Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { useStyles } from './loginStyles';
+import Register from './Register';
 
-export default function Login({ backToRegister }) {
+export default function Login({ login, onSubmit, handleSubmit }) {
     const classes = useStyles();
 
     return (
         <div className={classes.paper}>
           <Grid container className={classes.createAccount}>
             <Grid className={classes.accountText}>Don't have an account?</Grid>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.switch}
-                onClick={event => backToRegister(event)}
-            >
-              Create Account
-            </Button>
+            <Link to='/register'>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.switch}
+                >
+                  Create Account
+                </Button>
+            </Link>
           </Grid>
           <Grid container className={classes.mainContent}>
             <Grid container alignItems="left">
@@ -31,7 +33,7 @@ export default function Login({ backToRegister }) {
                 Welcome Back!
               </Typography>
             </Grid>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
               <TextField
                 margin="normal"
                 required
@@ -40,6 +42,7 @@ export default function Login({ backToRegister }) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                ref={login}
                 autoFocus
                 InputLabelProps={{
                   classes: {
@@ -62,6 +65,8 @@ export default function Login({ backToRegister }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                ref={login}
+
                 InputLabelProps={{
                   classes: {
                     root: classes.label,

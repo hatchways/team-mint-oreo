@@ -10,15 +10,19 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   console.log(req.body);
-  const { email, password } = req.body;
+  const { email, password, confirmPassword, language } = req.body;
   const hashedPassword = await bcrypt.encrypt(password);
   try {
+    // Throw error if passwords don't match
+    if(password !== confirmPassword) throw Error(403);
+
     const { id } = await userController.createUser({ email, password: hashedPassword });
     console.log(id);
     if (id) res.sendStatus(201);
   } catch (err) {
     console.error(err);
     // insert error handling here
+    return res.sendStatus(403);
   }
 });
 

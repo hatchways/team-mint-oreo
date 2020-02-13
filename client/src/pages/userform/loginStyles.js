@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     marginTop: theme.spacing(1),
   },
+  formControl: {
+    width: '100%',
+  },
   rememberMe: {
     fontSize: 14,
   },

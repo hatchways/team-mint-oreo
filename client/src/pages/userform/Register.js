@@ -1,29 +1,33 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+// import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
+// import MenuItem from '@material-ui/core/MenuItem';
 import { useStyles } from './loginStyles';
 
-export default function Register({ backToLogin }) {
+export default function Register({ onSubmitRegister }) {
     const classes = useStyles();
 
     return (
         <div className={classes.paper}>
           <Grid container className={classes.createAccount}>
             <Grid className={classes.accountText}>Already have an account?</Grid>
-            <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                className={classes.switch}
-                onClick={event => backToLogin(event)}
-            >
-              Login
-            </Button>
+            <Link to='/login'>
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    className={classes.switch}
+                >
+                  Login
+                </Button>
+            </Link>
           </Grid>
           <Grid container className={classes.mainContent}>
             <Grid container alignItems="left">
@@ -95,12 +99,21 @@ export default function Register({ backToLogin }) {
                   },
                 }}
               />
+              <FormControl required margin='normal' className={classes.formControl}>
+                <InputLabel className={classes.label}>Age</InputLabel>
+                <NativeSelect name='language'>
+                  <option value="" />
+                  <option value={10}>English</option>
+                  <option value={20}>French</option>
+                </NativeSelect>
+              </FormControl>
               <Grid container className={classes.alignCenter}>
                 <Button
                   type="submit"
                   variant="contained"
                   color="primary"
                   className={classes.submit}
+                  onSubmit={(event) => onSubmitRegister(event)}
                 >
                   Sign In
                 </Button>

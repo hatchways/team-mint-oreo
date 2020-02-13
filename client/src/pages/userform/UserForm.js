@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter, Route, Link } from "react-router-dom";
+import { useForm } from 'react-hook-form';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -10,19 +12,25 @@ import Login from './Login';
 import Register from './Register';
 
 export default function UserForm() {
-  // use login form as default form
-  const [formSwitch, setFormSwitch] = useState("Login");
-  console.log(formSwitch);
-  const classes = useStyles();
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
+  const {login, handleSubmit} = useForm();
 
-  const backToRegister = (event) => {
-      event.preventDefault();
-      setFormSwitch("Register");
+  const onSubmit = (data) => {
+      console.log(data);
   }
 
-  const backToLogin = (event) => {
+  // use login form as default form
+  const classes = useStyles();
+
+  const onSubmitRegister = (event) => {
+    event.preventDefault();
+    console.log(event.target.value);
+  };
+
+  const onSubmitLogin = (event) => {
       event.preventDefault();
-      setFormSwitch("Login");
+      console.log(event.target);
   }
 
   return (
@@ -48,9 +56,13 @@ export default function UserForm() {
         className={classes.alignCenter}
         square
       >
-      {formSwitch==="Login" ? (
-          <Login backToRegister={backToRegister} />
-      ): <Register backToLogin={backToLogin} />}
+          <BrowserRouter>
+              <Route path='/login' component={() => <Login
+                                                      login={login}
+                                                      onSubmit={onSubmit}
+                                                      handleSubmit={handleSubmit} />} />
+              <Route path='/register' component={() => <Register onSubmitRegister={onSubmitRegister} />} />
+          </BrowserRouter>
       </Grid>
     </Grid>
   );
