@@ -44,6 +44,7 @@ router.post('/login', async (req, res) => {
 
 router.get('/verify', (req, res) => {
   res.send(!!res.locals.userId);
+  console.log('userID is ', res.locals.userId);
 });
 
 router.get('/data', isAuthorized, async (req, res) => {

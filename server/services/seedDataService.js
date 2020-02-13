@@ -24,6 +24,8 @@ const createChatrooms = async idPair => {
   return chatId;
 };
 
+const makeFriends = async idPair => {};
+
 const getAllUsers = async () => {
   const users = await db.user.getAllUsers();
   // console.log(users);

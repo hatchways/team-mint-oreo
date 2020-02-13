@@ -10,7 +10,7 @@ const addUser = async (userId, chatId) => {
   }
 };
 
-const getChatroom = async chatId => {
+const getChatroomById = async chatId => {
   try {
     const { id = null } = await Chatroom.findById(chatId);
     return id;
@@ -31,7 +31,7 @@ const createChatroom = async userIds => {
   }
 };
 
-const getUsersInChatroom = async chatId => {
+const getUsersByChatId = async chatId => {
   try {
     const usersInChat = await Chatroom.findById(chatId)
       .populate('users')
@@ -45,7 +45,7 @@ const getUsersInChatroom = async chatId => {
   }
 };
 
-const removeUserFromChat = async (userId, chatId) => {
+const removeUser = async (userId, chatId) => {
   try {
     Chatroom.findByIdAndUpdate(chatId, { $pull: { users: userId } });
   } catch (err) {
@@ -53,9 +53,9 @@ const removeUserFromChat = async (userId, chatId) => {
   }
 };
 
-const getLanguagesAndIdsInChatroom = chatId => {
+const getLanguagesAndIds = async chatId => {
   try {
-    const data = getUsersInChatroom(chatId).map(({ id, language }) => ({
+    const data = await getUsers(chatId).map(({ id, language }) => ({
       id,
       language,
     }));
@@ -68,8 +68,8 @@ const getLanguagesAndIdsInChatroom = chatId => {
 module.exports = {
   addUser,
   createChatroom,
-  getChatroom,
-  getUsersInChatroom,
-  removeUserFromChat,
-  getLanguagesAndIdsInChatroom,
+  getChatroomById,
+  getUsersByChatId,
+  removeUser,
+  getLanguagesAndIds,
 };

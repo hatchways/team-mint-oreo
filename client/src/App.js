@@ -3,7 +3,6 @@ import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import Client from './utils/HTTPClient';
 import WebsocketTesting from './websocketTesting';
-
 import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
 import UserForm from './pages/userform/UserForm';
@@ -44,7 +43,7 @@ function App() {
             <Route
               exact
               path="/login"
-              render={() => (tokenVerified ? <Redirect to="/dashboard" /> : <Login />)}
+              render={() => (tokenVerified ? <Redirect to="/dashboard" /> : <UserForm />)}
             />
             <Route
               exact
