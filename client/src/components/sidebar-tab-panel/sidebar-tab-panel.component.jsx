@@ -10,12 +10,22 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const SidebarTabPanel = ({ value, index, profilesList }) => {
-  const { dispatch } = useContext(directoryStore);
+  const { state: directoryState, dispatch } = useContext(directoryStore);
   const handleToggle = () => {
     dispatch({
       type: DirectoryActionTypes.TOGGLE_BACKDROP,
     });
   };
+
+  const { currentlyActive } = directoryState;
+
+  const handleClick = event => {
+    dispatch({
+      type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
+      payload: event.currentTarget.id,
+    });
+  };
+
   return (
     <TabPanel {...{ value, index }} p={1} paddingBottom={0}>
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
@@ -38,6 +48,19 @@ const SidebarTabPanel = ({ value, index, profilesList }) => {
         */
 
           if (value === TabNames.CHATS) {
+            return (
+              <Grid item key={profile.id}>
+                <ProfileAsButton
+                  key={profile.id}
+                  id={profile.id}
+                  {...profile}
+                  handleClick={handleClick}
+                  isActive={currentlyActive != null && currentlyActive == profile.id.toString()}
+                />
+              </Grid>
+            );
+          }
+          if (value === TabNames.CONTACTS) {
             return (
               <Grid item key={profile.id}>
                 <ProfileAsButton key={profile.id} id={profile.id} {...profile} />
