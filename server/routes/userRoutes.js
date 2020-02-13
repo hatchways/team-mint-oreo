@@ -27,7 +27,6 @@ router.post('/login', async (req, res) => {
     await bcrypt.checkPassword(password, userData.password);
     const { id } = userData;
     const encodedToken = await jwt.sign({ id });
-
     res
       .cookie('user', encodedToken, {
         httpOnly: true,

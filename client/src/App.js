@@ -5,7 +5,8 @@ import Client from './utils/HTTPClient';
 import WebsocketTesting from './websocketTesting';
 import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
-import UserForm from './pages/userform/UserForm';
+import Login from './pages/userform/Login';
+import Register from './pages/userform/Register';
 
 function App() {
   const [tokenVerified, setTokenVerified] = useState(false);
@@ -50,6 +51,7 @@ function App() {
               path="/dashboard"
               render={() => (tokenVerified ? <Dashboard /> : <Redirect to="/login" />)}
             />
+            <Route path="/register" component={Register} />
             <Route path="/testing" component={WebsocketTesting} />
           </Switch>
         </BrowserRouter>

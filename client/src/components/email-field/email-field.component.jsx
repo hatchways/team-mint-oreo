@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const EmailField = ({ values, onAddClick, ...props }) => {
+const EmailField = ({ onAddClick, ...props }) => {
   const classes = useStyles();
 
   const handleChange = e => {
