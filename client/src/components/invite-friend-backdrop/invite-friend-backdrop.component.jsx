@@ -41,7 +41,6 @@ const InviteFriendBackdrop = () => {
   };
 
   const handleAddFriendField = e => {
-    console.log('clicked', e.currentTarget.id);
     const lengthOfFields = emailFields.length;
     setEmailFields([
       ...emailFields,
@@ -55,7 +54,6 @@ const InviteFriendBackdrop = () => {
 
   const recordFieldChanges = e => {
     const id = parseInt(e.currentTarget.id, 10);
-    console.log('changed', id, e.currentTarget.value);
     const newList = [
       ...emailFields.splice(0, id),
       {
@@ -75,10 +73,9 @@ const InviteFriendBackdrop = () => {
   };
 
   useEffect(() => {
-    console.log(emailFields);
+    //    console.log(emailFields);
   }, [emailFields]);
 
-  console.log(showBackdrop);
   return (
     <Backdrop className={classes.backdrop} open={showBackdrop}>
       {showBackdrop && (
