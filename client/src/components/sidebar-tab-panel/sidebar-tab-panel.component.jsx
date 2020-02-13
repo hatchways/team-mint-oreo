@@ -59,17 +59,21 @@ const SidebarTabPanel = ({ value, index, profilesList }) => {
                 />
               </Grid>
             );
-          }
-          if (value === TabNames.CONTACTS) {
+          } else if (value === TabNames.CONTACTS) {
             return (
               <Grid item key={profile.id}>
                 <ProfileAsButton key={profile.id} id={profile.id} {...profile} />
               </Grid>
             );
-          } else
+          } else if (value === TabNames.INVITES)
             return (
               <Grid item key={profile.id}>
-                <ProfileWithBorder id={profile.id} {...profile} />
+                <ProfileWithBorder
+                  id={profile.id}
+                  {...profile}
+                  handleApproval={() => {}}
+                  handleDisapproval={() => {}}
+                />
               </Grid>
             );
         })}
