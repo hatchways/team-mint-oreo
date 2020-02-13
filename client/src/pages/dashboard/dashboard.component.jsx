@@ -9,6 +9,7 @@ import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite
 const Dashboard = () => {
   return (
     <Box>
+      <InviteFriendBackdrop />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>
