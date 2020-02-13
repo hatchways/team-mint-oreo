@@ -1,6 +1,8 @@
 import React from 'react';
 import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
+import Check from '@material-ui/icons/Check';
+import Clear from '@material-ui/icons/Clear';
 import { makeStyles } from '@material-ui/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -11,7 +13,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Profile = (
-  { name, secondary = '', notifications = 0, moreOptions = null, avatar: { url, fallback } },
+  {
+    name,
+    secondary = '',
+    notifications = 0,
+    moreOptions = null,
+    avatar: { url, fallback },
+    handleApproval = null,
+    handleDisapproval = null,
+  },
   width = 400
 ) => {
   const classes = useStyles();
@@ -51,6 +61,22 @@ const Profile = (
                 <Grid item>
                   <IconButton>
                     <MoreHoriz />
+                  </IconButton>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
+          {handleApproval !== null && handleDisapproval !== null && (
+            <Grid item xs>
+              <Grid container direction="row" justify="flex-end" alignItems="center">
+                <Grid item>
+                  <IconButton>
+                    <Check />
+                  </IconButton>
+                </Grid>
+                <Grid item>
+                  <IconButton>
+                    <Clear />
                   </IconButton>
                 </Grid>
               </Grid>
