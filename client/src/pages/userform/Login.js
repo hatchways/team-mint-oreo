@@ -9,7 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { useStyles } from './loginStyles';
 import Register from './Register';
 
-export default function Login({ login, onSubmit, handleSubmit }) {
+export default function Login({ values, handleChange, handleSubmit }) {
     const classes = useStyles();
 
     return (
@@ -33,7 +33,7 @@ export default function Login({ login, onSubmit, handleSubmit }) {
                 Welcome Back!
               </Typography>
             </Grid>
-            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+            <form className={classes.form} onSubmit={(event) => handleSubmit(event)}>
               <TextField
                 margin="normal"
                 required
@@ -42,8 +42,9 @@ export default function Login({ login, onSubmit, handleSubmit }) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                ref={login}
                 autoFocus
+                value={ values.email }
+                onChange={ handleChange }
                 InputLabelProps={{
                   classes: {
                     root: classes.label,
@@ -65,8 +66,8 @@ export default function Login({ login, onSubmit, handleSubmit }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                ref={login}
-
+                value={ values.password }
+                onChange={ handleChange }
                 InputLabelProps={{
                   classes: {
                     root: classes.label,

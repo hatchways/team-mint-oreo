@@ -11,7 +11,7 @@ import NativeSelect from '@material-ui/core/NativeSelect';
 // import MenuItem from '@material-ui/core/MenuItem';
 import { useStyles } from './loginStyles';
 
-export default function Register({ onSubmitRegister }) {
+export default function Register({ values, handleChange, handleSubmit }) {
     const classes = useStyles();
 
     return (
@@ -35,7 +35,7 @@ export default function Register({ onSubmitRegister }) {
                 Create an account
               </Typography>
             </Grid>
-            <form className={classes.form} noValidate>
+            <form className={classes.form} onSubmit={ (event) => handleSubmit(event) }>
               <TextField
                 margin="normal"
                 required
@@ -43,8 +43,9 @@ export default function Register({ onSubmitRegister }) {
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
                 autoFocus
+                value={ values.email }
+                onChange={ handleChange }
                 InputLabelProps={{
                   classes: {
                     root: classes.label,
@@ -66,6 +67,8 @@ export default function Register({ onSubmitRegister }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={ values.password }
+                onChange={ handleChange }
                 InputLabelProps={{
                   classes: {
                     root: classes.label,
@@ -87,6 +90,8 @@ export default function Register({ onSubmitRegister }) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={ values.confirmPassword }
+                onChange={ handleChange }
                 InputLabelProps={{
                   classes: {
                     root: classes.label,
@@ -101,10 +106,10 @@ export default function Register({ onSubmitRegister }) {
               />
               <FormControl required margin='normal' className={classes.formControl}>
                 <InputLabel className={classes.label}>Age</InputLabel>
-                <NativeSelect name='language'>
+                <NativeSelect value={ values.language } onChange={ handleChange } name='language'>
                   <option value="" />
-                  <option value={10}>English</option>
-                  <option value={20}>French</option>
+                  <option value='English'>English</option>
+                  <option value='French'>French</option>
                 </NativeSelect>
               </FormControl>
               <Grid container className={classes.alignCenter}>
@@ -113,7 +118,6 @@ export default function Register({ onSubmitRegister }) {
                   variant="contained"
                   color="primary"
                   className={classes.submit}
-                  onSubmit={(event) => onSubmitRegister(event)}
                 >
                   Sign In
                 </Button>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Route, Link } from "react-router-dom";
-import { useForm } from 'react-hook-form';
+// import { useForm } from 'react-hook-form';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
@@ -12,25 +12,42 @@ import Login from './Login';
 import Register from './Register';
 
 export default function UserForm() {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  const {login, handleSubmit} = useForm();
+  const [values, setValues] = useState({email: '', password: ''});
+  const [regValues, setRegValues] = useState({email: '', password: '', confirmPassword: '', language: ''});
+  // const [formState, setFormState] = useState({});
 
-  const onSubmit = (data) => {
-      console.log(data);
+  const handleChange = event => {
+      const { name, value } = event.target;
+      setValues({...values, [name]:value});
+  }
+
+  const handleChangeReg = event => {
+      const { name, value } = event.target;
+      setRegValues({...regValues, [name]: value});
   }
 
   // use login form as default form
   const classes = useStyles();
 
-  const onSubmitRegister = (event) => {
+  const onSubmitRegister = async (event) => {
+    // event.preventDefault();
+    // console.log(regValues);
     event.preventDefault();
-    console.log(event.target.value);
+    console.log(JSON.stringify(regValues));
+    const response = await fetch('http://localhost:3001/user/register', {
+        method: 'POST',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(regValues)
+    });
+
+    console.log(response);
   };
 
   const onSubmitLogin = (event) => {
       event.preventDefault();
-      console.log(event.target);
+      console.log(JSON.stringify(values));
   }
 
   return (
@@ -58,10 +75,13 @@ export default function UserForm() {
       >
           <BrowserRouter>
               <Route path='/login' component={() => <Login
-                                                      login={login}
-                                                      onSubmit={onSubmit}
-                                                      handleSubmit={handleSubmit} />} />
-              <Route path='/register' component={() => <Register onSubmitRegister={onSubmitRegister} />} />
+                                                      values={values}
+                                                      handleChange={handleChange}
+                                                      handleSubmit={onSubmitLogin} />} />
+              <Route path='/register' component={() => <Register
+                                                      values={regValues}
+                                                      handleChange={handleChangeReg}
+                                                      handleSubmit={onSubmitRegister} />} />
           </BrowserRouter>
       </Grid>
     </Grid>
