@@ -44,7 +44,7 @@ function App() {
             <Route
               exact
               path="/login"
-              render={() => (tokenVerified ? <Redirect to="/dashboard" /> : <UserForm />)}
+              render={() => (tokenVerified ? <Redirect to="/dashboard" /> : <Login />)}
             />
             <Route
               exact

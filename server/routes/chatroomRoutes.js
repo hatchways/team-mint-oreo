@@ -1,20 +1,21 @@
 const router = require('express').Router();
 const db = require('../controllers');
 
-router.get('/messages/all', async (req, res) => {
+router.get('/messages/all/user', async (req, res) => {
   const { id } = res.locals;
   const chatIds = db.user.getChatsById(id);
   const messages = db.messages;
 });
 
-router.get('/messages/:chatId', async (req, res) => {
+router.get('/messages/all/:chatId', async (req, res) => {
   const { chatId } = req.params;
+  // when request coming from clicking contact, contain idpair
+  // request messages from db
+  // if chat doesn't exist (dinstinction between doesnt exist and no messages)
+  // create a db and add users via id pair,
 });
 
-router.get('/verify/:chatId', async (req, res) => {
-  const { chatId } = req.params;
-  db.chatroom.getChatroomById(chatId);
-});
+router.get('/create', (req, res) => {});
 
 router.post('/new', async (req, res) => {
   const { userIds } = req.body; // in form of array
