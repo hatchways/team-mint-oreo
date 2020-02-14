@@ -13,7 +13,7 @@ export const useStyles = makeStyles(theme => ({
   rounded: {
     borderRadius: 16,
   },
-  padddd: {
+  pad10: {
     padding: 10,
   },
   componentStyle: {
