@@ -19,7 +19,7 @@ const ChatFrame = ({ size }) => {
       size.height,
       hRect !== null ? -hRect.height : null,
       mRect !== null ? -mRect.height : null,
-      -40,
+      -50,
     ];
     return list;
   };

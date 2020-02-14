@@ -39,7 +39,7 @@ const EmailField = ({ onAddClick, ...props }) => {
       borderRadius={6}
       border={1}
     >
-      <InputBase className={classes.input} {...props} />
+      <InputBase className={classes.input} {...props} type="email" />
       <IconButton
         id={props.id}
         type="submit"

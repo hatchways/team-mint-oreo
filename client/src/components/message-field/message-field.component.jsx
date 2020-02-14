@@ -1,16 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Paper, InputBase, Divider, IconButton } from '@material-ui/core';
+import { Box, InputBase, Divider, IconButton } from '@material-ui/core';
 import Send from '@material-ui/icons/Send';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    padding: '2px 4px',
+    padding: '15px 30px',
+    margin: '0px 40px',
     display: 'flex',
     alignItems: 'center',
     width: 'auto',
     backgroundColor: '#eee',
+    borderRadius: 16,
   },
   input: {
     marginLeft: theme.spacing(1),
@@ -33,12 +35,7 @@ const MessageField = () => {
   };
 
   return (
-    <Paper
-      component="form"
-      className={classes.root}
-      onChange={handleChange}
-      onSubmit={handleChange}
-    >
+    <Box component="form" className={classes.root} onChange={handleChange} onSubmit={handleChange}>
       <InputBase
         className={classes.input}
         placeholder="Type Something ... "
@@ -51,7 +48,7 @@ const MessageField = () => {
       <IconButton type="submit" className={classes.iconButton} aria-label="send">
         <Send />
       </IconButton>
-    </Paper>
+    </Box>
   );
 };
 
