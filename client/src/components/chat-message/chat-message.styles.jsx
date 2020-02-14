@@ -8,5 +8,6 @@ export const useStyles = makeStyles(theme => ({
   senderPaper: {
     backgroundColor: '#dfdfdf',
     borderRadius: 20,
+    marginLeft: 50,
   },
 }));
