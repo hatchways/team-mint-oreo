@@ -1,13 +1,16 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const invitationModel = new mongoose.Schema(
+const invitationModel = new Schema(
   {
-    from_user: {
-      type: String,
+    fromUser: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
-    to_user: {
-      type: String,
+    toUser: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
   },
@@ -15,6 +18,8 @@ const invitationModel = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+invitationModel.index({ fromUser: 1, toUser: 1 }, { unique: true });
 
 const Invitation = mongoose.model('invitation', invitationModel);
 

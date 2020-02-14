@@ -10,31 +10,31 @@ const registerSocketId = (socket, userId) => {
 };
 
 const addChatroom = async (socket, userId, chatId) => {
-    await db.user.addChatById(userId, chatId);
-    await db.chatroom.addUser(userId, chatId);
-}
+  await db.user.addChatById(userId, chatId);
+  await db.chatroom.addUser(userId, chatId);
+};
 
 const joinChatrooms = async (socket, userId) => {
   const chatroomList = await db.user.getChatsById(userId);
 
   // No chatrooms available
-  if(!chatroomList || chatroomList.length <= 0) {
-      console.log('No chatrooms available yet');
-      return;
+  if (!chatroomList || chatroomList.length <= 0) {
+    console.log('No chatrooms available yet');
+    return;
   }
 
   chatroomList.forEach(room => socket.join(room));
 };
 
-const addFriend = async (socket, userId, friendEmail) => {
-    await db.user.addFriendByEmail(userId, friendEmail);
-}
+const acceptInvitation = async (socket, userId, friendId) => {
+  await db.user.addFriend(userId, friendId);
+};
 
 const notifyFriends = async (socket, userId) => {
   const friendSocketList = await db.user.getFriendsSocketsById(userId);
   if (!friendSocketList || !friendSocketList.length) {
-      console.log('No friends are online');
-      return;
+    console.log('No friends are online');
+    return;
   }
   friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
 };
@@ -45,7 +45,7 @@ const cacheActiveChatInfo = msgObject => {
   // cache info here
 };
 
-const translateMessage = async (msgObject) => {
+const translateMessage = async msgObject => {
   // ⚠️ check cache for active chat languages
   const { originalText, chatId } = msgObject;
   const idAndLanguageList = await db.chatroom.getLanguagesAndIdsInChatroom(chatId);
@@ -83,16 +83,15 @@ const handleSocket = server => {
   io.on('connection', socket => {
     console.log(`${socket.id} has connected to the site.`);
 
-    socket.on('login', async ({userId, chatId, friendEmail}) => {
+    socket.on('login', async ({ userId, chatId }) => {
       console.log('login ping');
       await registerSocketId(socket, userId);
       await addChatroom(socket, userId, chatId);
-      await addFriend(socket, userId, friendEmail);
       joinChatrooms(socket, userId);
       notifyFriends(socket, userId);
     });
 
-    socket.on('sendMsg', async (msgObject) => {
+    socket.on('sendMsg', async msgObject => {
       // ⚠️ Check if first message, if first message, create chatroom
       const translations = await translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
@@ -100,10 +99,39 @@ const handleSocket = server => {
       db.message.createMessage(outgoingMsg);
     });
 
-    socket.on('friendRequestSent', () => {});
-    socket.on('friendRequestReceived', () => {});
+    // current user is sending the friend an invitation request
+    socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
+        // await addFriend(socket, userId, friendEmail);
+        try {
+            const newInvitation = await db.invitation.createInvitation(userId, friendEmail);
 
-    socket.on('friendRequestAccepted', () => {});
+            /* Maybe convert the userId into email? */
+            /* Or we can possibly send the whole User query to fromUser & toUser
+                that was returned from mongo */
+
+            // This socket identifies from who, to who, and the identifier of invitation itself
+            socket.to(friendEmail).emit('friendRequestReceived', {
+                fromUser: userId,
+                toUser: friendEmail,
+                invitatioin: newInvitation.id
+            });
+        } catch(err) {
+            // Error will occur if the user tries to add duplicate
+            // invitation, or internal server error
+            console.error(err);
+        }
+    });
+    // socket.on('friendRequestReceived', () => {});
+
+    socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
+        try {
+            await acceptInvitation(socket, userId, friendId);
+            db.invitation.deleteInvitation(invitationId);
+            db.user.removeInvitation(userId, invitationId);
+        } catch(err) {
+            console.error(err);
+        }
+    });
 
     socket.on('test', () => {
       console.log('Connected sockets');

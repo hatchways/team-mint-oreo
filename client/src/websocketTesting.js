@@ -31,8 +31,8 @@ function WebsocketTesting() {
   };
 
   const login = async () => {
-    // const data = { email: 'testmail1@example.com', password: '123' };
     const data = { email: 'gg@gg.gg', password: 'gggggg' };
+    // const data = { email: 'sang.m.lee@mail.mcgill.ca', password: 'dltkdals' }
     const resp = await fetch('/user/login', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -46,8 +46,8 @@ function WebsocketTesting() {
   const emitSocket = () => {
     socket.emit('login', {
         userId: '5e459bd631f1035e2811137d',
-        chatId: '5e45f6f81c9d440000a138fe',
-        friendEmail: 'sang.m.lee@mail.mcgill.ca'
+        // userId: '5e4634be7cd7323b7891381c',
+        chatId: '5e45f6f81c9d440000a138fe'
     });
   };
   const sendMessage = (event) => {
@@ -55,13 +55,31 @@ function WebsocketTesting() {
       if(message) {
           socket.emit('sendMsg', {
               userId: '5e459bd631f1035e2811137d',
+              // userId: '5e4634be7cd7323b7891381c',
               chatId: '5e45f6f81c9d440000a138fe',
               originalText: message
           });
       }
-  }
+  };
 
-  console.log(message);
+  const sendFriendReq = event => {
+      event.preventDefault();
+      socket.emit('friendRequestSent', {
+        userId: '5e459bd631f1035e2811137d',
+        friendEmail: 'sang.m.lee@mail.mcgill.ca'
+        // userId: '5e4634be7cd7323b7891381c',
+        // friendEmail: 'gg@gg.gg'
+      });
+  };
+
+  const acceptFriendReq = event => {
+      event.preventDefault();
+      socket.emit('friendRequestAccepted', {
+        userId: '5e459bd631f1035e2811137d',
+        friendId: '5e4634be7cd7323b7891381c',
+        invitationId: '5e472c167607676f241d4240'
+      });
+  }
 
   return (
     <div>
@@ -70,6 +88,9 @@ function WebsocketTesting() {
       <button onClick={login}>LOGIN</button>
 
       <button onClick={emitSocket}> SOCKET EMIT</button>
+      <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
+      <br />
+      <button onClick={acceptFriendReq}>ACCEPT FRIEND REQUEST</button>
       <input
         type="text"
         placeholder="message test"

@@ -35,9 +35,9 @@ router.post('/login', async (req, res) => {
         signed: true,
       })
       .send({
-          success: true,
-          status: 200,
-          userData
+        success: true,
+        status: 200,
+        userData,
       });
   } catch (err) {
     console.log(err);
