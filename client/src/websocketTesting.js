@@ -91,12 +91,18 @@ function WebsocketTesting() {
       <button type="button" onClick={logout}>
         LOGOUT
       </button>
-      <input placeholder="event name" name="event" type="text" onChange={onChange} />
-      <input placeholder="body content" name="body" type="text" onChange={onChange} />
       <button type="button" onClick={emitSocket}>
         {' '}
         SOCKET EMIT
       </button>
+      <input
+        type="text"
+        placeholder="message test"
+        value={message}
+        onChange={({ target: { value } }) => setMessage(value)}
+        onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
+      />
+
       <button type="button" onClick={connectedSockets}>
         {' '}
         log connected sockets EMIT
