@@ -5,6 +5,7 @@ const DirectoryActionTypes = {
   CLOSE_BACKDROP: 'CLOSE_BACKDROP',
   TOGGLE_SIDEBAR: 'TOGGLE_SIDEBAR',
   CLOSE_SIDEBAR: 'CLOSE_SIDEBAR',
+  CHANGE_ACTIVE_WINDOW: 'CHANGE_ACTIVE_WINDOW',
 };
 
 export default DirectoryActionTypes;

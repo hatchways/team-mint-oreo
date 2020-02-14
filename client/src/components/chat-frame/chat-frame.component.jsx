@@ -12,9 +12,11 @@ const ChatFrame = () => {
 
   const [messages, setMessage] = useState([]);
 
-  console.log('chatid is', chatId);
-
-  useEffect(() => {}, []);
+  useEffect(() => {
+    // check front end cache for stored conversation
+    // if not cached, get messages from db
+    console.log('chatid is', chatId);
+  }, [chatId]);
 
   return (
     <Box height="100vh" overflow={'hidden'} border="1px solid black">

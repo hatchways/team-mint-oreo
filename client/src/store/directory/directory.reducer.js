@@ -163,6 +163,8 @@ export const directoryReducer = (state, action) => {
       return { ...state, showSidebar: !state.showSidebar };
     case DirectoryActionTypes.CLOSE_SIDEBAR:
       return { ...state, showSidebar: false };
+    case DirectoryActionTypes.CHANGE_ACTIVE_WINDOW:
+      return { ...state, currentlyActive: action.payload };
     default: {
       return state;
     }
