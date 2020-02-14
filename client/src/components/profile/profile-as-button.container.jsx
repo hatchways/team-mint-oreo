@@ -19,7 +19,7 @@ const ProfileAsButton = ({ id, handleClick = () => {}, isActive = false, ...prop
       disableTouchRipple
       className={` ${classes.rounded}`}
     >
-      <Box className={`${className} ${classes.padddd}  ${classes.rounded}`}>
+      <Box className={`${className} ${classes.pad10}  ${classes.rounded}`}>
         <Profile {...props} id={id} />
       </Box>
     </CardActionArea>
