@@ -11,7 +11,7 @@ import {
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import Menu from '@material-ui/icons/Menu';
-import { useStyles } from './chat-header.styles';
+import { useStyles, IOSSwitch } from './chat-header.styles';
 
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
@@ -39,37 +39,63 @@ const ChatHeader = () => {
 
   return (
     <Box className={classes.header}>
-      <Box px={5} py={3}>
+      <Box className={classes.bigPadd}>
         <Grid container direction="row" justify="space-between" alignItems="center">
-          <Grid item>
-            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
+          <Grid item xs sm>
+            <Grid
+              container
+              direction="row"
+              justify="flex-start"
+              alignItems="center"
+              className={classes.lessSpacingOnXS}
+            >
               <Hidden mdUp>
                 <Grid item>
-                  <IconButton color="primary" onClick={triggerSidebar}>
-                    <Menu />
-                  </IconButton>
+                  <Box marginRight={1}>
+                    <IconButton color="primary" onClick={triggerSidebar}>
+                      <Menu />
+                    </IconButton>
+                  </Box>
                 </Grid>
               </Hidden>
-              <Grid item>
-                <Typography>{title}</Typography>
+              <Grid item xs={8} sm>
+                <Grid
+                  container
+                  direction="row"
+                  justify="flex-start"
+                  alignItems="center"
+                  spacing={1}
+                >
+                  <Grid item>
+                    <Typography>{title}</Typography>
+                  </Grid>
+                  <Grid item xs={12} sm>
+                    Online
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item>Online</Grid>
             </Grid>
           </Grid>
           <Grid item>
-            <Grid container direction="row" justify="flex-end" alignItems="center" spacing={2}>
+            <Grid
+              container
+              direction="row"
+              justify="flex-end"
+              alignItems="center"
+              className={classes.lessSpacingOnXS}
+            >
               <Grid item>
-                <FormControlLabel
-                  control={
-                    <Switch
+                <Grid component="label" container alignItems="center">
+                  <Grid item>
+                    <IOSSwitch
                       // checked={state.checkedA}
                       // onChange={handleChange('checkedA')}
                       value="checkedA"
                       color="primary"
                     />
-                  }
-                  label="Original"
-                />
+                  </Grid>
+                  <Grid item>Off</Grid>
+                </Grid>
               </Grid>
               <Grid item>
                 <IconButton>

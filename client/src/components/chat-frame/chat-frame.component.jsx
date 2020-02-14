@@ -32,7 +32,7 @@ const ChatFrame = ({ size }) => {
     );
 
   return (
-    <Box height={'100vh'} paddingRight={1}>
+    <Box height={'100vh'} overflow={'hidden'}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
           <Box ref={hRef}>
