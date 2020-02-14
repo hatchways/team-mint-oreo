@@ -36,7 +36,7 @@ const ChatMessages = ({ height }) => {
             return (
               <Grid key={message.id} item>
                 <Box paddingLeft={2} paddingRight={2}>
-                  <ChatMessage currentUserId={currentUserId} message={message} />
+                  <ChatMessage message={message} />
                 </Box>
               </Grid>
             );

@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Grid, Typography, Avatar, Paper } from '@material-ui/core';
-import { useStyles } from './chat-messages.styles';
+import { useStyles } from './chat-message.styles';
 
-const ChatMessage = ({ currentUserId, message: { senderId, texts, original, timeStamp } }) => {
-  const [isSender, setIsSender] = useState();
-  useEffect(() => {
-    setIsSender(senderId === currentUserId);
-  }, [currentUserId, senderId]);
-
+const ChatMessage = ({ message: { isSender, texts, original, timeStamp } }) => {
   const classes = useStyles();
   return (
     <Box>
