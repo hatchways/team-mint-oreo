@@ -38,74 +38,66 @@ const ChatHeader = () => {
   };
 
   return (
-    <Box className={classes.header}>
-      <Box className={classes.bigPadd}>
-        <Grid container direction="row" justify="space-between" alignItems="center">
-          <Grid item xs sm>
-            <Grid
-              container
-              direction="row"
-              justify="flex-start"
-              alignItems="center"
-              className={classes.lessSpacingOnXS}
-            >
-              <Hidden mdUp>
+    <Box className={`${classes.header} ${classes.bigPadd}`}>
+      <Grid container direction="row" justify="space-between" alignItems="center">
+        <Grid item>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+            className={classes.lessSpacingOnXS}
+          >
+            <Hidden mdUp>
+              <Grid item>
+                <Box marginRight={1}>
+                  <IconButton color="primary" onClick={triggerSidebar}>
+                    <Menu />
+                  </IconButton>
+                </Box>
+              </Grid>
+            </Hidden>
+            <Grid item xs={8} sm>
+              <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
                 <Grid item>
-                  <Box marginRight={1}>
-                    <IconButton color="primary" onClick={triggerSidebar}>
-                      <Menu />
-                    </IconButton>
-                  </Box>
+                  <Typography>{title}</Typography>
                 </Grid>
-              </Hidden>
-              <Grid item xs={8} sm>
-                <Grid
-                  container
-                  direction="row"
-                  justify="flex-start"
-                  alignItems="center"
-                  spacing={1}
-                >
-                  <Grid item>
-                    <Typography>{title}</Typography>
-                  </Grid>
-                  <Grid item xs={12} sm>
-                    Online
-                  </Grid>
+                <Grid item xs={12} sm>
+                  Online
                 </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item>
-            <Grid
-              container
-              direction="row"
-              justify="flex-end"
-              alignItems="center"
-              className={classes.lessSpacingOnXS}
-            >
-              <Grid item>
-                <Grid component="label" container alignItems="center">
-                  <Grid item>
-                    <IOSSwitch
-                      // checked={state.checkedA}
-                      // onChange={handleChange('checkedA')}
-                      value="checkedA"
-                      color="primary"
-                    />
-                  </Grid>
-                  <Grid item>Off</Grid>
-                </Grid>
-              </Grid>
-              <Grid item>
-                <IconButton>
-                  <MoreHoriz />
-                </IconButton>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+        <Grid item>
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+            className={classes.lessSpacingOnXS}
+          >
+            <Grid item>
+              <Grid component="label" container alignItems="center">
+                <Grid item>
+                  <IOSSwitch
+                    // checked={state.checkedA}
+                    // onChange={handleChange('checkedA')}
+                    value="checkedA"
+                    color="primary"
+                  />
+                </Grid>
+                <Grid item>Off</Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <IconButton>
+                <MoreHoriz />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
