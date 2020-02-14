@@ -1,26 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { CardActionArea, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 
 import Profile from './profile.component';
-
-const useStyles = makeStyles(theme => ({
-  unselected: {
-    backgroundColor: '#F5F8FA',
-    '&:hover': {
-      backgroundColor: '#fff',
-    },
-  },
-  selected: {
-    backgroundColor: '#fff',
-  },
-  rounded: {
-    borderRadius: 16,
-  },
-  padddd: {
-    padding: 10,
-  },
-}));
+import { useStyles } from './profile.styles';
 
 const ProfileAsButton = ({ id, handleClick = () => {}, isActive = false, ...props }) => {
   const classes = useStyles();

@@ -10,16 +10,10 @@ import {
 } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import { store as directoryStore } from '../../store/directory/directory.provider';
-import { makeStyles } from '@material-ui/styles';
 import Menu from '@material-ui/icons/Menu';
+import { useStyles } from './chat-header.styles';
 
 import DirectoryActionTypes from '../../store/directory/directory.types';
-
-const useStyles = makeStyles({
-  header: {
-    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-  },
-});
 
 const ChatHeader = () => {
   const classes = useStyles();

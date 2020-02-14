@@ -1,6 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { Button, Box, Grid, Card, Backdrop, ClickAwayListener } from '@material-ui/core';
+import {
+  Button,
+  Box,
+  Grid,
+  Card,
+  Backdrop,
+  ClickAwayListener,
+  IconButton,
+} from '@material-ui/core';
+import Clear from '@material-ui/icons/Clear';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
@@ -8,15 +16,7 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 import EmailField from '../email-field/email-field.component';
 import CopyField from '../copy-field/copy-field.component';
 
-import { IconButton } from '@material-ui/core';
-import Clear from '@material-ui/icons/Clear';
-
-const useStyles = makeStyles(theme => ({
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-}));
+import { useStyles } from './invite-friend-backdrop.styles';
 
 const InviteFriendBackdrop = () => {
   const placeholder = "Friend's email address";

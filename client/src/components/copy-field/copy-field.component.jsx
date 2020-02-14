@@ -1,27 +1,8 @@
 import React, { useRef } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { Box, InputBase, IconButton, SvgIcon } from '@material-ui/core';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    padding: '2px 4px',
-    display: 'flex',
-    alignItems: 'center',
-    width: 'auto',
-  },
-  input: {
-    marginLeft: theme.spacing(1),
-    flex: 1,
-  },
-  iconButton: {
-    padding: 10,
-  },
-  divider: {
-    height: 28,
-    margin: 4,
-  },
-}));
+import { useStyles } from './copy-field.styles';
 
 const CopyField = ({ placeholder }) => {
   const classes = useStyles();

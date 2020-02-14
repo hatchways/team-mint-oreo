@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Typography, Avatar, Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { useStyles } from './chat-messages.styles';
 
-const useStyles = makeStyles(theme => ({
-  chatPaper: {
-    backgroundColor: '#86B9FF',
-    borderRadius: 20,
-  },
-  senderPaper: {
-    backgroundColor: '#dfdfdf',
-    borderRadius: 20,
-  },
-}));
 const ChatMessage = ({ currentUserId, message: { senderId, texts, original, timeStamp } }) => {
   const [isSender, setIsSender] = useState();
   useEffect(() => {
