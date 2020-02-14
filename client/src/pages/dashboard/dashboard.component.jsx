@@ -9,8 +9,8 @@ import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 const Dashboard = () => {
   return (
     <Box>
-      <InviteFriendBackdrop />
       <SidebarDrawer />
+      <InviteFriendBackdrop />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>
