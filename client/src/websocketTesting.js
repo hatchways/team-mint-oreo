@@ -12,6 +12,7 @@ function WebsocketTesting() {
     const { name, value } = e.target;
     setSocketEvent({ ...socketEvent, [name]: value });
   };
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const checkToken = async () => {
@@ -37,7 +38,8 @@ function WebsocketTesting() {
   };
 
   const login = async () => {
-    const data = { email: 'testmail1@example.com', password: '123' };
+    // const data = { email: 'testmail1@example.com', password: '123' };
+    const data = { email: 'gg@gg.gg', password: 'gggggg' };
     const resp = await fetch('/user/login', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -50,7 +52,11 @@ function WebsocketTesting() {
     console.log(result);
   };
   const emitSocket = () => {
-    socket.emit('login', '5e436fa38de8845397022305');
+    socket.emit('login', {
+      userId: '5e459bd631f1035e2811137d',
+      chatId: '5e45f6f81c9d440000a138fe',
+      friendEmail: 'sang.m.lee@mail.mcgill.ca',
+    });
   };
 
   const connectedSockets = () => {
@@ -60,6 +66,18 @@ function WebsocketTesting() {
   const logout = () => {
     fetch('/user/logout');
   };
+  const sendMessage = event => {
+    event.preventDefault();
+    if (message) {
+      socket.emit('sendMsg', {
+        userId: '5e459bd631f1035e2811137d',
+        chatId: '5e45f6f81c9d440000a138fe',
+        originalText: message,
+      });
+    }
+  };
+
+  console.log(message);
 
   return (
     <div>

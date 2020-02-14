@@ -19,6 +19,7 @@ const makeMeows = () => {
       original: 'en',
       timeStamp: `14:${i < 10 ? '0' + i : i}`,
       senderId: 2 + 'i',
+      isSender: Math.random() > 0.8,
     });
   }
   return list;
@@ -35,7 +36,8 @@ export const initialState = {
 				}
 				original: of of the keys in text like [en, fe, zh], 
 				timestamp: timeobject or string, 
-				senderId: string/id
+        senderId: string/id
+        isSender: boolean
 			}
 		]
 	*/
@@ -48,6 +50,7 @@ export const initialState = {
       original: 'en',
       timeStamp: '1:50',
       senderId: 1,
+      isSender: true,
     },
     {
       id: 1235,
@@ -57,6 +60,7 @@ export const initialState = {
       original: 'en',
       timeStamp: '2:10',
       senderId: 1234,
+      isSender: false,
     },
   ],
   2: [
@@ -68,6 +72,7 @@ export const initialState = {
       original: 'en',
       timeStamp: '10:50',
       senderId: 12,
+      isSender: false,
     },
     {
       id: 699,
@@ -77,6 +82,7 @@ export const initialState = {
       original: 'en',
       timeStamp: '10:51',
       senderId: 1,
+      isSender: false,
     },
   ],
   123: [
@@ -89,6 +95,7 @@ export const initialState = {
         original: 'en',
         timeStamp: '14:00',
         senderId: 1,
+        isSender: true,
       },
     ],
     ...makeMeows(),

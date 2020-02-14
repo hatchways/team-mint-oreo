@@ -34,7 +34,11 @@ router.post('/login', async (req, res) => {
         // secure: true
         signed: true,
       })
-      .sendStatus(200);
+      .send({
+          success: true,
+          status: 200,
+          userData
+      });
   } catch (err) {
     console.log(err);
     res.sendStatus(err.code || 500);

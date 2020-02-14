@@ -9,15 +9,33 @@ const registerSocketId = (socket, userId) => {
   db.user.setSocketIdById(userId, socket.id);
 };
 
+const addChatroom = async (socket, userId, chatId) => {
+  await db.user.addChatById(userId, chatId);
+  await db.chatroom.addUser(userId, chatId);
+};
+
 const joinChatrooms = async (socket, userId) => {
   const chatroomList = await db.user.getChatsById(userId);
-  if (!chatroomList || !chatroomList.length) return;
+
+  // No chatrooms available
+  if (!chatroomList || chatroomList.length <= 0) {
+    console.log('No chatrooms available yet');
+    return;
+  }
+
   chatroomList.forEach(room => socket.join(room));
+};
+
+const addFriend = async (socket, userId, friendEmail) => {
+  await db.user.addFriendByEmail(userId, friendEmail);
 };
 
 const notifyFriends = async (socket, userId) => {
   const friendSocketList = await db.user.getFriendsSocketsById(userId);
-  if (!friendSocketList || !friendSocketList.length) return;
+  if (!friendSocketList || !friendSocketList.length) {
+    console.log('No friends are online');
+    return;
+  }
   friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
 };
 
@@ -61,8 +79,12 @@ const handleSocket = server => {
   const io = socketio.listen(server);
   io.on('connection', socket => {
     console.log(`${socket.id} has connected to the site.`);
-    socket.on('login', userId => {
-      registerSocketId(socket, userId);
+
+    socket.on('login', async ({ userId, chatId, friendEmail }) => {
+      console.log('login ping');
+      await registerSocketId(socket, userId);
+      await addChatroom(socket, userId, chatId);
+      await addFriend(socket, userId, friendEmail);
       joinChatrooms(socket, userId);
       notifyFriends(socket, userId);
     });

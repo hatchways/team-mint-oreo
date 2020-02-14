@@ -24,6 +24,13 @@ const SidebarTabPanel = ({ value, index, profilesList }) => {
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: event.currentTarget.id,
     });
+    hideSidebar();
+  };
+
+  const hideSidebar = () => {
+    dispatch({
+      type: DirectoryActionTypes.CLOSE_SIDEBAR,
+    });
   };
 
   return (

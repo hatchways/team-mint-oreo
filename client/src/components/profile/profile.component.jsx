@@ -3,14 +3,7 @@ import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/co
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import Check from '@material-ui/icons/Check';
 import Clear from '@material-ui/icons/Clear';
-import { makeStyles } from '@material-ui/styles';
-
-const useStyles = makeStyles(theme => ({
-  chipStyle: {
-    backgroundColor: '#3A8DFF',
-    color: '#fff',
-  },
-}));
+import { useStyles } from './profile.styles';
 
 const Profile = (
   {

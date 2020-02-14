@@ -4,7 +4,11 @@ const Error = require('../utils/Error');
 
 const addUser = async (userId, chatId) => {
   try {
-    Chatroom.findByIdAndUpdate(chatId, { $push: { users: userId } });
+    const chatroom = await Chatroom.findByIdAndUpdate(
+      chatId,
+      { $addToSet: { users: userId } },
+      { new: true }
+    );
   } catch (err) {
     throw new Error(500, 'Add User To Chat', err);
   }
@@ -12,8 +16,10 @@ const addUser = async (userId, chatId) => {
 
 const getChatroomById = async chatId => {
   try {
-    const { id = null } = await Chatroom.findById(chatId);
-    return id;
+    const chatroom = await Chatroom.findById(chatId);
+    return chatroom.id;
+    // const { id = null } = await Chatroom.findById(chatId);
+    // return id;
   } catch (err) {
     throw new Error(500, 'Get Chatroom', err);
   }
@@ -33,13 +39,8 @@ const createChatroom = async userIds => {
 
 const getUsersByChatId = async chatId => {
   try {
-    const usersInChat = await Chatroom.findById(chatId)
-      .populate('users')
-      .exec((err, users) => {
-        console.log(users);
-        return users;
-      });
-    console.log(usersInChat);
+    const usersInChat = await Chatroom.findById(chatId).populate({ path: 'users', model: 'User' });
+    return usersInChat.users;
   } catch (err) {
     throw new Error(500, 'Get Users In Chat', err);
   }
@@ -55,7 +56,7 @@ const removeUser = async (userId, chatId) => {
 
 const getLanguagesAndIds = async chatId => {
   try {
-    const data = await getUsers(chatId).map(({ id, language }) => ({
+    const data = await getUsersByChatId(chatId).map(({ id, language }) => ({
       id,
       language,
     }));
