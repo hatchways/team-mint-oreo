@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Message = require('../models/Message');
 const Error = require('../utils/Error');
 
-const createMessage = async msg => {
+const createMessage = async (msg) => {
   const { userId, chatId, ...rest } = msg;
   const { ObjectId } = mongoose.Types;
   try {
