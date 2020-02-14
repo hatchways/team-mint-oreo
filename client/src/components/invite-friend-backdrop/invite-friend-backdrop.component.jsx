@@ -110,7 +110,7 @@ const InviteFriendBackdrop = () => {
                     <CopyField placeholder={'http://localhost:3000/dashboard'} />
                   </Grid>
                   <Grid item>
-                    <h3></h3>
+                    <h3> </h3>
                     <Button variant="contained" color="primary" onClick={composeEmails}>
                       Send Invite
                     </Button>

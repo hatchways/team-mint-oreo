@@ -7,8 +7,6 @@ import Sidebar from './sidebar.component';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const useStyles = makeStyles({});
-
 const SidebarDrawer = () => {
   const {
     state: { showSidebar },

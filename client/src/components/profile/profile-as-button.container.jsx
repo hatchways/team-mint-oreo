@@ -1,8 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
-
-import { store as directoryStore } from '../../store/directory/directory.provider';
-import DirectoryActionTypes from '../../store/directory/directory.types';
-
+import React, { useState, useEffect } from 'react';
 import { CardActionArea, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
