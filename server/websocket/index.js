@@ -9,15 +9,33 @@ const registerSocketId = (socket, userId) => {
   db.user.setSocketIdById(userId, socket.id);
 };
 
+const addChatroom = async (socket, userId, chatId) => {
+    await db.user.addChatById(userId, chatId);
+    await db.chatroom.addUser(userId, chatId);
+}
+
 const joinChatrooms = async (socket, userId) => {
   const chatroomList = await db.user.getChatsById(userId);
-  if (!chatroomList || !chatroomList.length) return;
+
+  // No chatrooms available
+  if(!chatroomList || chatroomList.length <= 0) {
+      console.log('No chatrooms available yet');
+      return;
+  }
+
   chatroomList.forEach(room => socket.join(room));
 };
 
+const addFriend = async (socket, userId, friendEmail) => {
+    await db.user.addFriendByEmail(userId, friendEmail);
+}
+
 const notifyFriends = async (socket, userId) => {
   const friendSocketList = await db.user.getFriendsSocketsById(userId);
-  if (!friendSocketList || !friendSocketList.length) return;
+  if (!friendSocketList || !friendSocketList.length) {
+      console.log('No friends are online');
+      return;
+  }
   friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
 };
 
@@ -27,21 +45,23 @@ const cacheActiveChatInfo = msgObject => {
   // cache info here
 };
 
-const translateMessage = async msgObject => {
+const translateMessage = async (msgObject) => {
   // ⚠️ check cache for active chat languages
-  const { text } = msgObject;
-  const idAndLanguageList = await db.chatroom.getLanguagesAndIdsInChatroom(msgObject.chatId);
+  const { originalText, chatId } = msgObject;
+  const idAndLanguageList = await db.chatroom.getLanguagesAndIdsInChatroom(chatId);
 
   //  ⚠️ filter out same language for translation
   const translationAPI = { translate: (x, y) => x };
   const translatedText = await Promise.all(
-    idAndLanguageList.map(({ language }) => translationAPI.translate(text, language))
+    idAndLanguageList.map(({ language }) => translationAPI.translate(originalText, language))
   );
+
   // const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
   const idTranslationMap = idAndLanguageList.reduce(
     (a, b, i) => ({ ...a, [b.id]: translatedText[i] }),
     {}
   );
+
   // ⚠️ cache translation
   return idTranslationMap;
 };
@@ -63,14 +83,16 @@ const handleSocket = server => {
   io.on('connection', socket => {
     console.log(`${socket.id} has connected to the site.`);
 
-    socket.on('login', userId => {
+    socket.on('login', async ({userId, chatId, friendEmail}) => {
       console.log('login ping');
-      registerSocketId(socket, userId);
+      await registerSocketId(socket, userId);
+      await addChatroom(socket, userId, chatId);
+      await addFriend(socket, userId, friendEmail);
       joinChatrooms(socket, userId);
       notifyFriends(socket, userId);
     });
 
-    socket.on('sendMsg', async msgObject => {
+    socket.on('sendMsg', async (msgObject) => {
       // ⚠️ Check if first message, if first message, create chatroom
       const translations = await translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };

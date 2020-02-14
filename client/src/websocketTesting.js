@@ -6,6 +6,8 @@ const socket = io('http://localhost:3001');
 function WebsocketTesting() {
   const [tokenVerified, setTokenVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
     const checkToken = async () => {
       const isVerified = await (await fetch('/user/verify')).json();
@@ -29,7 +31,8 @@ function WebsocketTesting() {
   };
 
   const login = async () => {
-    const data = { email: 'testmail1@example.com', password: '123' };
+    // const data = { email: 'testmail1@example.com', password: '123' };
+    const data = { email: 'gg@gg.gg', password: 'gggggg' };
     const resp = await fetch('/user/login', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -41,8 +44,25 @@ function WebsocketTesting() {
     console.log(result);
   };
   const emitSocket = () => {
-    socket.emit('login', '5e436fa38de8845397022305');
+    socket.emit('login', {
+        userId: '5e459bd631f1035e2811137d',
+        chatId: '5e45f6f81c9d440000a138fe',
+        friendEmail: 'sang.m.lee@mail.mcgill.ca'
+    });
   };
+  const sendMessage = (event) => {
+      event.preventDefault();
+      if(message) {
+          socket.emit('sendMsg', {
+              userId: '5e459bd631f1035e2811137d',
+              chatId: '5e45f6f81c9d440000a138fe',
+              originalText: message
+          });
+      }
+  }
+
+  console.log(message);
+
   return (
     <div>
       {`USER HAS VALID JWT: ${tokenVerified}`}
@@ -50,6 +70,13 @@ function WebsocketTesting() {
       <button onClick={login}>LOGIN</button>
 
       <button onClick={emitSocket}> SOCKET EMIT</button>
+      <input
+        type="text"
+        placeholder="message test"
+        value={message}
+        onChange={({ target: { value } }) => setMessage(value)}
+        onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
+      />
     </div>
   );
 }
