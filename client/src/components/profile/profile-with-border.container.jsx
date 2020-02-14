@@ -1,15 +1,8 @@
 import React from 'react';
-import { Paper, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { Box } from '@material-ui/core';
 
 import Profile from './profile.component';
-
-const useStyles = makeStyles(theme => ({
-  componentStyle: {
-    borderRadius: 16,
-    backgroundColor: 'white',
-  },
-}));
+import { useStyles } from './profile.styles';
 
 const ProfileWithBorder = ({ ...props }) => {
   const classes = useStyles();
