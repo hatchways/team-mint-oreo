@@ -4,6 +4,7 @@ export const initialState = {
   // currently active conversation to display
   currentlyActive: null,
   showBackdrop: false,
+  showSidebar: false,
   /*
   Comms: {
     id: integer/string, 
@@ -158,6 +159,10 @@ export const directoryReducer = (state, action) => {
       return { ...state, showBackdrop: !state.showBackdrop };
     case DirectoryActionTypes.CLOSE_BACKDROP:
       return { ...state, showBackdrop: false };
+    case DirectoryActionTypes.TOGGLE_SIDEBAR:
+      return { ...state, showSidebar: !state.showSidebar };
+    case DirectoryActionTypes.CLOSE_SIDEBAR:
+      return { ...state, showSidebar: false };
     default: {
       return state;
     }

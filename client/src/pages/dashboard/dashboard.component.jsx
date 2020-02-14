@@ -5,11 +5,13 @@ import Client from '../../utils/HTTPClient';
 import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
 import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite-friend-backdrop.component';
+import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 
 const Dashboard = () => {
   return (
     <Box>
       <InviteFriendBackdrop />
+      <SidebarDrawer />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>

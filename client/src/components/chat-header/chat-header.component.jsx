@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Grid, Switch, Typography, FormControlLabel, IconButton } from '@material-ui/core';
+import {
+  Box,
+  Grid,
+  Switch,
+  Typography,
+  FormControlLabel,
+  IconButton,
+  Hidden,
+} from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import { makeStyles } from '@material-ui/styles';
+import Menu from '@material-ui/icons/Menu';
+
+import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const useStyles = makeStyles({
   header: {
@@ -14,6 +25,7 @@ const ChatHeader = () => {
   const classes = useStyles();
   const {
     state: { currentlyActive, commsList },
+    dispatch,
   } = useContext(directoryStore);
 
   const [title, setTitle] = useState('Group Chat');
@@ -25,12 +37,25 @@ const ChatHeader = () => {
     }
   }, [currentlyActive]);
 
+  const triggerSidebar = () => {
+    dispatch({
+      type: DirectoryActionTypes.TOGGLE_SIDEBAR,
+    });
+  };
+
   return (
     <Box className={classes.header}>
       <Box px={5} py={3}>
         <Grid container direction="row" justify="space-between" alignItems="center">
           <Grid item>
             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={2}>
+              <Hidden mdUp>
+                <Grid item>
+                  <IconButton color="primary" onClick={triggerSidebar}>
+                    <Menu />
+                  </IconButton>
+                </Grid>
+              </Hidden>
               <Grid item>
                 <Typography>{title}</Typography>
               </Grid>
