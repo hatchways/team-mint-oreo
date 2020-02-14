@@ -115,6 +115,16 @@ const clearSocketId = socketId => {
   }
 };
 
+const makeFriends = async idPair => {
+  try {
+    const [user1, user2] = idPair;
+    User.findByIdAndUpdate(user1, { friends: { $push: user2 } });
+    User.findByIdAndUpdate(user2, { friends: { $push: user1 } });
+  } catch (err) {
+    throw new Error(500, 'Make Friends', err);
+  }
+};
+
 module.exports = {
   createUser,
   addChatById,
@@ -128,4 +138,5 @@ module.exports = {
   clearSocketId,
   getFriendsSocketsById,
   getAllUsers,
+  makeFriends,
 };
