@@ -7,7 +7,7 @@ import { store as userStore } from '../../store/user/user.provider';
 
 import ChatMessage from '../chat-message/chat-message.component';
 
-const ChatMessages = () => {
+const ChatMessages = ({ height }) => {
   const [messagesList, setMessagesList] = useState([]);
   const {
     state: { currentlyActive },
@@ -29,7 +29,7 @@ const ChatMessages = () => {
     //    console.log(messagesList);
   }, [messagesList]);
   return (
-    <Box minHeight="73vh" style={{ overflow: 'auto' }}>
+    <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
       <Box maxWidth="99%">
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
           {messagesList.map(message => {
