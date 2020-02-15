@@ -38,8 +38,10 @@ const Sidebar = ({ size, socket }) => {
     setHeight(sum);
   }, [upperRect, size]);
 
-  const [userData, setUserData] = useState();
   const [isLoading, setIsLoading] = useState(true);
+  const [friendsList, setFriendsList] = useState([]);
+  const [onlineFriends, setOnlineFriends] = useState([]);
+  const [chatsList, setChatsList] = useState([]);
 
   const fetchUserData = async () => {
     const response = await fetch('user/data');
@@ -48,14 +50,18 @@ const Sidebar = ({ size, socket }) => {
   };
 
   useEffect(() => {
+    // mounting point.
     console.log('Fetching user Data....');
     fetchUserData().then(data => {
       console.log(data);
-      setUserData(data);
+      setFriendsList(data.friends.friends);
+      setChatsList(data.chats);
       setIsLoading(false);
+      console.log('friendsLIst', data.friends.friends);
     });
-
-    // TODO notify friends here
+    socket.on('userOnline', userId => {
+      setOnlineFriends([...onlineFriends, userId]);
+    });
   }, []);
 
   return (
@@ -83,13 +89,14 @@ const Sidebar = ({ size, socket }) => {
           <SidebarTabPanelContacts
             profilesList={
               !isLoading &&
-              userData.friends.friends.map(({ _id, displayName }) => ({
+              friendsList.map(({ _id, displayName }) => ({
                 id: _id,
                 name: displayName,
                 avatar: {
                   url: '',
                   fallback: displayName[0].toUpperCase(),
                 },
+                isOnline: onlineFriends.includes(_id),
               }))
             }
           />

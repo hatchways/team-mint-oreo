@@ -28,7 +28,7 @@ const SidebarTabPanelContacts = ({ profilesList }) => {
             key={profile.id}
             id={profile.id}
             {...profile}
-            isOnline={true}
+            isOnline={profile.isOnline}
             hideStatus={false}
           />
         </Grid>
