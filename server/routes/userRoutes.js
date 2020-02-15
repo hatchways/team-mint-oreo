@@ -70,13 +70,8 @@ router.get('/data', isAuthorized, async (req, res) => {
   ]);
 
   const [chats, friends, invitations] = data;
-<<<<<<< HEAD
   console.log(data);
   res.status(200).json({ id: userId, chats, friends, invitations });
-=======
-
-  res.status(200).json({ userId, chats, friends, invitations });
->>>>>>> added login ping to dashboard, some user routes added, more testing info in websocketTesting
 });
 
 router.get('/logout', async (req, res) => {
