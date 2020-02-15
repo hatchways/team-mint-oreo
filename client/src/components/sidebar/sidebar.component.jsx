@@ -11,6 +11,10 @@ import Profile from '../../components/profile/profile.component';
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
+import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
+import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
+import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
+
 import WithSocket from '../with-socket/with-socket.component';
 
 const Sidebar = ({ size }) => {
@@ -70,25 +74,23 @@ const Sidebar = ({ size }) => {
         </Grid>
       </Box>
       <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
-        <SidebarTabPanel
-          value={tab}
-          index={TabNames.CHATS}
-          profilesList={directoryState.commsList}
-        />
-        <SidebarTabPanel
-          value={tab}
-          index={TabNames.CONTACTS}
-          profilesList={directoryState.contactsList.map(
-            ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-          )}
-        />
-        <SidebarTabPanel
-          value={tab}
-          index={TabNames.INVITES}
-          profilesList={directoryState.invitesList.map(
-            ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-          )}
-        />
+        <SidebarTabPanel value={tab} index={TabNames.CHATS}>
+          <SidebarTabPanelChats profilesList={directoryState.commsList} />
+        </SidebarTabPanel>
+        <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
+          <SidebarTabPanelContacts
+            profilesList={directoryState.contactsList.map(
+              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+            )}
+          />
+        </SidebarTabPanel>
+        <SidebarTabPanel value={tab} index={TabNames.INVITES}>
+          <SidebarTabPanelInvites
+            profilesList={directoryState.invitesList.map(
+              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+            )}
+          />
+        </SidebarTabPanel>
       </Box>
     </Box>
   );
