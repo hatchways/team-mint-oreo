@@ -1,7 +1,7 @@
 const createError = require('http-errors');
 const express = require('express');
 const { join } = require('path');
-const cors = require("cors");
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const routes = require('./routes');
@@ -43,8 +43,9 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  console.error('err', err);
   res.status(err.status || 500);
+  console.log('logging error', err.status);
+  if (err.status === 401) res.clearCookie('user');
   res.json({ error: err });
 });
 

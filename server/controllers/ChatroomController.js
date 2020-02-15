@@ -67,6 +67,12 @@ const getLanguagesAndIds = async chatId => {
   }
 };
 
+const seedRooms = async userId => {
+  for (let i = 0; i < 10; i++) {
+    createChatroom(userId);
+  }
+};
+
 module.exports = {
   addUser,
   createChatroom,
@@ -74,4 +80,5 @@ module.exports = {
   getUsersByChatId,
   removeUser,
   getLanguagesAndIds,
+  seedRooms,
 };

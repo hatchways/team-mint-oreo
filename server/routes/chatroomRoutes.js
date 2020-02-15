@@ -2,7 +2,7 @@ const router = require('express').Router();
 const db = require('../controllers');
 
 router.get('/messages/all', async (req, res) => {
-  const { id } = res.locals;
+  const { userId } = res.locals;
   const chatIds = db.user.getChatsById(id);
   const messages = db.messages;
 });
