@@ -36,6 +36,22 @@ const Sidebar = ({ size }) => {
     setHeight(sum);
   }, [upperRect, size]);
 
+  const [userData, setUserData] = useState();
+
+  const fetchUserData = async () => {
+    const response = await fetch('user/data');
+    const data = await response.json();
+    return data;
+  };
+
+  useEffect(() => {
+    console.log('Fetching user Data....');
+    fetchUserData().then(data => {
+      console.log(data);
+      setUserData(data);
+    });
+  }, []);
+
   return (
     <Box p={2} paddingBottom={0} height={'98vh'}>
       <Box paddingBottom={2} ref={upperRef}>
