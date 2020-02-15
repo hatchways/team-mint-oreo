@@ -3,7 +3,11 @@ import { Box, Grid, Typography, Avatar, Paper } from '@material-ui/core';
 import format from '../../utils/relativeDateFormat';
 import { useStyles } from './chat-message.styles';
 
-const ChatMessage = ({ message: { translation, originalText, timestamp }, isSender }) => {
+const ChatMessage = ({
+  message: { translation, originalText, timestamp },
+  isSender,
+  isOriginal,
+}) => {
   const classes = useStyles();
   return (
     <Box>
@@ -32,7 +36,7 @@ const ChatMessage = ({ message: { translation, originalText, timestamp }, isSend
             <Grid item>
               <Paper className={isSender ? classes.senderPaper : classes.chatPaper}>
                 <Box p={2}>
-                  <Typography>{translation}</Typography>
+                  <Typography>{isOriginal ? originalText : translation}</Typography>
                 </Box>
               </Paper>
             </Grid>

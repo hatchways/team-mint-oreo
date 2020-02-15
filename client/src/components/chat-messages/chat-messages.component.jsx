@@ -5,7 +5,7 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 
 import ChatMessage from '../chat-message/chat-message.component';
 
-const ChatMessages = ({ messages, userId }) => {
+const ChatMessages = ({ messages, userId, showOriginalText }) => {
   // const {
   //   state: { currentlyActive: chatId },
   // } = useContext(directoryStore);
@@ -19,7 +19,11 @@ const ChatMessages = ({ messages, userId }) => {
             return (
               <Grid key={message.id} item>
                 <Box paddingLeft={2} paddingRight={2}>
-                  <ChatMessage message={message} isSender={isSender} />
+                  <ChatMessage
+                    message={message}
+                    isSender={isSender}
+                    isOriginal={showOriginalText}
+                  />
                 </Box>
               </Grid>
             );

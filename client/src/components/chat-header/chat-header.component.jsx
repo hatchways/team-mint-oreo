@@ -4,24 +4,27 @@ import Menu from '@material-ui/icons/Menu';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import { useStyles, IOSSwitch } from './chat-header.styles';
-
+import Client from '../../utils/HTTPClient';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const ChatHeader = () => {
-  const classes = useStyles();
-  const {
-    state: { currentlyActive, commsList },
-    dispatch,
-  } = useContext(directoryStore);
+const ChatHeader = ({ chatId }) => {
+  const { dispatch } = useContext(directoryStore);
 
   const [title, setTitle] = useState('Group Chat');
 
   useEffect(() => {
-    if (commsList !== null && currentlyActive != null) {
-      const found = commsList.find(e => e.id == currentlyActive);
-      setTitle(found.name);
-    }
-  }, [currentlyActive]);
+    let isMounted = true;
+    const getHeaderInfo = async () => {
+      const data = await Client.request('/');
+      if (isMounted) setTitle(data.title);
+    };
+
+    // getHeaderInfo();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [chatId]);
 
   const triggerSidebar = () => {
     dispatch({
@@ -29,8 +32,9 @@ const ChatHeader = () => {
     });
   };
 
+  const classes = useStyles();
   return (
-    <Box className={`${classes.header} ${classes.bigPadd}`}>
+    <Box className={`${classes.header} ${classes.bigPadd}`} component="header">
       <Grid container direction="row" justify="space-between" alignItems="center">
         <Grid
           container
@@ -48,9 +52,7 @@ const ChatHeader = () => {
           </Hidden>
           <Grid item xs={8} sm>
             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
-              <Grid item>
-                <Typography>{title}</Typography>
-              </Grid>
+              <Typography>{title}</Typography>
               <Grid item xs={12} sm>
                 Online
               </Grid>

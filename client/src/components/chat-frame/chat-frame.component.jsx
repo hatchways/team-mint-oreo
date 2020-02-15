@@ -5,7 +5,7 @@ import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
 
-const ChatFrame = ({ socket }) => {
+const ChatFrame = ({ socket, userId }) => {
   const {
     state: { currentlyActive: chatId },
   } = useContext(directoryStore);
@@ -26,10 +26,10 @@ const ChatFrame = ({ socket }) => {
   return (
     <Box height="100vh" overflow="hidden">
       <Grid style={{ height: '100%' }} direction="column" spacing={2}>
-        <ChatHeader changeText={setShowOriginalText} />
+        <ChatHeader changeText={setShowOriginalText} chatId={chatId} />
         <Grid item style={{ height: '100%' }}>
-          <ChatMessages messages={messages} originalText={showOriginalText} />
-          <MessageField emit={socket.emit} chatId={chatId} />
+          <ChatMessages messages={messages} showOriginalText={showOriginalText} userId={userId} />
+          <MessageField emit={socket.emit} chatId={chatId} userId={userId} />
         </Grid>
       </Grid>
     </Box>
