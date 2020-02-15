@@ -5,7 +5,7 @@ import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
 
-const ChatFrame = () => {
+const ChatFrame = ({ socket }) => {
   const {
     state: { currentlyActive: chatId },
   } = useContext(directoryStore);
@@ -15,18 +15,22 @@ const ChatFrame = () => {
   useEffect(() => {
     // check front end cache for stored conversation
     // if not cached, get messages from db
+    socket.on('receiveMsg', msg => {
+      console.log('msg received!', msg);
+    });
+
     console.log('chatid is', chatId);
   }, [chatId]);
 
   return (
-    <Box height="100vh" overflow={'hidden'} border="1px solid black">
+    <Box height="100vh" overflow="hidden">
       <Grid style={{ height: '100%' }} direction="column" spacing={2}>
         <Grid item>
           <ChatHeader />
         </Grid>
         <Grid item style={{ height: '100%' }}>
           <ChatMessages messages={messages} />
-          <MessageField />
+          <MessageField emit={socket.emit} />
         </Grid>
       </Grid>
     </Box>

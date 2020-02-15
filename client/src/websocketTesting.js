@@ -5,7 +5,6 @@ const socket = io('http://localhost:3001');
 
 function WebsocketTesting() {
   const [tokenVerified, setTokenVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [socketEvent, setSocketEvent] = useState({});
 
   const onChange = e => {
@@ -18,7 +17,6 @@ function WebsocketTesting() {
     const checkToken = async () => {
       const isVerified = await (await fetch('/user/verify')).json();
       await setTokenVerified(isVerified);
-      setIsLoading(false);
     };
     checkToken();
   }, []);
@@ -52,7 +50,7 @@ function WebsocketTesting() {
     console.log(result);
   };
   const emitSocket = () => {
-    socket.emit('login', {
+    socket.toemit('login', {
       userId: '5e459bd631f1035e2811137d',
       chatId: '5e45f6f81c9d440000a138fe',
       friendEmail: 'sang.m.lee@mail.mcgill.ca',
@@ -60,52 +58,61 @@ function WebsocketTesting() {
   };
 
   const connectedSockets = () => {
-    socket.emit(socketEvent.event, socketEvent.body);
+    socket.emit('sendMsg', { body: 'hello' });
   };
 
   const logout = () => {
     fetch('/user/logout');
   };
 
-  const sendMessage = (event) => {
-      event.preventDefault();
-      if(message) {
-          socket.emit('sendMsg', {
-              userId: '5e459bd631f1035e2811137d',
-              // userId: '5e4634be7cd7323b7891381c',
-              chatId: '5e45f6f81c9d440000a138fe',
-              originalText: message
-          });
-      }
+  const sendMessage = event => {
+    event.preventDefault();
+    if (message) {
+      socket.emit('sendMsg', {
+        userId: '5e459bd631f1035e2811137d',
+        // userId: '5e4634be7cd7323b7891381c',
+        chatId: '5e45f6f81c9d440000a138fe',
+        originalText: message,
+      });
+    }
   };
 
   const sendFriendReq = event => {
-      event.preventDefault();
-      socket.emit('friendRequestSent', {
-        userId: '5e459bd631f1035e2811137d',
-        friendEmail: 'sang.m.lee@mail.mcgill.ca'
-        // userId: '5e4634be7cd7323b7891381c',
-        // friendEmail: 'gg@gg.gg'
-      });
+    event.preventDefault();
+    socket.emit('friendRequestSent', {
+      userId: '5e459bd631f1035e2811137d',
+      friendEmail: 'sang.m.lee@mail.mcgill.ca',
+      // userId: '5e4634be7cd7323b7891381c',
+      // friendEmail: 'gg@gg.gg'
+    });
   };
 
   const acceptFriendReq = event => {
-      event.preventDefault();
-      socket.emit('friendRequestAccepted', {
-        userId: '5e459bd631f1035e2811137d',
-        friendId: '5e4634be7cd7323b7891381c',
-        invitationId: '5e472c167607676f241d4240'
-      });
+    event.preventDefault();
+    socket.emit('friendRequestAccepted', {
+      userId: '5e459bd631f1035e2811137d',
+      friendId: '5e4634be7cd7323b7891381c',
+      invitationId: '5e472c167607676f241d4240',
+    });
+  };
+
+  const createFakeRooms = () => {
+    fetch('/chat/seedRooms');
   };
 
   return (
     <div>
       {`USER HAS VALID JWT: ${tokenVerified}`}
-      <button type="button" onClick={createUser}>CREATE USER</button>
-      <button type="button" onClick={login}>LOGIN</button>
-      <button type="button" onClick={logout}>LOGOUT</button>
+      <button type="button" onClick={createUser}>
+        CREATE USER
+      </button>
+      <button type="button" onClick={login}>
+        LOGIN
+      </button>
+      <button type="button" onClick={logout}>
+        LOGOUT
+      </button>
       <button type="button" onClick={emitSocket}>
-        {' '}
         SOCKET EMIT
       </button>
       <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
@@ -119,8 +126,11 @@ function WebsocketTesting() {
         onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
       />
 
+      <button type="button" onClick={createFakeRooms}>
+        SEED CHATROOMS
+      </button>
+
       <button type="button" onClick={connectedSockets}>
-        {' '}
         log connected sockets EMIT
       </button>
     </div>
