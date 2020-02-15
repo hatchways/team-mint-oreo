@@ -23,9 +23,9 @@ function WebsocketTesting() {
   }, []);
 
   const createUser = async () => {
-    const data = { email: 'briantest@example.com', password: '123', displayName: 'brian' };
+    // const data = { email: 'briantest@example.com', password: '123', displayName: 'brian' };
     // const data = { email: 'sangtest@example.com', password: '123', displayName: 'sang' };
-    // const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
+    const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
     const result = await fetch('/user/register', {
       method: 'POST',
       body: JSON.stringify(data),
