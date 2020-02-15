@@ -11,8 +11,11 @@ import Profile from '../../components/profile/profile.component';
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
+import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
+import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
+import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 
-const Sidebar = ({ size }) => {
+const Sidebar = ({ size, socket }) => {
   const [upperRect, upperRef] = useClientRect();
   const [height, setHeight] = useState(0);
 
@@ -35,6 +38,24 @@ const Sidebar = ({ size }) => {
     setHeight(sum);
   }, [upperRect, size]);
 
+  const [userData, setUserData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchUserData = async () => {
+    const response = await fetch('user/data');
+    const data = await response.json();
+    return data;
+  };
+
+  useEffect(() => {
+    console.log('Fetching user Data....');
+    fetchUserData().then(data => {
+      console.log(data);
+      setUserData(data);
+      setIsLoading(false);
+    });
+  }, []);
+
   return (
     <Box p={2} paddingBottom={0} height={'98vh'}>
       <Box paddingBottom={2} ref={upperRef}>
@@ -53,25 +74,31 @@ const Sidebar = ({ size }) => {
         </Grid>
       </Box>
       <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
-        <SidebarTabPanel
-          value={tab}
-          index={TabNames.CHATS}
-          profilesList={directoryState.commsList}
-        />
-        <SidebarTabPanel
-          value={tab}
-          index={TabNames.CONTACTS}
-          profilesList={directoryState.contactsList.map(
-            ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-          )}
-        />
-        <SidebarTabPanel
-          value={tab}
-          index={TabNames.INVITES}
-          profilesList={directoryState.invitesList.map(
-            ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-          )}
-        />
+        <SidebarTabPanel value={tab} index={TabNames.CHATS}>
+          <SidebarTabPanelChats profilesList={directoryState.commsList} />
+        </SidebarTabPanel>
+        <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
+          <SidebarTabPanelContacts
+            profilesList={
+              !isLoading &&
+              userData.friends.friends.map(({ _id, displayName }) => ({
+                id: _id,
+                name: displayName,
+                avatar: {
+                  url: '',
+                  fallback: displayName[0].toUpperCase(),
+                },
+              }))
+            }
+          />
+        </SidebarTabPanel>
+        <SidebarTabPanel value={tab} index={TabNames.INVITES}>
+          <SidebarTabPanelInvites
+            profilesList={directoryState.invitesList.map(
+              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
+            )}
+          />
+        </SidebarTabPanel>
       </Box>
     </Box>
   );

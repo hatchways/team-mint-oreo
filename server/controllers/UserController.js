@@ -81,7 +81,12 @@ const getById = async id => {
 
 const getFriendsById = async id => {
   try {
-    const data = await User.findById(id, 'friends').populate('users');
+    // find the user with by the id and get the friends field
+    // then populate the data with the friend's name
+    const data = await User.findById(id, 'friends').populate({
+      path: 'friends',
+      select: ['displayName'],
+    });
     return data;
   } catch (err) {
     throw new Error(500, 'Get Friends - ID', err);

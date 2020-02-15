@@ -65,7 +65,7 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   const [chats, friends, invitations] = data;
   console.log(data);
-  res.status(200).json({ userId: id, chats, friends, invitations });
+  res.status(200).json({ id: userId, chats, friends, invitations });
 });
 
 router.get('/logout', async (req, res) => {

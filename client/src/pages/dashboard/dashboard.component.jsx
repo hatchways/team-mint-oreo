@@ -28,7 +28,7 @@ const Dashboard = () => {
 
   return (
     <Box>
-      <SidebarDrawer />
+      <SidebarDrawer socket={socket} />
       <InviteFriendBackdrop />
       <Box>
         <Grid container spacing={0} alignItems="stretch">

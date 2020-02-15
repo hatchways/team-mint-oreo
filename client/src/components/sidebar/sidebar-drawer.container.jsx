@@ -6,7 +6,7 @@ import Sidebar from './sidebar.component';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const SidebarDrawer = () => {
+const SidebarDrawer = props => {
   const {
     state: { showSidebar },
     dispatch,
@@ -36,7 +36,7 @@ const SidebarDrawer = () => {
         disableDiscovery={iOS}
       >
         <Box bgcolor="grey.200">
-          <Sidebar />
+          <Sidebar {...props} />
         </Box>
       </SwipeableDrawer>
     </Hidden>
