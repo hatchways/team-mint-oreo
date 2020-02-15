@@ -40,11 +40,11 @@ router.post('/login', async (req, res) => {
       });
   } catch (err) {
     console.log(err);
-    res.sendStatus(err.code || 500);
+    res.sendStatus(err.status || 500);
   }
 });
 
-router.get('/verify', isAuthorized, async (req, res) => {
+router.get('/verify', async (req, res) => {
   const { userId = null } = res.locals;
   console.log('id', userId);
   const dbUser = await db.user.getById(userId);

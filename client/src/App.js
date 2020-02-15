@@ -18,8 +18,8 @@ function App() {
       const isVerified = await Client.request('/user/verify');
       // TODO: handle error for isVerified
       if (isMounted) {
-        await setTokenVerified(isVerified);
         setIsLoading(false);
+        await setTokenVerified(isVerified);
       }
     };
     checkToken();

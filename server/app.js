@@ -43,7 +43,6 @@ app.use((err, req, res, next) => {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  console.error('err', err);
   res.status(err.status || 500);
   console.log('logging error', err.status);
   if (err.status === 401) res.clearCookie('user');
