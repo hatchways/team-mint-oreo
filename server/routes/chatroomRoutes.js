@@ -22,4 +22,9 @@ router.post('/new', async (req, res) => {
   res.json({ chatId });
 });
 
+router.get('/seedRooms', async (req, res) => {
+  const { id } = res.locals;
+  db.chatroom.seedRooms(id);
+});
+
 module.exports = router;

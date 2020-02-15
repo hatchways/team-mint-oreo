@@ -34,7 +34,11 @@ router.post('/login', async (req, res) => {
         // secure: true
         signed: true,
       })
+<<<<<<< HEAD
       .send({
+=======
+      .json({
+>>>>>>> added some chatroom routes and user routes
         success: true,
         status: 200,
         userData,
@@ -46,8 +50,16 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/verify', (req, res) => {
-  res.send(!!res.locals.userId);
-  console.log('userID is ', res.locals.userId);
+  const { userId } = res.locals;
+  if (!userId) {
+    res
+      .status(401)
+      .clearCookie()
+      .json({ status: 401, message: 'Token error' });
+  }
+
+  res.status(200).json({ userId });
+  console.log('userID is ', userId);
 });
 
 router.get('/data', isAuthorized, async (req, res) => {

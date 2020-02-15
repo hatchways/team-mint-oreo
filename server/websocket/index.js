@@ -70,7 +70,7 @@ const translateMessage = async msgObject => {
 };
 
 const sendMessage = async (socket, outgoingMsg) => {
-  socket.to(outgoingMsg.chatId).emit('receiveMsg', outgoingMsg);
+  socket.to('123').emit('receiveMsg', outgoingMsg);
 };
 
 // User disconnects -----------------------------------------------------
@@ -104,36 +104,36 @@ const handleSocket = server => {
 
     // current user is sending the friend an invitation request
     socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
-        // await addFriend(socket, userId, friendEmail);
-        try {
-            const newInvitation = await db.invitation.createInvitation(userId, friendEmail);
+      // await addFriend(socket, userId, friendEmail);
+      try {
+        const newInvitation = await db.invitation.createInvitation(userId, friendEmail);
 
-            /* Maybe convert the userId into email? */
-            /* Or we can possibly send the whole User query to fromUser & toUser
+        /* Maybe convert the userId into email? */
+        /* Or we can possibly send the whole User query to fromUser & toUser
                 that was returned from mongo */
 
-            // This socket identifies from who, to who, and the identifier of invitation itself
-            socket.to(friendEmail).emit('friendRequestReceived', {
-                fromUser: userId,
-                toUser: friendEmail,
-                invitatioin: newInvitation.id
-            });
-        } catch(err) {
-            // Error will occur if the user tries to add duplicate
-            // invitation, or internal server error
-            console.error(err);
-        }
+        // This socket identifies from who, to who, and the identifier of invitation itself
+        socket.to(friendEmail).emit('friendRequestReceived', {
+          fromUser: userId,
+          toUser: friendEmail,
+          invitatioin: newInvitation.id,
+        });
+      } catch (err) {
+        // Error will occur if the user tries to add duplicate
+        // invitation, or internal server error
+        console.error(err);
+      }
     });
     // socket.on('friendRequestReceived', () => {});
 
     socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
-        try {
-            await acceptInvitation(socket, userId, friendId);
-            db.invitation.deleteInvitation(invitationId);
-            db.user.removeInvitation(userId, invitationId);
-        } catch(err) {
-            console.error(err);
-        }
+      try {
+        await acceptInvitation(socket, userId, friendId);
+        db.invitation.deleteInvitation(invitationId);
+        db.user.removeInvitation(userId, invitationId);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
     socket.on('isTyping', () => {});
