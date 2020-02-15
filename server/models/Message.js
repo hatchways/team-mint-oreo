@@ -27,7 +27,6 @@ const messageSchema = new Schema(
 );
 
 messageSchema.index({ createdAt: -1 });
-messageSchema.index({ updatedAt: -1 });
 const Message = mongoose.model('Message', messageSchema);
 
 module.exports = Message;

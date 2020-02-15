@@ -6,6 +6,12 @@ const socket = io('http://localhost:3001');
 function WebsocketTesting() {
   const [tokenVerified, setTokenVerified] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [socketEvent, setSocketEvent] = useState({});
+
+  const onChange = e => {
+    const { name, value } = e.target;
+    setSocketEvent({ ...socketEvent, [name]: value });
+  };
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -18,7 +24,7 @@ function WebsocketTesting() {
   }, []);
 
   const createUser = async () => {
-    const data = { email: 'testmail1@example.com', password: '123', displayName: 'brian' };
+    const data = { email: 'testmail231@example.com', password: '123', displayName: 'brian' };
     const resp = await fetch('/user/register', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -26,7 +32,8 @@ function WebsocketTesting() {
         'content-type': 'application/json',
       },
     });
-    const result = await resp.json();
+    console.log(resp.body);
+    const result = await resp.text();
     console.log(result);
   };
 
@@ -40,11 +47,29 @@ function WebsocketTesting() {
         'content-type': 'application/json',
       },
     });
-    const result = await resp.json();
+    console.log(resp.body);
+    const result = await resp.text();
     console.log(result);
   };
   const emitSocket = () => {
     socket.emit('login', {
+      userId: '5e459bd631f1035e2811137d',
+      chatId: '5e45f6f81c9d440000a138fe',
+      friendEmail: 'sang.m.lee@mail.mcgill.ca',
+    });
+  };
+
+  const connectedSockets = () => {
+    socket.emit(socketEvent.event, socketEvent.body);
+  };
+
+  const logout = () => {
+    fetch('/user/logout');
+  };
+  const sendMessage = event => {
+    event.preventDefault();
+    if (message) {
+      socket.emit('sendMsg', {
         userId: '5e459bd631f1035e2811137d',
         // userId: '5e4634be7cd7323b7891381c',
         chatId: '5e45f6f81c9d440000a138fe'
@@ -84,10 +109,13 @@ function WebsocketTesting() {
   return (
     <div>
       {`USER HAS VALID JWT: ${tokenVerified}`}
-      <button onClick={createUser}>CREATE USER</button>
-      <button onClick={login}>LOGIN</button>
-
-      <button onClick={emitSocket}> SOCKET EMIT</button>
+      <button type="button" onClick={createUser}>CREATE USER</button>
+      <button type="button" onClick={login}>LOGIN</button>
+      <button type="button" onClick={logout}>LOGOUT</button>
+      <button type="button" onClick={emitSocket}>
+        {' '}
+        SOCKET EMIT
+      </button>
       <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
       <br />
       <button onClick={acceptFriendReq}>ACCEPT FRIEND REQUEST</button>
@@ -96,8 +124,13 @@ function WebsocketTesting() {
         placeholder="message test"
         value={message}
         onChange={({ target: { value } }) => setMessage(value)}
-        onKeyPress={(event) => event.key === 'Enter' ? sendMessage(event) : null}
+        onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
       />
+
+      <button type="button" onClick={connectedSockets}>
+        {' '}
+        log connected sockets EMIT
+      </button>
     </div>
   );
 }

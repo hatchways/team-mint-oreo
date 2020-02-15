@@ -3,7 +3,6 @@ import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import Client from './utils/HTTPClient';
 import WebsocketTesting from './websocketTesting';
-
 import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
 import Login from './pages/userform/Login';

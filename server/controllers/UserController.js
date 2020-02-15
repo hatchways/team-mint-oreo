@@ -140,7 +140,7 @@ const removeInvitation = async (userId, invitationId) => {
     } catch(err) {
         throw new Error(500, 'Remove Invitation - ID', err);
     }
-}
+};
 
 module.exports = {
   createUser,

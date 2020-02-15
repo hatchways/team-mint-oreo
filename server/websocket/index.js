@@ -40,17 +40,20 @@ const notifyFriends = async (socket, userId) => {
 };
 
 // On send message ------------------------------------------------------------
-const cacheActiveChatInfo = msgObject => {
-  // const {chatId, }
-  // cache info here
+const getLanguageAndIdList = async chatId => {
+  let list = cache.get(chatId);
+  if (!list) list = await db.chatroom.getLanguagesAndIds(chatId);
+  cache.set(chatId, list);
+  return list;
 };
 
 const translateMessage = async msgObject => {
   // ⚠️ check cache for active chat languages
   const { originalText, chatId } = msgObject;
-  const idAndLanguageList = await db.chatroom.getLanguagesAndIdsInChatroom(chatId);
+  const idAndLanguageList = await getLanguageAndIdList(chatId);
 
-  //  ⚠️ filter out same language for translation
+  // remove sender from translation list
+  idAndLangaugeList.filter(pair => pair.id !== chatId);
   const translationAPI = { translate: (x, y) => x };
   const translatedText = await Promise.all(
     idAndLanguageList.map(({ language }) => translationAPI.translate(originalText, language))
@@ -98,7 +101,7 @@ const handleSocket = server => {
       sendMessage(socket, outgoingMsg);
       db.message.createMessage(outgoingMsg);
     });
-
+    
     // current user is sending the friend an invitation request
     socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
         // await addFriend(socket, userId, friendEmail);
@@ -132,6 +135,10 @@ const handleSocket = server => {
             console.error(err);
         }
     });
+
+    socket.on('isTyping', () => {});
+    socket.on('endTyping', () => {});
+    socket.on('searching', () => {});
 
     socket.on('test', () => {
       console.log('Connected sockets');
