@@ -56,7 +56,8 @@ const removeUser = async (userId, chatId) => {
 
 const getLanguagesAndIds = async chatId => {
   try {
-    const data = await getUsersByChatId(chatId).map(({ id, language }) => ({
+    const usersInChatroom = await getUsersByChatId(chatId);
+    const data = usersInChatroom.map(({ id, language }) => ({
       id,
       language,
     }));

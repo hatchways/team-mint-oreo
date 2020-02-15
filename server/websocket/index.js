@@ -26,8 +26,8 @@ const joinChatrooms = async (socket, userId) => {
   chatroomList.forEach(room => socket.join(room));
 };
 
-const addFriend = async (socket, userId, friendEmail) => {
-  await db.user.addFriendByEmail(userId, friendEmail);
+const acceptInvitation = async (socket, userId, friendId) => {
+  await db.user.addFriend(userId, friendId);
 };
 
 const notifyFriends = async (socket, userId) => {
@@ -47,19 +47,25 @@ const getLanguageAndIdList = async chatId => {
   return list;
 };
 
-const translateMessage = async (msgObject, idLangaugeList) => {
-  const { text, userId } = msgObject;
+const translateMessage = async msgObject => {
+  // ⚠️ check cache for active chat languages
+  const { originalText, chatId } = msgObject;
+  const idAndLanguageList = await getLanguageAndIdList(chatId);
+
   // remove sender from translation list
-  idLangaugeList.filter(pair => pair.id !== userId);
+  idAndLangaugeList.filter(pair => pair.id !== chatId);
   const translationAPI = { translate: (x, y) => x };
   const translatedText = await Promise.all(
-    idLangaugeList.map(({ language }) => translationAPI.translate(text, language))
+    idAndLanguageList.map(({ language }) => translationAPI.translate(originalText, language))
   );
-  // const translationAndIds = idLangaugeList.map(({ id }, i) => ({ id, text: translatedText[i] }));
-  const idTranslationMap = idLangaugeList.reduce(
+
+  // const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
+  const idTranslationMap = idAndLanguageList.reduce(
     (a, b, i) => ({ ...a, [b.id]: translatedText[i] }),
     {}
   );
+
+  // ⚠️ cache translation
   return idTranslationMap;
 };
 
@@ -80,29 +86,56 @@ const handleSocket = server => {
   io.on('connection', socket => {
     console.log(`${socket.id} has connected to the site.`);
 
-    socket.on('login', async ({ userId, chatId, friendEmail }) => {
+    socket.on('login', async ({ userId, chatId }) => {
       console.log('login ping');
       await registerSocketId(socket, userId);
       await addChatroom(socket, userId, chatId);
-      await addFriend(socket, userId, friendEmail);
       joinChatrooms(socket, userId);
       notifyFriends(socket, userId);
     });
 
     socket.on('sendMsg', async msgObject => {
-      const list = getLanguageAndIdList(msgObject.chatId);
-      const translations = await translateMessage(msgObject, list);
+      // ⚠️ Check if first message, if first message, create chatroom
+      const translations = await translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
       sendMessage(socket, outgoingMsg);
       db.message.createMessage(outgoingMsg);
     });
+    
+    // current user is sending the friend an invitation request
+    socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
+        // await addFriend(socket, userId, friendEmail);
+        try {
+            const newInvitation = await db.invitation.createInvitation(userId, friendEmail);
 
-    socket.on('friendRequestSent', (fromEmail, toEmail, toId) => {
-      socket.to(toId).emit('friendRequestReceived');
-      db.invitation.createInvitation(fromEmail, toEmail);
+            /* Maybe convert the userId into email? */
+            /* Or we can possibly send the whole User query to fromUser & toUser
+                that was returned from mongo */
+
+            // This socket identifies from who, to who, and the identifier of invitation itself
+            socket.to(friendEmail).emit('friendRequestReceived', {
+                fromUser: userId,
+                toUser: friendEmail,
+                invitatioin: newInvitation.id
+            });
+        } catch(err) {
+            // Error will occur if the user tries to add duplicate
+            // invitation, or internal server error
+            console.error(err);
+        }
+    });
+    // socket.on('friendRequestReceived', () => {});
+
+    socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
+        try {
+            await acceptInvitation(socket, userId, friendId);
+            db.invitation.deleteInvitation(invitationId);
+            db.user.removeInvitation(userId, invitationId);
+        } catch(err) {
+            console.error(err);
+        }
     });
 
-    socket.on('friendRequestAccepted', fromEmail => {});
     socket.on('isTyping', () => {});
     socket.on('endTyping', () => {});
     socket.on('searching', () => {});

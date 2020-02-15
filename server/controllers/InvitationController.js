@@ -1,18 +1,26 @@
 const Error = require('../utils/Error');
-
+const UserController = require('../controllers/UserController');
 const Invitation = require('../models/Invitation');
 
-const createInvitation = async (fromUser, toUser) => {
-  const invitation = new Invitation({
-    fromUser,
-    toUser,
-  });
-
+const createInvitation = async (fromUser, toUserEmail) => {
   try {
+    const toUser = await UserController.getByEmail(toUserEmail);
+    const invitation = new Invitation({
+        fromUser,
+        toUser: toUser.id
+    });
     // Invitation is successfully created
     const savedInvitation = await invitation.save();
-    console.log('New invitation is created', savedInvitation);
+
+    // Add invitation to to_user
+    UserController.addInvitationById(toUser.id, savedInvitation.id);
+
+    return savedInvitation;
   } catch (err) {
+    if(err.code === 11000) {
+        throw new Error(400, 'No duplicate invitation is allowed!');
+    }
+
     throw new Error(500, 'Create Invitation', err);
   }
 };
@@ -26,9 +34,10 @@ const getInvitations = async email => {
   }
 };
 
-const deleteInvitation = (fromUser, toUser) => {
+const deleteInvitation = async (invitationId) => {
   try {
-    Invitation.findOneAndDelete({ fromUser, toUser });
+    const deletedInvitation = await Invitation.findOneAndDelete(invitationId);
+    console.log(deletedInvitation, " was deleted from db");
   } catch (err) {
     throw new Error(500, 'Delete Invitation', err);
   }
