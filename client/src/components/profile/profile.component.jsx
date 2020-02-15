@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Box, Grid, Chip, IconButton, Typography } from '@material-ui/core';
+import { Avatar, Box, Grid, Chip, IconButton, Typography, Badge } from '@material-ui/core';
 import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import Check from '@material-ui/icons/Check';
 import Clear from '@material-ui/icons/Clear';
@@ -23,7 +23,19 @@ const Profile = (
       <Box p={2}>
         <Grid container spacing={2} alignItems="center">
           <Grid item>
-            <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
+            <Badge
+              classes={{ badge: classes.badgeGreen }}
+              overlap="circle"
+              showZero
+              variant="dot"
+              invisible={false}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'right',
+              }}
+            >
+              <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
+            </Badge>
           </Grid>
           <Grid item xs>
             {secondary === '' ? (
