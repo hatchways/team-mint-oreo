@@ -41,6 +41,7 @@ const Sidebar = ({ size }) => {
   }, [upperRect, size]);
 
   const [userData, setUserData] = useState();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserData = async () => {
     const response = await fetch('user/data');
@@ -53,6 +54,7 @@ const Sidebar = ({ size }) => {
     fetchUserData().then(data => {
       console.log(data);
       setUserData(data);
+      setIsLoading(false);
     });
   }, []);
 
@@ -79,9 +81,17 @@ const Sidebar = ({ size }) => {
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
           <SidebarTabPanelContacts
-            profilesList={directoryState.contactsList.map(
-              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-            )}
+            profilesList={
+              !isLoading &&
+              userData.friends.friends.map(({ _id, displayName }) => ({
+                id: _id,
+                name: displayName,
+                avatar: {
+                  url: '',
+                  fallback: displayName[0].toUpperCase(),
+                },
+              }))
+            }
           />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
