@@ -26,24 +26,20 @@ function WebsocketTesting() {
     const data = { email: 'briantest@example.com', password: '123', displayName: 'brian' };
     // const data = { email: 'sangtest@example.com', password: '123', displayName: 'sang' };
     // const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
-    const resp = await fetch('/user/register', {
+    const result = await fetch('/user/register', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
         'content-type': 'application/json',
       },
     });
-    console.log(resp.body);
-    const result = await resp.text();
     console.log(result);
   };
 
   const login = async () => {
     const data = { email: 'briantest@example.com', password: '123' };
     // const data = { email: 'sang.m.lee@mail.mcgill.ca', password: 'dltkdals' }
-    const resp = await Client.request('/user/login', 'POST', data);
-    console.log(resp.body);
-    const result = await resp.text();
+    const result = await Client.request('/user/login', 'POST', data);
     console.log(result);
   };
   const emitSocket = () => {

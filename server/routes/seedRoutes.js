@@ -3,7 +3,7 @@ const db = require('../controllers');
 
 router.get('/rooms', async (req, res) => {
   const { userId } = res.locals;
-  db.chatroom.seedRooms(id);
+  db.chatroom.seedRooms(userId);
 });
 
 router.get('/friends', async (req, res) => {
@@ -13,7 +13,7 @@ router.get('/friends', async (req, res) => {
   for (let i = 0; i < 10; i++) {
     queries.push(
       db.user.createUser({
-        email: `fakeFriend${i}//${id}@test.com`,
+        email: `fakeFriend${i}//${userId}@test.com`,
         password: '123',
         displayName: `fakeFriend${i}`,
       })
@@ -24,7 +24,7 @@ router.get('/friends', async (req, res) => {
   console.log(friendIds);
 
   for (let i = 0; i < 10; i++) {
-    db.user.addFriend(id, friendIds[i]);
+    db.user.addFriend(userId, friendIds[i]);
   }
 });
 
