@@ -54,6 +54,8 @@ const Sidebar = ({ size, socket }) => {
       setUserData(data);
       setIsLoading(false);
     });
+
+    // TODO notify friends here
   }, []);
 
   return (

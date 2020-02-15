@@ -14,6 +14,8 @@ const Profile = (
     avatar: { url, fallback },
     handleApproval = null,
     handleDisapproval = null,
+    hideStatus = true,
+    isOnline = false,
   },
   width = 400
 ) => {
@@ -24,11 +26,11 @@ const Profile = (
         <Grid container spacing={2} alignItems="center">
           <Grid item>
             <Badge
-              classes={{ badge: classes.badgeGreen }}
+              classes={{ badge: isOnline ? classes.badgeGreen : classes.badgeGrey }}
               overlap="circle"
               showZero
               variant="dot"
-              invisible={false}
+              invisible={hideStatus}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',

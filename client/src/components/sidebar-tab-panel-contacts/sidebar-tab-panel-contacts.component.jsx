@@ -24,7 +24,13 @@ const SidebarTabPanelContacts = ({ profilesList }) => {
       </Grid>
       {profilesList.map(profile => (
         <Grid item key={profile.id}>
-          <ProfileAsButton key={profile.id} id={profile.id} {...profile} />
+          <ProfileAsButton
+            key={profile.id}
+            id={profile.id}
+            {...profile}
+            isOnline={true}
+            hideStatus={false}
+          />
         </Grid>
       ))}
     </Grid>
