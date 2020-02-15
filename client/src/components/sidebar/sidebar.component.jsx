@@ -11,6 +11,7 @@ import Profile from '../../components/profile/profile.component';
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
+import WithSocket from '../with-socket/with-socket.component';
 
 const Sidebar = ({ size }) => {
   const [upperRect, upperRef] = useClientRect();
@@ -77,4 +78,4 @@ const Sidebar = ({ size }) => {
   );
 };
 
-export default sizeMe({ monitorHeight: true })(Sidebar);
+export default WithSocket(sizeMe({ monitorHeight: true })(Sidebar));

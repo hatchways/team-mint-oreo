@@ -37,8 +37,9 @@ function WebsocketTesting() {
   };
 
   const login = async () => {
-    const data = { email: 'briantest@example.com', password: '123' };
+    //const data = { email: 'briantest@example.com', password: '123' };
     // const data = { email: 'sang.m.lee@mail.mcgill.ca', password: 'dltkdals' }
+    const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
     const result = await Client.request('/user/login', 'POST', data);
     console.log(result);
   };
