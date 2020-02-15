@@ -15,9 +15,7 @@ import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-c
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 
-import WithSocket from '../with-socket/with-socket.component';
-
-const Sidebar = ({ size }) => {
+const Sidebar = ({ size, socket }) => {
   const [upperRect, upperRef] = useClientRect();
   const [height, setHeight] = useState(0);
 
@@ -106,4 +104,4 @@ const Sidebar = ({ size }) => {
   );
 };
 
-export default WithSocket(sizeMe({ monitorHeight: true })(Sidebar));
+export default sizeMe({ monitorHeight: true })(Sidebar);
