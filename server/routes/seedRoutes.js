@@ -3,7 +3,11 @@ const db = require('../controllers');
 
 router.get('/rooms', async (req, res) => {
   const { userId } = res.locals;
-  db.chatroom.seedRooms(userId);
+  const { friends } = await db.user.getFriendsFieldsById(userId, ['id']);
+  console.log(friends[1]['_id']);
+  for (let i = 0; i < 10; i++) {
+    db.chatroom.createChatroom([userId, friends[i]['_id']]);
+  }
 });
 
 router.get('/friends', async (req, res) => {
@@ -21,7 +25,6 @@ router.get('/friends', async (req, res) => {
   }
   const friends = await Promise.all(queries);
   const friendIds = friends.map(friend => friend.id);
-  console.log(friendIds);
 
   for (let i = 0; i < 10; i++) {
     db.user.addFriend(userId, friendIds[i]);

@@ -13,10 +13,8 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const socket = io('http://localhost:3001');
 
-const Dashboard = () => {
-  const [userId, setUserId] = useState('');
+const Dashboard = ({ userId }) => {
   const { dispatch } = useContext(directoryStore);
-  const history = useHistory();
 
   const handleClick = () => {
     dispatch({
@@ -25,6 +23,14 @@ const Dashboard = () => {
       payload: '5e471d9929ffd2366a37ea9b',
     });
   };
+
+  useEffect(() => {
+    socket.emit('login', { userId });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [userId]);
 
   return (
     <Box>
