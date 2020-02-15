@@ -16,6 +16,16 @@ const ChatFrame = ({ socket, userId }) => {
   useEffect(() => {
     // check front end cache for stored conversation
     // if not cached, get messages from db
+
+    // const msgObject = {
+    //   userId, // of sender
+    //   originalText,
+    //   translations: {
+    //     'english': 'asdf',
+    //     'spanish': 'asdf'
+    //   },
+    //   timestamp
+    // }
     socket.on('receiveMsg', msg => {
       console.log('msg received!', msg);
     });

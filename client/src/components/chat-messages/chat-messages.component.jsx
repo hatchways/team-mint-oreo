@@ -1,15 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Grid } from '@material-ui/core';
 
-import { store as directoryStore } from '../../store/directory/directory.provider';
-
 import ChatMessage from '../chat-message/chat-message.component';
 
 const ChatMessages = ({ messages, userId, showOriginalText }) => {
-  // const {
-  //   state: { currentlyActive: chatId },
-  // } = useContext(directoryStore);
-
   return (
     <Box minHeight="73vh" style={{ overflow: 'auto' }}>
       <Box maxWidth="99%">

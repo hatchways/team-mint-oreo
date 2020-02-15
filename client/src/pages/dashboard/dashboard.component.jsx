@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [userId, setUserId] = useState('');
   const { dispatch } = useContext(directoryStore);
   const history = useHistory();
+
   const handleClick = () => {
     dispatch({
       type: DirectoryActionTypes.CHANGE_ACTIVE_WINDOW,
@@ -24,27 +25,6 @@ const Dashboard = () => {
       payload: '5e471d9929ffd2366a37ea9b',
     });
   };
-
-  useEffect(() => {
-    let isMounted = true;
-    const checkToken = async () => {
-      const { userId: data } = await Client.request('/user/verify');
-      if (data.status === 401) throw Error;
-      if (isMounted) {
-        socket.emit('login', { userId: data });
-        setUserId(data);
-      }
-    };
-    try {
-      checkToken();
-    } catch {
-      history.push('/login');
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   return (
     <Box>

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const db = require('../controllers');
 
 router.get('/messages/all', async (req, res) => {
-  const { id } = res.locals;
+  const { userId } = res.locals;
   const chatIds = db.user.getChatsById(id);
   const messages = db.messages;
 });
@@ -20,11 +20,6 @@ router.post('/new', async (req, res) => {
   const { userIds } = req.body; // in form of array
   const chatId = await db.chatroom.createChatroom(userIds);
   res.json({ chatId });
-});
-
-router.get('/seedRooms', async (req, res) => {
-  const { id } = res.locals;
-  db.chatroom.seedRooms(id);
 });
 
 module.exports = router;

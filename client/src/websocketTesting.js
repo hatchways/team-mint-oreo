@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import Client from './utils/HTTPClient';
 
 const socket = io('http://localhost:3001');
 
@@ -22,7 +23,9 @@ function WebsocketTesting() {
   }, []);
 
   const createUser = async () => {
-    const data = { email: 'testmail231@example.com', password: '123', displayName: 'brian' };
+    const data = { email: 'briantest@example.com', password: '123', displayName: 'brian' };
+    // const data = { email: 'sangtest@example.com', password: '123', displayName: 'sang' };
+    // const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
     const resp = await fetch('/user/register', {
       method: 'POST',
       body: JSON.stringify(data),
@@ -36,21 +39,15 @@ function WebsocketTesting() {
   };
 
   const login = async () => {
-    const data = { email: 'gg@gg.gg', password: 'gggggg' };
+    const data = { email: 'briantest@example.com', password: '123' };
     // const data = { email: 'sang.m.lee@mail.mcgill.ca', password: 'dltkdals' }
-    const resp = await fetch('/user/login', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        'content-type': 'application/json',
-      },
-    });
+    const resp = await Client.request('/user/login', 'POST', data);
     console.log(resp.body);
     const result = await resp.text();
     console.log(result);
   };
   const emitSocket = () => {
-    socket.toemit('login', {
+    socket.emit('login', {
       userId: '5e459bd631f1035e2811137d',
       chatId: '5e45f6f81c9d440000a138fe',
       friendEmail: 'sang.m.lee@mail.mcgill.ca',
@@ -95,9 +92,11 @@ function WebsocketTesting() {
       invitationId: '5e472c167607676f241d4240',
     });
   };
-
+  const createFakeFriends = () => {
+    fetch('/seed/friends');
+  };
   const createFakeRooms = () => {
-    fetch('/chat/seedRooms');
+    fetch('/seed/rooms');
   };
 
   return (
@@ -128,6 +127,9 @@ function WebsocketTesting() {
 
       <button type="button" onClick={createFakeRooms}>
         SEED CHATROOMS
+      </button>
+      <button type="button" onClick={createFakeFriends}>
+        SEED FRIENDS
       </button>
 
       <button type="button" onClick={connectedSockets}>

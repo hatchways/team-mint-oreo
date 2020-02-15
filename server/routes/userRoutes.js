@@ -4,7 +4,6 @@ const db = require('../controllers');
 const jwt = require('../services/jwtService');
 const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
-const seedService = require('../services/seedDataService');
 
 const Error = require('../utils/Error');
 
@@ -45,34 +44,32 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/verify', (req, res) => {
-  const { userId } = res.locals;
-  if (!userId) {
-    res
-      .status(401)
-      .clearCookie()
-      .json({ status: 401, message: 'Token error' });
-  }
-
-  res.status(200).json({ userId });
-  console.log('userID is ', userId);
+router.get('/verify', isAuthorized, async (req, res) => {
+  const { userId = null } = res.locals;
+  console.log('id', userId);
+  const dbUser = await db.user.getById(userId);
+  console.log('dbuser', dbUser);
+  if (!dbUser) res.clearCookie('user');
+  res.send(!!userId);
 });
 
 router.get('/data', isAuthorized, async (req, res) => {
-  const { id } = res.locals;
+  const { userId } = res.locals;
   const { getChatsById, getFriendsById, getFieldById } = db.user;
-  const email = await getFieldById('email', id);
+  const email = await getFieldById('email', userId);
   const data = await Promise.all([
-    getChatsById(id),
-    getFriendsById(id),
+    getChatsById(userId),
+    getFriendsById(userId),
     db.invitation.getInvitations(email),
   ]);
+
+  const [chats, friends, invitations] = data;
   console.log(data);
-  res.status(200).json({ data });
+  res.status(200).json({ userId: id, chats, friends, invitations });
 });
 
-router.get('/logout', isAuthorized, async (req, res) => {
-  res.clearCookie().end();
+router.get('/logout', async (req, res) => {
+  res.clearCookie('user').end();
 });
 
 router.get('/test', async (req, res) => {
@@ -81,13 +78,13 @@ router.get('/test', async (req, res) => {
   console.log('************************');
 
   // seedService.createUsers();
-  const users = await seedService.getAllUsers();
-  console.log(users, users.length);
-  for (let i = 0; i <= users.length / 2; i++) {
-    const random = Math.floor(Math.random() * users.length);
-    const { id } = db.chatroom.createChatroom([users[random].id, users.pop().id]);
-    console.log('new chat id', id);
-  }
+  // const users = await seedService.getAllUsers();
+  // console.log(users, users.length);
+  // for (let i = 0; i <= users.length / 2; i++) {
+  //   const random = Math.floor(Math.random() * users.length);
+  //   const { id } = db.chatroom.createChatroom([users[random].id, users.pop().id]);
+  //   console.log('new chat id', id);
+  // }
 
   console.log('************************');
   console.log('***TEST RESULTS HERE****');
