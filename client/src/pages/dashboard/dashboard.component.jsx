@@ -60,7 +60,7 @@ const Dashboard = () => {
             </Grid>
           </Hidden>
           <Grid item xs={12} sm={12} md>
-            <button onClick={handleClick}>CLICK ME</button>
+            {/* <button onClick={handleClick}>CLICK ME</button> */}
             <ChatFrame socket={socket} userId={userId} />
           </Grid>
         </Grid>

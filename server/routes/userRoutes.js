@@ -34,11 +34,7 @@ router.post('/login', async (req, res) => {
         // secure: true
         signed: true,
       })
-<<<<<<< HEAD
-      .send({
-=======
       .json({
->>>>>>> added some chatroom routes and user routes
         success: true,
         status: 200,
         userData,

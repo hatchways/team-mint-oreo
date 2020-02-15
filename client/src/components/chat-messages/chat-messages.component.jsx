@@ -5,24 +5,21 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 
 import ChatMessage from '../chat-message/chat-message.component';
 
-const ChatMessages = () => {
-  const [messagesList, setMessagesList] = useState([]);
-  const {
-    state: { currentlyActive },
-  } = useContext(directoryStore);
+const ChatMessages = ({ messages, userId }) => {
+  // const {
+  //   state: { currentlyActive: chatId },
+  // } = useContext(directoryStore);
 
-  useEffect(() => {
-    //    console.log(messagesList);
-  }, [messagesList]);
   return (
     <Box minHeight="73vh" style={{ overflow: 'auto' }}>
       <Box maxWidth="99%">
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
-          {messagesList.map(message => {
+          {messages.map(message => {
+            const isSender = message.userId === userId;
             return (
               <Grid key={message.id} item>
                 <Box paddingLeft={2} paddingRight={2}>
-                  <ChatMessage message={message} />
+                  <ChatMessage message={message} isSender={isSender} />
                 </Box>
               </Grid>
             );

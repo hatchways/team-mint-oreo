@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Grid, Typography, Avatar, Paper } from '@material-ui/core';
+import format from '../../utils/relativeDateFormat';
 import { useStyles } from './chat-message.styles';
 
-const ChatMessage = ({ message: { isSender, texts, original, timeStamp } }) => {
+const ChatMessage = ({ message: { translation, originalText, timestamp }, isSender }) => {
   const classes = useStyles();
   return (
     <Box>
@@ -27,11 +28,11 @@ const ChatMessage = ({ message: { isSender, texts, original, timeStamp } }) => {
             justify="flex-start"
             alignItems={isSender ? 'flex-end' : 'flex-start'}
           >
-            <Grid item> {timeStamp}</Grid>
+            <Grid item> {format(timestamp)}</Grid>
             <Grid item>
               <Paper className={isSender ? classes.senderPaper : classes.chatPaper}>
                 <Box p={2}>
-                  <Typography>{texts[original]}</Typography>
+                  <Typography>{translation}</Typography>
                 </Box>
               </Paper>
             </Grid>

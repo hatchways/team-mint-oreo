@@ -11,6 +11,7 @@ const ChatFrame = ({ socket }) => {
   } = useContext(directoryStore);
 
   const [messages, setMessage] = useState([]);
+  const [showOriginalText, setShowOriginalText] = useState(false);
 
   useEffect(() => {
     // check front end cache for stored conversation
@@ -25,12 +26,10 @@ const ChatFrame = ({ socket }) => {
   return (
     <Box height="100vh" overflow="hidden">
       <Grid style={{ height: '100%' }} direction="column" spacing={2}>
-        <Grid item>
-          <ChatHeader />
-        </Grid>
+        <ChatHeader changeText={setShowOriginalText} />
         <Grid item style={{ height: '100%' }}>
-          <ChatMessages messages={messages} />
-          <MessageField emit={socket.emit} />
+          <ChatMessages messages={messages} originalText={showOriginalText} />
+          <MessageField emit={socket.emit} chatId={chatId} />
         </Grid>
       </Grid>
     </Box>

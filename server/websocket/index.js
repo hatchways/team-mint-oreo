@@ -88,8 +88,8 @@ const handleSocket = server => {
 
     socket.on('login', async ({ userId, chatId }) => {
       console.log('login ping');
-      await registerSocketId(socket, userId);
-      await addChatroom(socket, userId, chatId);
+      registerSocketId(socket, userId);
+      //  addChatroom(socket, userId, chatId);
       joinChatrooms(socket, userId);
       notifyFriends(socket, userId);
     });
