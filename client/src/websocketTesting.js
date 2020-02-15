@@ -66,15 +66,7 @@ function WebsocketTesting() {
   const logout = () => {
     fetch('/user/logout');
   };
-  const sendMessage = event => {
-    event.preventDefault();
-    if (message) {
-      socket.emit('sendMsg', {
-        userId: '5e459bd631f1035e2811137d',
-        // userId: '5e4634be7cd7323b7891381c',
-        chatId: '5e45f6f81c9d440000a138fe'
-    });
-  };
+
   const sendMessage = (event) => {
       event.preventDefault();
       if(message) {
@@ -104,7 +96,7 @@ function WebsocketTesting() {
         friendId: '5e4634be7cd7323b7891381c',
         invitationId: '5e472c167607676f241d4240'
       });
-  }
+  };
 
   return (
     <div>

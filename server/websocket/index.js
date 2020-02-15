@@ -53,7 +53,7 @@ const translateMessage = async msgObject => {
   const idAndLanguageList = await getLanguageAndIdList(chatId);
 
   // remove sender from translation list
-  idAndLangaugeList.filter(pair => pair.id !== chatId);
+  idAndLanguageList.filter(pair => pair.id !== chatId);
   const translationAPI = { translate: (x, y) => x };
   const translatedText = await Promise.all(
     idAndLanguageList.map(({ language }) => translationAPI.translate(originalText, language))
@@ -101,7 +101,7 @@ const handleSocket = server => {
       sendMessage(socket, outgoingMsg);
       db.message.createMessage(outgoingMsg);
     });
-    
+
     // current user is sending the friend an invitation request
     socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
         // await addFriend(socket, userId, friendEmail);
