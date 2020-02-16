@@ -30,4 +30,7 @@ export const useStyles = makeStyles(theme => ({
   badgeGrey: {
     backgroundColor: 'grey',
   },
+  maxWidth: {
+    width: '100%',
+  },
 }));

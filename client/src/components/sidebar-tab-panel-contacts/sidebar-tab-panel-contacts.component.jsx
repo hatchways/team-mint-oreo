@@ -6,7 +6,9 @@ import { Grid, Button } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const SidebarTabPanelContacts = ({ profilesList }) => {
+import { createChatroom } from '../../utils/axios-utils';
+
+const SidebarTabPanelContacts = ({ profilesList, user }) => {
   const { dispatch } = useContext(directoryStore);
 
   const handleToggle = () => {
@@ -14,6 +16,8 @@ const SidebarTabPanelContacts = ({ profilesList }) => {
       type: DirectoryActionTypes.TOGGLE_BACKDROP,
     });
   };
+
+  const handleClick = e => {};
 
   return (
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
@@ -30,6 +34,10 @@ const SidebarTabPanelContacts = ({ profilesList }) => {
             {...profile}
             isOnline={profile.isOnline}
             hideStatus={false}
+            handleClick={e => {
+              console.log('clicked', profile, user);
+              createChatroom(profile.id, user.id);
+            }}
           />
         </Grid>
       ))}

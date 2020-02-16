@@ -19,6 +19,7 @@ router.get('/verify/:chatId', async (req, res) => {
 router.post('/new', async (req, res) => {
   const { userIds } = req.body; // in form of array
   const chatId = await db.chatroom.createChatroom(userIds);
+  // TODO connect DB to chatroom
   res.json({ chatId });
 });
 

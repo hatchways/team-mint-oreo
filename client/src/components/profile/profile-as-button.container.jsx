@@ -15,6 +15,7 @@ const ProfileAsButton = ({ id, handleClick = () => {}, isActive = false, ...prop
   return (
     <CardActionArea
       onClick={handleClick}
+      key={id}
       id={id}
       disableTouchRipple
       className={` ${classes.rounded}`}
