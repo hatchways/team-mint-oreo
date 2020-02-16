@@ -5,13 +5,10 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import { CookiesProvider } from 'react-cookie';
-import { UserStateProvider } from './store/user/user.provider';
 
 const app = (
   <CookiesProvider>
-    <UserStateProvider>
-      <App />
-    </UserStateProvider>
+    <App />
   </CookiesProvider>
 );
 

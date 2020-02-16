@@ -1,3 +1,4 @@
+/*
 import React, { useContext, useEffect, useState } from 'react';
 import { Box, Grid } from '@material-ui/core';
 
@@ -48,3 +49,4 @@ const ChatMessages = ({ height }) => {
 };
 
 export default ChatMessages;
+*/

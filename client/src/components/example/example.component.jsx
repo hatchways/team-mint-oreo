@@ -1,3 +1,4 @@
+/*
 import React, { useContext } from 'react';
 import { store } from '../../store/user/user.provider';
 import UserActionTypes from '../../store/user/user.types';
@@ -51,3 +52,4 @@ const Example = () => {
 };
 
 export default Example;
+*/
