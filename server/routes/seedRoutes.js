@@ -31,4 +31,13 @@ router.get('/friends', async (req, res) => {
   }
 });
 
+router.get('/friendsToChat', async (req, res) => {
+  const { userId } = res.locals;
+  const { friends } = await db.user.getFriendsFieldsById('id', userId);
+  friends.forEach(friend => {
+    db.chatroom.createChatroom([userId, friend['_id']]);
+  });
+  console.log(friendIds);
+});
+
 module.exports = router;

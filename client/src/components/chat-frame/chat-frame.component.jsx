@@ -34,10 +34,11 @@ const ChatFrame = ({ socket, userId }) => {
       if (!chatId) return;
       let messages;
       const data = await Client.request(`/chat/messages/${chatId}`);
+      console.log(data);
     };
     try {
       getMessages();
-    } catch (err) {}
+    } catch (err) { }
     console.log('chatid is', chatId);
   }, [chatId]);
 

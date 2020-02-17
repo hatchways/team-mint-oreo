@@ -91,8 +91,12 @@ function WebsocketTesting() {
     fetch('/seed/rooms');
   };
 
-  const emitSocket = () => {
+  const getUserData = () => {
     fetch('/user/data');
+  };
+
+  const addFriendsToChatrooms = () => {
+    fetch('/seed/friendsToChat');
   };
 
   return (
@@ -124,8 +128,8 @@ function WebsocketTesting() {
           <button type="button" onClick={logout}>
             LOGOUT
           </button>
-          <button type="button" onClick={emitSocket}>
-            SOCKET EMIT
+          <button type="button" onClick={getUserData}>
+            GET USER DATA
           </button>
           <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
           <br />
@@ -143,6 +147,9 @@ function WebsocketTesting() {
           </button>
           <button type="button" onClick={createFakeFriends}>
             SEED FRIENDS
+          </button>
+          <button type="button" onClick={addFriendsToChatrooms}>
+            Add Friends to chatroom
           </button>
 
           <button type="button" onClick={connectedSockets}>

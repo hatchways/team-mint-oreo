@@ -5,20 +5,17 @@ import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { useStyles } from './message-field.styles';
 
 const MessageField = ({ emit, chatId, userId }) => {
-  const [msgObject, setMsgObject] = useState({ chatId: '', userId: '', originalText: '' });
+  const [msgText, setMsgText] = useState('');
 
   const handleChange = e => {
-    setMsgObject({ ...msgObject, originalText: e.target.value });
+    console.log('msg field onchange', e.target.value)
+    setMsgText(e.target.value);
   };
 
   const onSubmit = e => {
     e.preventDefault();
-    emit('sendMsg', msgObject);
+    emit('sendMsg', { chatId, userId, msgText });
   };
-
-  useEffect(() => {
-    setMsgObject({ chatId, userId, originalText: '' });
-  }, [chatId, userId]);
 
   const classes = useStyles();
   return (
@@ -27,8 +24,8 @@ const MessageField = ({ emit, chatId, userId }) => {
         className={classes.input}
         placeholder="Type Something ... "
         inputProps={{ 'aria-label': 'search listing' }}
-        // value={msgObject.originalText}
-        // onChange={handleChange}
+      // value={msgObject.originalText}
+      // onChange={handleChange}
       />
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />

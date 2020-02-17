@@ -104,7 +104,7 @@ const getFriendsById = async id => {
   }
 };
 
-const getFriendsFieldsById = async (id, fields) => {
+const getFriendsFieldsById = async (fields, id) => {
   try {
     const data = await User.findById(id, 'friends').populate({ path: 'friends', select: fields });
     return data;
