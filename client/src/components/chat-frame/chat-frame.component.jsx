@@ -4,6 +4,7 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
+import Client from '../../utils/HTTPClient';
 
 const ChatFrame = ({ socket, userId }) => {
   const {
@@ -14,9 +15,6 @@ const ChatFrame = ({ socket, userId }) => {
   const [showOriginalText, setShowOriginalText] = useState(false);
 
   useEffect(() => {
-    // check front end cache for stored conversation
-    // if not cached, get messages from db
-
     // const msgObject = {
     //   userId, // of sender
     //   originalText,
@@ -30,6 +28,15 @@ const ChatFrame = ({ socket, userId }) => {
       console.log('msg received!', msg);
     });
 
+    const getMessages = async () => {
+      // if not cached, get messages from db
+      if (!chatId) return;
+      let messages;
+      const data = await Client.request(`/chat/messages/${chatId}`);
+    };
+    try {
+      getMessages();
+    } catch (err) {}
     console.log('chatid is', chatId);
   }, [chatId]);
 
@@ -37,7 +44,7 @@ const ChatFrame = ({ socket, userId }) => {
     <Box height="100vh" overflow="hidden">
       <Grid style={{ height: '100%' }} direction="column" spacing={2}>
         <ChatHeader changeText={setShowOriginalText} chatId={chatId} />
-        <Grid item style={{ height: '100%' }}>
+        <Grid item style={{ height: '100%', border: '1px solid black' }}>
           <ChatMessages messages={messages} showOriginalText={showOriginalText} userId={userId} />
           <MessageField emit={socket.emit} chatId={chatId} userId={userId} />
         </Grid>

@@ -45,12 +45,18 @@ router.post('/login', async (req, res) => {
 });
 
 router.get('/verify', async (req, res) => {
-  const { userId = null } = res.locals;
-  console.log('id', userId);
+  const { userId } = res.locals;
   const dbUser = await db.user.getById(userId);
-  console.log('dbuser', dbUser);
   if (!dbUser) res.clearCookie('user');
-  res.send(!!userId);
+  res.json({ userId });
+});
+
+router.get('/getUser', async (req, res) => {
+  const { userId } = res.locals;
+  const dbUser = await db.user.getById(userId);
+  console.log('/find/userid', dbUser);
+
+  res.json(dbUser);
 });
 
 router.get('/data', isAuthorized, async (req, res) => {

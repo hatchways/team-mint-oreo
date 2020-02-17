@@ -9,17 +9,16 @@ import Login from './pages/userform/Login';
 import Register from './pages/userform/Register';
 
 function App() {
-  const [tokenVerified, setTokenVerified] = useState(false);
+  const [userId, setUserId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
     const checkToken = async () => {
-      const isVerified = await Client.request('/user/verify');
-      // TODO: handle error for isVerified
+      const { userId = null } = await Client.request('/user/verify');
       if (isMounted) {
         setIsLoading(false);
-        await setTokenVerified(isVerified);
+        await setUserId(userId);
       }
     };
     checkToken();
@@ -37,19 +36,17 @@ function App() {
             <Route
               exact
               path="/"
-              render={() =>
-                tokenVerified ? <Redirect to="/dashboard" /> : <Redirect to="/login" />
-              }
+              render={() => (userId ? <Redirect to="/dashboard" /> : <Redirect to="/login" />)}
             />
             <Route
               exact
               path="/login"
-              render={() => (tokenVerified ? <Redirect to="/dashboard" /> : <Login />)}
+              render={() => (userId ? <Redirect to="/dashboard" /> : <Login />)}
             />
             <Route
               exact
               path="/dashboard"
-              render={() => (tokenVerified ? <Dashboard /> : <Redirect to="/login" />)}
+              render={() => (userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />)}
             />
             <Route path="/register" component={Register} />
             <Route path="/testing" component={WebsocketTesting} />

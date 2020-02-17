@@ -17,7 +17,7 @@ const createMessage = async msg => {
   }
 };
 
-const getMessage = async (chatId, limit = 50, skip = 0) => {
+const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
   try {
     const messages = await Message.find({ chatId }, null, skip)
       .limit(limit)
@@ -31,5 +31,5 @@ const getMessage = async (chatId, limit = 50, skip = 0) => {
 
 module.exports = {
   createMessage,
-  getMessage,
+  getAllByChatId,
 };

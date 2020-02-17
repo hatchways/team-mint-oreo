@@ -72,7 +72,7 @@ const getAllUsers = () => {
 
 const getById = async id => {
   try {
-    const data = await User.findById(id);
+    const data = await User.findById(id).populate('friends');
     return data;
   } catch (err) {
     throw new Error(500, 'Get User - ID', err);
@@ -93,12 +93,21 @@ const getFriendsById = async id => {
   }
 };
 
+const getFriendsFieldsById = async (id, fields) => {
+  try {
+    const data = await User.findById(id, 'friends').populate({ path: 'friends', select: fields });
+    return data;
+  } catch (err) {
+    throw new Error(500, 'Get Friends - ID', err);
+  }
+};
+
 const getFriendsSocketsById = async id => {
   try {
     const onlineFriends = await User.findById(id).populate({ path: 'friends', model: 'User' });
     const { friends } = onlineFriends;
     if (!friends || friends.length <= 0) return [];
-    console.log('online friends: ', friends);
+    // console.log('online friends: ', friends);
     return friends.filter(friend => friend.socketId).map(friend => friend.socketId);
   } catch (err) {
     throw new Error(500, 'Get Friends Sockets - ID', err);
@@ -166,4 +175,5 @@ module.exports = {
   getFriendsSocketsById,
   getAllUsers,
   removeInvitation,
+  getFriendsFieldsById,
 };
