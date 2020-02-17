@@ -79,11 +79,15 @@ const Sidebar = ({ size, socket }) => {
     socket.on('userOnline', userId => {
       setOnlineFriends([...onlineFriends, userId]);
     });
-    socket.on('receiveMsg', outgoingMsg => {
-      // TODO:
-      // take our the msgObject out of the outgoingMsg
-      // find the id of the object we want, change secondary=msgObject.text
-      setChatsList([...chatsList]);
+    socket.on('receiveMsg', incommingMessage => {
+      const chatId = incommingMessage.chatId;
+      // using original text for now. crop to first 16 characters
+      const msgText = incommingMessage.originalText;
+      const secondary = msgText.length > 15 ? `${msgText.subString(0, 13)}...` : msgText;
+      setChatsList([...chatsList], {
+        ...chatsList.find(chatRoom => chatRoom.id === chatId),
+        secondary,
+      });
     });
   }, []);
 
