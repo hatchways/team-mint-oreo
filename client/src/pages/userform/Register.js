@@ -51,7 +51,7 @@ export default function Register() {
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Grid container xs={false} sm={4} md={5} className={classes.image}>
+      <Grid item xs={false} sm={4} md={5} className={classes.image}>
         <Box mx="auto" className={classes.converseBox}>
           <TextsmsOutlinedIcon fontSize="large" />
           <Typography variant="h6">
@@ -81,7 +81,7 @@ export default function Register() {
             </Link>
           </Grid>
           <Grid container className={classes.mainContent}>
-            <Grid container alignItems="left">
+            <Grid container>
               <Typography component="h1" variant="h5">
                 Create an account
               </Typography>

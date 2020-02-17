@@ -43,7 +43,8 @@ export default function Login() {
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <Grid container xs={false} sm={4} md={5} className={classes.image}>
+      {/*<Grid container xs={false} sm={4} md={5} className={classes.image}>*/}
+      <Grid item xs={false} sm={4} md={5} className={classes.image}>
         <Box mx="auto" className={classes.converseBox}>
           <TextsmsOutlinedIcon fontSize="large" />
           <Typography variant="h6">
@@ -73,7 +74,7 @@ export default function Login() {
             </Link>
           </Grid>
           <Grid container className={classes.mainContent}>
-            <Grid container alignItems="left">
+            <Grid container>
               <Typography component="h1" variant="h5">
                 Welcome Back!
               </Typography>
@@ -127,7 +128,7 @@ export default function Login() {
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
-                label={<Typography class={classes.rememberMe}>Remember Me</Typography>}
+                label={<Typography className={classes.rememberMe}>Remember Me</Typography>}
               />
               <Grid container className={classes.alignCenter}>
                 <Button
@@ -141,7 +142,7 @@ export default function Login() {
               </Grid>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link to="#" variant="body2">
                     Forgot password?
                   </Link>
                 </Grid>
