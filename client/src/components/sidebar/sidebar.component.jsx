@@ -13,6 +13,7 @@ import SearchField from '../search-field/search-field.component';
 import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
+import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ size, socket }) => {
   const [upperRect, upperRef] = useClientRect();
@@ -47,7 +48,8 @@ const Sidebar = ({ size, socket }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
-  const [chatsList, setChatsList] = useState([]);
+  const [chatsList, setChatsList] = useState(tempChatData);
+  const [invitesList, setInvitesList] = useState(tempInvitesList);
 
   const fetchUserData = async () => {
     const response = await fetch('user/data');
@@ -61,7 +63,8 @@ const Sidebar = ({ size, socket }) => {
     fetchUserData().then(data => {
       console.log(data);
       setFriendsList(data.friends.friends);
-      setChatsList(data.chats);
+      // TODO: replace placeholder later
+      setChatsList([...chatsList, ...data.chats]);
       setIsLoading(false);
       console.log('friendsLIst', data.friends.friends);
       setUser({
@@ -75,6 +78,16 @@ const Sidebar = ({ size, socket }) => {
     });
     socket.on('userOnline', userId => {
       setOnlineFriends([...onlineFriends, userId]);
+    });
+    socket.on('receiveMsg', incommingMessage => {
+      const chatId = incommingMessage.chatId;
+      // using original text for now. crop to first 16 characters
+      const msgText = incommingMessage.originalText;
+      const secondary = msgText.length > 15 ? `${msgText.subString(0, 13)}...` : msgText;
+      setChatsList([...chatsList], {
+        ...chatsList.find(chatRoom => chatRoom.id === chatId),
+        secondary,
+      });
     });
   }, []);
 
@@ -97,7 +110,7 @@ const Sidebar = ({ size, socket }) => {
       </Box>
       <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
         <SidebarTabPanel value={tab} index={TabNames.CHATS}>
-          <SidebarTabPanelChats profilesList={directoryState.commsList} />
+          <SidebarTabPanelChats profilesList={chatsList} />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
           <SidebarTabPanelContacts
@@ -118,9 +131,12 @@ const Sidebar = ({ size, socket }) => {
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
           <SidebarTabPanelInvites
-            profilesList={directoryState.invitesList.map(
-              ({ user: { id, name, avatar }, ...otherArgs }) => ({ id, name, avatar, ...otherArgs })
-            )}
+            profilesList={invitesList.map(({ user: { id, name, avatar }, ...otherArgs }) => ({
+              id,
+              name,
+              avatar,
+              ...otherArgs,
+            }))}
           />
         </SidebarTabPanel>
       </Box>

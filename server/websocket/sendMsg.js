@@ -31,7 +31,8 @@ const translateMessage = async msgObject => {
 };
 
 const sendMessage = async (socket, outgoingMsg) => {
-  socket.to('123').emit('receiveMsg', outgoingMsg);
+  // assuming outgoingMsg inherits Model Message
+  socket.to(outgoingMsg.chatId).emit('receiveMsg', outgoingMsg);
 };
 
 module.exports = {
