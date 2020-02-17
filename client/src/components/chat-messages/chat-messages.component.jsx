@@ -3,9 +3,9 @@ import { Box, Grid } from '@material-ui/core';
 
 import ChatMessage from '../chat-message/chat-message.component';
 
-const ChatMessages = ({ height, messages, userId, showOriginalText }) => {
+const ChatMessages = ({ className, messages, userId, showOriginalText }) => {
   return (
-    <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
+    <Box className={className} style={{ overflow: 'auto' }}>
       <Box maxWidth="99%">
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
           {messages.map(message => {

@@ -5,32 +5,10 @@ import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
 import Client from '../../utils/HTTPClient';
-import sizeMe from 'react-sizeme';
-import { useClientRect } from '../../utils/react-utils';
+import { useStyles } from './chat-frame.styles';
 
-const ChatFrame = ({ size, socket, userId }) => {
-  // header box = hRect
-  const [hRect, hRef] = useClientRect();
-  // message text sender box = mRect
-  const [mRect, mRef] = useClientRect();
-
-  const makeHeightsList = () => {
-    const list = [
-      size.height,
-      hRect !== null ? -hRect.height : null,
-      mRect !== null ? -mRect.height : null,
-      -50,
-    ];
-    return list;
-  };
-
-  const calculateHeights = heights =>
-    heights.reduce(
-      (accumulator, currentElement) =>
-        currentElement !== null && accumulator + Math.round(currentElement),
-      0
-    );
-
+const ChatFrame = ({ socket, userId }) => {
+  const classes = useStyles();
   const {
     state: { currentlyActive: chatId },
   } = useContext(directoryStore);
@@ -67,9 +45,7 @@ const ChatFrame = ({ size, socket, userId }) => {
     <Box height={'100vh'} overflow={'hidden'}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
-          <Box ref={hRef}>
-            <ChatHeader changeText={setShowOriginalText} chatId={chatId} />
-          </Box>
+          <ChatHeader changeText={setShowOriginalText} chatId={chatId} />
         </Grid>
         <Grid item>
           <Box paddingLeft={1}>
@@ -79,13 +55,11 @@ const ChatFrame = ({ size, socket, userId }) => {
                   messages={messages}
                   showOriginalText={showOriginalText}
                   userId={userId}
-                  height={calculateHeights(makeHeightsList())}
+                  className={classes.messageBoxHeight}
                 />
               </Grid>
               <Grid item>
-                <Box ref={mRef}>
-                  <MessageField emit={socket.emit} chatId={chatId} userId={userId} />
-                </Box>
+                <MessageField emit={socket.emit} chatId={chatId} userId={userId} />
               </Grid>
             </Grid>
           </Box>
@@ -95,4 +69,4 @@ const ChatFrame = ({ size, socket, userId }) => {
   );
 };
 
-export default sizeMe({ monitorHeight: true })(ChatFrame);
+export default ChatFrame;
