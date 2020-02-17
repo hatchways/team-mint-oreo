@@ -63,6 +63,9 @@ router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsById, getFriendsById, getFieldById } = db.user;
   const email = await getFieldById('email', userId);
+  const displayName = await getFieldById('displayName', userId);
+  // const avatar = await getFieldById('avatar', userId); // TODO
+
   const data = await Promise.all([
     getChatsById(userId),
     getFriendsById(userId),
@@ -71,7 +74,14 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   const [chats, friends, invitations] = data;
   console.log(data);
-  res.status(200).json({ id: userId, chats, friends, invitations });
+  res.status(200).json({
+    id: userId,
+    displayName,
+    // avatar,
+    chats,
+    friends,
+    invitations,
+  });
 });
 
 router.get('/logout', async (req, res) => {

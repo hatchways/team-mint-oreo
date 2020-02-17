@@ -3,7 +3,6 @@ import { Box, Grid } from '@material-ui/core';
 import sizeMe from 'react-sizeme';
 import { useClientRect } from '../../utils/react-utils';
 
-import { store as userStore } from '../../store/user/user.provider';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 
 import Profile from '../../components/profile/profile.component';
@@ -20,7 +19,6 @@ const Sidebar = ({ size, socket }) => {
   const [height, setHeight] = useState(0);
 
   const [tab, setTab] = useState(TabNames.CHATS);
-  const { state: userState } = useContext(userStore);
   const { state: directoryState } = useContext(directoryStore);
 
   const changeTab = (event, newValue) => {
@@ -38,8 +36,18 @@ const Sidebar = ({ size, socket }) => {
     setHeight(sum);
   }, [upperRect, size]);
 
-  const [userData, setUserData] = useState();
+  const [user, setUser] = useState({
+    name: 'Ultimate Legend',
+    id: 1,
+    avatar: {
+      url: '',
+      fallback: 'L',
+    },
+  });
   const [isLoading, setIsLoading] = useState(true);
+  const [friendsList, setFriendsList] = useState([]);
+  const [onlineFriends, setOnlineFriends] = useState([]);
+  const [chatsList, setChatsList] = useState([]);
 
   const fetchUserData = async () => {
     const response = await fetch('user/data');
@@ -48,11 +56,25 @@ const Sidebar = ({ size, socket }) => {
   };
 
   useEffect(() => {
+    // mounting point.
     console.log('Fetching user Data....');
     fetchUserData().then(data => {
       console.log(data);
-      setUserData(data);
+      setFriendsList(data.friends.friends);
+      setChatsList(data.chats);
       setIsLoading(false);
+      console.log('friendsLIst', data.friends.friends);
+      setUser({
+        ...user,
+        id: data.id,
+      });
+      console.log('user', {
+        ...user,
+        id: data.id,
+      });
+    });
+    socket.on('userOnline', userId => {
+      setOnlineFriends([...onlineFriends, userId]);
     });
   }, []);
 
@@ -61,7 +83,7 @@ const Sidebar = ({ size, socket }) => {
       <Box paddingBottom={2} ref={upperRef}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
-            <Profile {...userState} moreOptions={{ exists: true }} />
+            <Profile {...user} moreOptions={{ exists: true }} />
           </Grid>
           <Grid item>
             <Tabs value={tab} onChange={changeTab}></Tabs>
@@ -79,15 +101,17 @@ const Sidebar = ({ size, socket }) => {
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
           <SidebarTabPanelContacts
+            user={user}
             profilesList={
               !isLoading &&
-              userData.friends.friends.map(({ _id, displayName }) => ({
+              friendsList.map(({ _id, displayName }) => ({
                 id: _id,
                 name: displayName,
                 avatar: {
                   url: '',
                   fallback: displayName[0].toUpperCase(),
                 },
+                isOnline: onlineFriends.includes(_id),
               }))
             }
           />

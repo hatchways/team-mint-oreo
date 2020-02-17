@@ -36,46 +36,50 @@ const ChatHeader = ({ chatId }) => {
   return (
     <Box className={`${classes.header} ${classes.bigPadd}`} component="header">
       <Grid container direction="row" justify="space-between" alignItems="center">
-        <Grid
-          container
-          direction="row"
-          justify="flex-start"
-          alignItems="center"
-          className={classes.lessSpacingOnXS}
-        >
-          <Hidden mdUp>
-            <Box marginRight={1}>
-              <IconButton color="primary" onClick={triggerSidebar}>
-                <Menu />
-              </IconButton>
-            </Box>
-          </Hidden>
-          <Grid item xs={8} sm>
-            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
-              <Typography>{title}</Typography>
-              <Grid item xs={12} sm>
-                Online
+        <Grid item>
+          <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+            className={classes.lessSpacingOnXS}
+          >
+            <Hidden mdUp>
+              <Box marginRight={1}>
+                <IconButton color="primary" onClick={triggerSidebar}>
+                  <Menu />
+                </IconButton>
+              </Box>
+            </Hidden>
+            <Grid item xs={8} sm>
+              <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
+                <Typography>{title}</Typography>
+                <Grid item xs={12} sm>
+                  Online
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-        <Grid
-          container
-          direction="row"
-          justify="flex-end"
-          alignItems="center"
-          className={classes.lessSpacingOnXS}
-        >
-          <Grid item>
-            <Grid component="label" container alignItems="center">
-              <IOSSwitch value="checkedA" color="primary" />
+        <Grid item>
+          <Grid
+            container
+            direction="row"
+            justify="flex-end"
+            alignItems="center"
+            className={classes.lessSpacingOnXS}
+          >
+            <Grid item>
+              <Grid component="label" container alignItems="center">
+                <IOSSwitch value="checkedA" color="primary" />
 
-              <Grid item>Off</Grid>
+                <Grid item>Off</Grid>
+              </Grid>
             </Grid>
+            <IconButton>
+              <MoreHoriz />
+            </IconButton>
           </Grid>
-          <IconButton>
-            <MoreHoriz />
-          </IconButton>
         </Grid>
       </Grid>
     </Box>

@@ -5,7 +5,6 @@ import Switch from '@material-ui/core/Switch';
 export const useStyles = makeStyles(theme => ({
   header: {
     boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
-    height: '140px',
     'box-sizing': 'border-box',
   },
   bigPadd: {

@@ -78,7 +78,6 @@ const getById = async id => {
     throw new Error(500, 'Get User - ID', err);
   }
 };
-
 const getFriendsById = async id => {
   try {
     // find the user with by the id and get the friends field
@@ -126,6 +125,7 @@ const getChatsById = async (id, limit = 50, skip = 0) => {
 const getFieldById = async (field, id) => {
   try {
     const data = await User.findById(id, `${field}`);
+    console.log(`field: ${field} => `, data);
     return data;
   } catch (err) {
     throw new Error(500, 'Get (Field) - ID', err);

@@ -24,4 +24,13 @@ export const useStyles = makeStyles(theme => ({
     backgroundColor: '#3A8DFF',
     color: '#fff',
   },
+  badgeGreen: {
+    backgroundColor: 'green',
+  },
+  badgeGrey: {
+    backgroundColor: 'grey',
+  },
+  maxWidth: {
+    width: '100%',
+  },
 }));
