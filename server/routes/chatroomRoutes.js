@@ -9,6 +9,9 @@ router.get('/messages/all', async (req, res) => {
 
 router.get('/messages/:chatId', async (req, res) => {
   const { chatId } = req.params;
+  const messages = await db.message.getAllByChatId(chatId);
+  console.log(messages);
+  res.status(200).json(messages);
 });
 
 router.get('/verify/:chatId', async (req, res) => {

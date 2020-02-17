@@ -4,6 +4,7 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
+import Client from '../../utils/HTTPClient';
 import sizeMe from 'react-sizeme';
 import { useClientRect } from '../../utils/react-utils';
 
@@ -37,9 +38,6 @@ const ChatFrame = ({ size, socket, userId }) => {
   const [messages, setMessage] = useState([]);
   const [showOriginalText, setShowOriginalText] = useState(false);
   useEffect(() => {
-    // check front end cache for stored conversation
-    // if not cached, get messages from db
-
     // const msgObject = {
     //   userId, // of sender
     //   originalText,
@@ -53,6 +51,15 @@ const ChatFrame = ({ size, socket, userId }) => {
       console.log('msg received!', msg);
     });
 
+    const getMessages = async () => {
+      // if not cached, get messages from db
+      if (!chatId) return;
+      let messages;
+      const data = await Client.request(`/chat/messages/${chatId}`);
+    };
+    try {
+      getMessages();
+    } catch (err) {}
     console.log('chatid is', chatId);
   }, [chatId]);
 

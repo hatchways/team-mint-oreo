@@ -67,10 +67,9 @@ const getLanguagesAndIds = async chatId => {
   }
 };
 
-const seedRooms = async userId => {
-  for (let i = 0; i < 10; i++) {
-    createChatroom(userId);
-  }
+const getAllByUserId = async userId => {
+  const data = await Chatroom.find({ users: userId });
+  console.log('getallusersbyid', data);
 };
 
 module.exports = {
@@ -80,5 +79,5 @@ module.exports = {
   getUsersByChatId,
   removeUser,
   getLanguagesAndIds,
-  seedRooms,
+  getAllByUserId,
 };

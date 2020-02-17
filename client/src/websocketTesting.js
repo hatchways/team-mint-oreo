@@ -5,7 +5,7 @@ import Client from './utils/HTTPClient';
 const socket = io('http://localhost:3001');
 
 function WebsocketTesting() {
-  const [tokenVerified, setTokenVerified] = useState(false);
+  const [userData, setUserData] = useState(false);
   const [socketEvent, setSocketEvent] = useState({});
 
   const onChange = e => {
@@ -16,8 +16,9 @@ function WebsocketTesting() {
 
   useEffect(() => {
     const checkToken = async () => {
-      const isVerified = await (await fetch('/user/verify')).json();
-      await setTokenVerified(isVerified);
+      const data = await (await fetch('/user/getUser')).json();
+      setUserData(data);
+      console.log(data);
     };
     checkToken();
   }, []);
@@ -42,13 +43,6 @@ function WebsocketTesting() {
     const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
     const result = await Client.request('/user/login', 'POST', data);
     console.log(result);
-  };
-  const emitSocket = () => {
-    socket.emit('login', {
-      userId: '5e459bd631f1035e2811137d',
-      chatId: '5e45f6f81c9d440000a138fe',
-      friendEmail: 'sang.m.lee@mail.mcgill.ca',
-    });
   };
 
   const connectedSockets = () => {
@@ -96,43 +90,66 @@ function WebsocketTesting() {
     fetch('/seed/rooms');
   };
 
+  const emitSocket = () => {
+    fetch('/user/data');
+  };
+
   return (
-    <div>
-      {`USER HAS VALID JWT: ${tokenVerified}`}
-      <button type="button" onClick={createUser}>
-        CREATE USER
-      </button>
-      <button type="button" onClick={login}>
-        LOGIN
-      </button>
-      <button type="button" onClick={logout}>
-        LOGOUT
-      </button>
-      <button type="button" onClick={emitSocket}>
-        SOCKET EMIT
-      </button>
-      <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
-      <br />
-      <button onClick={acceptFriendReq}>ACCEPT FRIEND REQUEST</button>
-      <input
-        type="text"
-        placeholder="message test"
-        value={message}
-        onChange={({ target: { value } }) => setMessage(value)}
-        onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
-      />
+    <>
+      <div style={{ display: 'flex' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <p>{`USER HAS VALID JWT: ${!!userData}`}</p>
+          <p>{`USERID: ${userData['_id']}`}</p>
+          <div style={{ display: 'flex' }}>
+            <p>Friends: </p>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {userData.friends &&
+                userData.friends.map(friend => (
+                  <p>
+                    {friend['_id']}: {friend.displayName}
+                  </p>
+                ))}
+            </div>
+          </div>
+          <p>Chatrooms: </p>
+        </div>
+        <div>
+          <button type="button" onClick={createUser}>
+            CREATE USER
+          </button>
+          <button type="button" onClick={login}>
+            LOGIN
+          </button>
+          <button type="button" onClick={logout}>
+            LOGOUT
+          </button>
+          <button type="button" onClick={emitSocket}>
+            SOCKET EMIT
+          </button>
+          <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
+          <br />
+          <button onClick={acceptFriendReq}>ACCEPT FRIEND REQUEST</button>
+          <input
+            type="text"
+            placeholder="message test"
+            value={message}
+            onChange={({ target: { value } }) => setMessage(value)}
+            onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
+          />
 
-      <button type="button" onClick={createFakeRooms}>
-        SEED CHATROOMS
-      </button>
-      <button type="button" onClick={createFakeFriends}>
-        SEED FRIENDS
-      </button>
+          <button type="button" onClick={createFakeRooms}>
+            SEED CHATROOMS
+          </button>
+          <button type="button" onClick={createFakeFriends}>
+            SEED FRIENDS
+          </button>
 
-      <button type="button" onClick={connectedSockets}>
-        log connected sockets EMIT
-      </button>
-    </div>
+          <button type="button" onClick={connectedSockets}>
+            log connected sockets EMIT
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
 
