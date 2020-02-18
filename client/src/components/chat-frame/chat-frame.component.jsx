@@ -20,13 +20,14 @@ const ChatFrame = ({ socket, userId }) => {
     //   userId, // of sender
     //   originalText,
     //   translations: {
-    //     'english': 'asdf',
-    //     'spanish': 'asdf'
+    //     'id1': 'asdf',
+    //     'id2': 'asdf'
     //   },
     //   timestamp
     // }
     socket.on('receiveMsg', msg => {
       console.log('msg received!', msg);
+      setMessage([...messages]);
     });
 
     const getMessages = async () => {
@@ -34,12 +35,23 @@ const ChatFrame = ({ socket, userId }) => {
       if (!chatId) return;
       let messages;
       const data = await Client.request(`/chat/messages/${chatId}`);
+<<<<<<< HEAD
       console.log(data);
+=======
+      console.log('chatFrame getMessages', data);
+>>>>>>> wip
     };
+
     try {
       getMessages();
+<<<<<<< HEAD
     } catch (err) { }
     console.log('chatid is', chatId);
+=======
+    } catch (err) {
+      // TODO: handle error
+    }
+>>>>>>> wip
   }, [chatId]);
 
   return (

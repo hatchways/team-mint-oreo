@@ -9,10 +9,9 @@ const getLanguageAndIdList = async chatId => {
 };
 
 const translateMessage = async msgObject => {
-  // ⚠️ check cache for active chat languages
   const { originalText, chatId } = msgObject;
+  // id and language list is an array of objects: {id, language}
   const idAndLanguageList = await getLanguageAndIdList(chatId);
-
   // remove sender from translation list
   idAndLanguageList.filter(pair => pair.id !== chatId);
   const translationAPI = { translate: (x, y) => x };
@@ -20,13 +19,12 @@ const translateMessage = async msgObject => {
     idAndLanguageList.map(({ language }) => translationAPI.translate(originalText, language))
   );
 
-  // const translationAndIds = idAndLanguageList.map(({ id }, i) => ({ id, text: translatedText[i] }));
+  // returns an object with the shape {userId: translatedText}
   const idTranslationMap = idAndLanguageList.reduce(
     (a, b, i) => ({ ...a, [b.id]: translatedText[i] }),
     {}
   );
 
-  // ⚠️ cache translation
   return idTranslationMap;
 };
 

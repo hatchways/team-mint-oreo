@@ -91,8 +91,13 @@ const handleSocket = server => {
       }
     });
 
-    socket.on('isTyping', () => {});
-    socket.on('endTyping', () => {});
+    socket.on('isTyping', (userId, chatId) => {
+      socket.to(chatId).emit('isTyping', { userId });
+    });
+    socket.on('endTyping', (userId, chatId) => {
+      socket.to(chatId).emit('endTyping', { userId });
+    });
+
     socket.on('searching', () => {});
 
     socket.on('test', () => {

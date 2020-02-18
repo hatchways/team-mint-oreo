@@ -11,7 +11,7 @@ const Profile = (
     secondary = '',
     notifications = 0,
     moreOptions = null,
-    avatar: { url, fallback },
+    avatar,
     handleApproval = null,
     handleDisapproval = null,
     hideStatus = true,
@@ -20,6 +20,8 @@ const Profile = (
   width = 400
 ) => {
   const classes = useStyles();
+  const { url = null } = avatar;
+
   return (
     <Box minWidth={width} maxWidth={width}>
       <Box p={2}>
@@ -36,7 +38,7 @@ const Profile = (
                 horizontal: 'right',
               }}
             >
-              <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
+              <Avatar {...{ src: url, alt: name }}>{avatar?.fallback}</Avatar>
             </Badge>
           </Grid>
           <Grid item xs>

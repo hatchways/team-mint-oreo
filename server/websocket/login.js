@@ -21,7 +21,7 @@ const notifyFriends = async (socket, userId) => {
     console.log('No friends are online');
     return;
   }
-  friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
+  friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', { userId }));
 };
 
 module.exports = {

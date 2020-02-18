@@ -5,16 +5,27 @@ import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { useStyles } from './message-field.styles';
 
 const MessageField = ({ emit, chatId, userId }) => {
+<<<<<<< HEAD
   const [msgText, setMsgText] = useState('');
 
   const handleChange = e => {
     console.log('msg field onchange', e.target.value)
     setMsgText(e.target.value);
+=======
+  const [msgContent, setMsgContent] = useState('');
+
+  const handleChange = e => {
+    setMsgContent(e.target.value);
+>>>>>>> wip
   };
 
   const onSubmit = e => {
     e.preventDefault();
+<<<<<<< HEAD
     emit('sendMsg', { chatId, userId, msgText });
+=======
+    emit('sendMsg', { userId, chatId, originalText: msgContent });
+>>>>>>> wip
   };
 
   const classes = useStyles();
