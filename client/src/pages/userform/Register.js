@@ -34,11 +34,11 @@ export default function Register() {
 
     const response = await Client.request('/user/register', 'POST', values);
     if (response.status === 201) {
-      alert('Account created successfully');
       history.push('/login');
     } else {
       // Temporary error handling
       alert('Failed to create account');
+      // TODO: handle error (500 vs 400)
       window.location.reload();
     }
     // register(values).then(res => {

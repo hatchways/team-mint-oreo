@@ -98,14 +98,14 @@ function WebsocketTesting() {
       <div style={{ display: 'flex' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <p>{`USER HAS VALID JWT: ${!!userData}`}</p>
-          <p>{`USERID: ${userData['_id']}`}</p>
+          <p>{`USERID: ${userData?.['_id']}`}</p>
           <div style={{ display: 'flex' }}>
             <p>Friends: </p>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {userData.friends &&
+              {userData?.friends &&
                 userData.friends.map(friend => (
                   <p>
-                    {friend['_id']}: {friend.displayName}
+                    {friend?.['_id']}: {friend.displayName}
                   </p>
                 ))}
             </div>

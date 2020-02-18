@@ -11,6 +11,11 @@ const SidebarTabPanelChats = ({ profilesList }) => {
 
   const { currentlyActive } = directoryState;
 
+  const hideSidebar = () => {
+    dispatch({
+      type: DirectoryActionTypes.CLOSE_SIDEBAR,
+    });
+  };
   const handleClick = event => {
     dispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
@@ -19,11 +24,6 @@ const SidebarTabPanelChats = ({ profilesList }) => {
     hideSidebar();
   };
 
-  const hideSidebar = () => {
-    dispatch({
-      type: DirectoryActionTypes.CLOSE_SIDEBAR,
-    });
-  };
   return (
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
       {/*
@@ -43,7 +43,7 @@ const SidebarTabPanelChats = ({ profilesList }) => {
             id={profile.id}
             {...profile}
             handleClick={handleClick}
-            isActive={currentlyActive != null && currentlyActive == profile.id.toString()}
+            isActive={currentlyActive !== null && currentlyActive === profile.id.toString()}
           />
         </Grid>
       ))}

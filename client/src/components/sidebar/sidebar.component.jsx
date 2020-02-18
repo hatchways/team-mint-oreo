@@ -61,7 +61,7 @@ const Sidebar = ({ size, socket }) => {
     // mounting point.
     console.log('Fetching user Data....');
     fetchUserData().then(data => {
-      console.log(data);
+      console.log('sidebar component data', data);
       setFriendsList(data.friends.friends);
       // TODO: replace placeholder later
       setChatsList([...chatsList, ...data.chats]);

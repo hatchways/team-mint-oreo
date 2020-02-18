@@ -20,7 +20,12 @@ const Profile = (
   width = 400
 ) => {
   const classes = useStyles();
-  const { url = null } = avatar;
+
+  /* FIX THIS LATER */
+  const url = avatar?.url || '';
+  const fallback = avatar?.fallback || '';
+
+  /* *************** */
 
   return (
     <Box minWidth={width} maxWidth={width}>
@@ -38,7 +43,7 @@ const Profile = (
                 horizontal: 'right',
               }}
             >
-              <Avatar {...{ src: url, alt: name }}>{avatar?.fallback}</Avatar>
+              <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
             </Badge>
           </Grid>
           <Grid item xs>
