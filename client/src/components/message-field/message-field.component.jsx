@@ -4,7 +4,7 @@ import Send from '@material-ui/icons/Send';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { useStyles } from './message-field.styles';
 
-const MessageField = ({ emit, chatId, userId }) => {
+const MessageField = ({ socket, chatId, userId }) => {
   const [msgContent, setMsgContent] = useState('');
 
   const handleChange = e => {
@@ -13,7 +13,7 @@ const MessageField = ({ emit, chatId, userId }) => {
 
   const onSubmit = e => {
     e.preventDefault();
-    emit('sendMsg', { userId, chatId, originalText: msgContent });
+    if (chatId) socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
   };
 
   const classes = useStyles();

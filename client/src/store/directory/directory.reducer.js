@@ -5,6 +5,7 @@ export const initialState = {
   currentlyActive: null,
   showBackdrop: false,
   showSidebar: false,
+  language: 'english',
 };
 export const directoryReducer = (state, action) => {
   switch (action.type) {
@@ -18,8 +19,8 @@ export const directoryReducer = (state, action) => {
       return { ...state, showSidebar: !state.showSidebar };
     case DirectoryActionTypes.CLOSE_SIDEBAR:
       return { ...state, showSidebar: false };
-    case DirectoryActionTypes.CHANGE_ACTIVE_WINDOW:
-      return { ...state, currentlyActive: action.payload };
+    case DirectoryActionTypes.SET_LANGUAGE:
+      return { ...state, language: action.payload };
     default: {
       return state;
     }

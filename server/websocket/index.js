@@ -34,8 +34,7 @@ const handleSocket = server => {
       //  addChatroom(socket, userId, chatId);
     });
 
-    socket.on('sendMsg', async msgObject => {
-      // ⚠️ Check if first message, if first message, create chatroom
+    socket.on('sendMsg', async ({ userId, language, chatId, originalText }) => {
       const translations = await onSend.translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
       onSend.sendMessage(socket, outgoingMsg);

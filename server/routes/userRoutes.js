@@ -4,7 +4,7 @@ const db = require('../controllers');
 const jwt = require('../services/jwtService');
 const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
-const { chatroomPromiseToObject } = require('../services/formatDataService');
+const format = require('../services/formatDataService');
 
 const Error = require('../utils/Error');
 
@@ -82,30 +82,31 @@ router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsIdsById, getFriendsFieldsById, getFieldById } = db.user;
   const email = await getFieldById('email', userId);
-  const displayName = await getFieldById('displayName', userId);
+  const { displayName, language } = await getFieldById('displayName language', userId);
   // const avatar = await getFieldById('avatar', userId); // TODO
 
   // TAB PANEL INFO NEEDED?
   // When friend is clicked, chatroom searches for that userDM
   // If it doesnt exist, retrieve from database
+  // user language -- update global state
 
   // CHATROOM TAB PANEL:
   // get all user chat Ids
   // use Id's to get members of chat
-  // return to frontend chatId, isDM, userInfo: {displayName, id, isOnline}, lastActivity: {<userId> : <timestamp>}
+  // return to frontend chatId, isDM, userInfo: {displayName, id, isOnline, avatar}, lastActivity: {<userId> : <timestamp>}
 
   // FRIENDS TAB PANEL
-  // get all friends: {displayName, isOnline, id, language }
+  // get all friends: {displayName, isOnline, id, email, avatar }
 
   // INVITATION TAB PANEL
   // (email) search for invitations
   const data = await Promise.all([
     getChatsIdsById(userId),
-    getFriendsFieldsById(['displayName', 'socketId', 'id', 'language'], userId),
+    getFriendsFieldsById(['displayName', 'socketId', 'id', 'email'], userId),
     db.invitation.getInvitations(email),
   ]);
 
-  const [chatIds, friends, invitations] = data;
+  let [chatIds, friends, invitations] = data;
 
   const chats = await Promise.all(
     chatIds.map(id => {
@@ -113,10 +114,11 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
-  const chatrooms = chatroomPromiseToObject(chatIds, chats);
-
+  const chatrooms = format.initialChatroomFetch(chatIds, chats);
+  friends = format.replaceSocketIdWithStatus(friends);
   res.status(200).json({
     userId,
+    language,
     displayName,
     // avatar,
     chatrooms,

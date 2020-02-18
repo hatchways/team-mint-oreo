@@ -21,6 +21,7 @@ const userSchema = new Schema(
       required: true,
       default: 'english',
     },
+    avatar: String,
     chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],
     socketId: {
       type: String,

@@ -12,7 +12,7 @@ const replaceSocketIdWithStatus = array => {
   });
 };
 
-const chatroomPromiseToObject = (chatIds, promiseResult) => {
+const initialChatroomFetch = (chatIds, promiseResult) => {
   const result = promiseResult.map((chatroom, i) => {
     const removedSockets = replaceSocketIdWithStatus(chatroom);
     return { chatId: chatIds[i], users: removedSockets };
@@ -24,5 +24,5 @@ const chatroomPromiseToObject = (chatIds, promiseResult) => {
 module.exports = {
   replaceSocketIdWithStatus,
   flattenArray,
-  chatroomPromiseToObject,
+  initialChatroomFetch,
 };

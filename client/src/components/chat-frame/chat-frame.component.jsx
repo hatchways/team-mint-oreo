@@ -10,11 +10,11 @@ import { useStyles } from './chat-frame.styles';
 const ChatFrame = ({ socket, userId }) => {
   const classes = useStyles();
   const {
-    state: { currentlyActive: chatId },
+    state: { currentlyActive: chatId, language },
   } = useContext(directoryStore);
 
   const [messages, setMessage] = useState([]);
-  const [showOriginalText, setShowOriginalText] = useState(false);
+  const [showOriginalText, toggleText] = useState(false);
   useEffect(() => {
     // const msgObject = {
     //   userId, // of sender
@@ -49,7 +49,12 @@ const ChatFrame = ({ socket, userId }) => {
     <Box height={'100vh'} overflow={'hidden'}>
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
-          <ChatHeader changeText={setShowOriginalText} chatId={chatId} />
+          <ChatHeader
+            toggleText={() => {
+              toggleText(!showOriginalText);
+            }}
+            chatId={chatId}
+          />
         </Grid>
         <Grid item>
           <Box paddingLeft={1}>
@@ -63,7 +68,7 @@ const ChatFrame = ({ socket, userId }) => {
                 />
               </Grid>
               <Grid item>
-                <MessageField emit={socket.emit} chatId={chatId} userId={userId} />
+                <MessageField socket={socket} chatId={chatId} userId={userId} language={language} />
               </Grid>
             </Grid>
           </Box>

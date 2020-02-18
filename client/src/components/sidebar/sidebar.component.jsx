@@ -4,7 +4,7 @@ import sizeMe from 'react-sizeme';
 import { useClientRect } from '../../utils/react-utils';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
-
+import DirectoryActionTypes from '../../store/directory/directory.types';
 import Profile from '../../components/profile/profile.component';
 
 import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
@@ -13,14 +13,14 @@ import SearchField from '../search-field/search-field.component';
 import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
-import { tempChatData, tempInvitesList } from './temp_data';
+// import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ size, socket }) => {
   const [upperRect, upperRef] = useClientRect();
   const [height, setHeight] = useState(0);
 
   const [tab, setTab] = useState(TabNames.CHATS);
-  const { state: directoryState } = useContext(directoryStore);
+  const { state: directoryState, dispatch } = useContext(directoryStore);
 
   useEffect(() => {
     const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
@@ -44,33 +44,38 @@ const Sidebar = ({ size, socket }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
-  const [chatsList, setChatsList] = useState(tempChatData);
-  const [invitesList, setInvitesList] = useState(tempInvitesList);
+  const [chatsList, setChatsList] = useState([]);
+  const [invitesList, setInvitesList] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchAndSetUserData = async () => {
       const data = await Client.request('/user/data');
       console.log(data);
+      const {
+        friends = [],
+        chatrooms = [],
+        invitations = [],
+        displayName,
+        userId,
+        language,
+      } = data;
+      if (isMounted) {
+        setFriendsList(friends);
+        setChatsList(chatrooms);
+        setInvitesList(invitations);
+        setIsLoading(false);
+        setUser({ name: displayName, id: userId });
+        dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
+      }
     };
 
     console.log('Fetching user Data....');
     fetchAndSetUserData();
 
-    // .then(data => {
-    //   console.log('sidebar component data', data);
-    //   setFriendsList(data.friends.friends);
-    //   setChatsList([...chatsList, ...data.chats]);
-    //   setIsLoading(false);
-    //   console.log('friendsLIst', data.friends.friends);
-    //   setUser({
-    //     ...user,
-    //     id: data.userId,
-    //   });
-    //   console.log('user', {
-    //     ...user,
-    //     id: data.userId,
-    //   });
-    // });
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -95,7 +100,7 @@ const Sidebar = ({ size, socket }) => {
 
   return (
     <Box p={2} paddingBottom={0} height={'98vh'}>
-      {/* <Box paddingBottom={2} ref={upperRef}>
+      <Box paddingBottom={2} ref={upperRef}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
             <Profile {...user} moreOptions={{ exists: true }} />
@@ -112,7 +117,7 @@ const Sidebar = ({ size, socket }) => {
       </Box>
       <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
         <SidebarTabPanel value={tab} index={TabNames.CHATS}>
-          <SidebarTabPanelChats profilesList={chatsList} />
+          <SidebarTabPanelChats chatrooms={chatsList} userId={user.id} />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
           <SidebarTabPanelContacts
@@ -141,7 +146,7 @@ const Sidebar = ({ size, socket }) => {
             }))}
           />
         </SidebarTabPanel>
-      </Box> */}
+      </Box>
     </Box>
   );
 };

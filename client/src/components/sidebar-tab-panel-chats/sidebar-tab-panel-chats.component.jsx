@@ -6,7 +6,7 @@ import { Grid } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const SidebarTabPanelChats = ({ profilesList }) => {
+const SidebarTabPanelChats = ({ chatrooms, userId }) => {
   const { state: directoryState, dispatch } = useContext(directoryStore);
 
   const { currentlyActive } = directoryState;
@@ -16,12 +16,28 @@ const SidebarTabPanelChats = ({ profilesList }) => {
       type: DirectoryActionTypes.CLOSE_SIDEBAR,
     });
   };
-  const handleClick = event => {
+  const handleClick = chatId => {
+    console.log('event curret', chatId);
     dispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
-      payload: event.currentTarget.id,
+      payload: chatId,
     });
     hideSidebar();
+  };
+
+  const filterSelf = chatroom => chatroom.users.filter(user => user._id !== userId);
+
+  const checkIfAnyOnline = chatroom => {
+    filterSelf(chatroom).some(user => user.isOnline);
+  };
+
+  const generateNames = chatroom => {
+    const filteredRoom = filterSelf(chatroom);
+    if (filteredRoom.length === 1) return filteredRoom[0].displayName;
+    const names = filteredRoom.reduce((a, b) => {
+      return `${a}, ${b}`;
+    }, '');
+    return names.slice(0, 15);
   };
 
   return (
@@ -36,17 +52,19 @@ const SidebarTabPanelChats = ({ profilesList }) => {
         }
         */
 
-      profilesList.map(profile => (
-        <Grid item key={profile.id}>
-          <ProfileAsButton
-            key={profile.id}
-            id={profile.id}
-            {...profile}
-            handleClick={handleClick}
-            isActive={currentlyActive !== null && currentlyActive === profile.id.toString()}
-          />
-        </Grid>
-      ))}
+      chatrooms.map(chatroom => {
+        const { chatId } = chatroom;
+        return (
+          <Grid item key={chatId}>
+            <ProfileAsButton
+              name={generateNames(chatroom)}
+              {...chatroom}
+              handleClick={() => handleClick(chatId)}
+              isOnline={checkIfAnyOnline(chatroom)}
+            />
+          </Grid>
+        );
+      })}
     </Grid>
   );
 };
