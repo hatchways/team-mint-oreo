@@ -128,6 +128,7 @@ const getFriendsSocketsById = async id => {
 const getChatsById = async (id, limit = 50, skip = 0) => {
   try {
     const data = await User.findById(id, 'chatrooms', { limit, skip, sort: 'desc' });
+    console.log('GET CHATS BY ID:', data);
     return data.chatrooms;
   } catch (err) {
     throw new Error(500, 'Get Chats - ID', err);

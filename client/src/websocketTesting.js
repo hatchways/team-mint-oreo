@@ -6,12 +6,6 @@ const socket = io('http://localhost:3001');
 
 function WebsocketTesting() {
   const [userData, setUserData] = useState(false);
-  const [socketEvent, setSocketEvent] = useState({});
-
-  const onChange = e => {
-    const { name, value } = e.target;
-    setSocketEvent({ ...socketEvent, [name]: value });
-  };
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -151,10 +145,17 @@ function WebsocketTesting() {
           <button type="button" onClick={addFriendsToChatrooms}>
             Add Friends to chatroom
           </button>
-
           <button type="button" onClick={connectedSockets}>
             log connected sockets EMIT
           </button>
+          <form style={{ display: 'flex' }}>
+            <label>TO USER ID</label>
+            <input type="text" onChange={changeInputUser} />
+            <label>Message: </label>
+            <input type="text" onChange={changeInputUser} />
+
+            <button type="submit"> send message to this user</button>
+          </form>
         </div>
       </div>
     </>
