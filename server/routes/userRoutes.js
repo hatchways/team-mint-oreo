@@ -10,11 +10,19 @@ const Error = require('../utils/Error');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  const { email, password } = req.body;
-  validateCredentials(email, password);
-  const hashedPassword = await bcrypt.encrypt(password);
-  const { id = null } = await db.user.createUser({ email, password: hashedPassword });
-  if (id) res.sendStatus(201);
+  try {
+    const { email, password } = req.body;
+    validateCredentials(email, password);
+    const hashedPassword = await bcrypt.encrypt(password);
+    const { id = null } = await db.user.createUser({ email, password: hashedPassword });
+    if (id) res.sendStatus(201);
+  } catch (error) {
+    res.status(400).json({
+      error: {
+        message: 'Bad Request',
+      },
+    });
+  }
 });
 
 router.post('/login', async (req, res) => {

@@ -8,7 +8,7 @@ const app = require('../app.js');
 chai.should();
 chai.use(chaiHttp);
 
-describe('/test', () => {
+describe('ROUTE /test/', () => {
   describe('GET', () => {
     it('it should return JSON', done => {
       chai
@@ -19,7 +19,7 @@ describe('/test', () => {
           res.should.have.status(200);
           res.body.should.be.a('Object');
           res.body.should.have.property('id');
-          res.body.id.should.be.a('integer');
+          res.body.id.should.be.a('number');
           res.body.should.have.property('message');
           res.body.message.should.be.a('string');
           res.body.should.have.property('child');
