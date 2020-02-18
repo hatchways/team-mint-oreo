@@ -4,13 +4,11 @@ const { Schema } = mongoose;
 const invitationModel = new Schema(
   {
     fromUser: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: true,
     },
     toUser: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
+      type: String,
       required: true,
     },
   },

@@ -2,6 +2,7 @@ const socketio = require('socket.io');
 const db = require('../controllers');
 const onLogin = require('./login');
 const onSend = require('./sendMsg');
+const onFriendReq = require('./friendRequest');
 
 /* SOCKET METHODS */
 
@@ -40,19 +41,19 @@ const handleSocket = server => {
     });
 
     // current user is sending the friend an invitation request
-    socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
+    socket.on('friendRequestSent', async ({ fromUser, toUser }) => {
       // await addFriend(socket, userId, friendEmail);
       try {
-        const newInvitation = await db.invitation.createInvitation(userId, friendEmail);
+        const newInvitation = await db.invitation.createInvitation(fromUser, toUser);
 
         /* Maybe convert the userId into email? */
         /* Or we can possibly send the whole User query to fromUser & toUser
                 that was returned from mongo */
 
         // This socket identifies from who, to who, and the identifier of invitation itself
-        socket.to(friendEmail).emit('friendRequestReceived', {
-          fromUser: userId,
-          toUser: friendEmail,
+        socket.to(toUser).emit('friendRequestReceived', {
+          fromUser: fromUser,
+          toUser: toUser,
           invitatioin: newInvitation.id,
         });
       } catch (err) {
