@@ -31,6 +31,11 @@ app.use(express.static(join(__dirname, 'public')));
 app.use(tokenAuth);
 app.use(routes);
 
+// for testing purposes
+app.get('/test', (req, res) => {
+  res.status(200).send();
+});
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
