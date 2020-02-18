@@ -33,7 +33,14 @@ app.use(routes);
 
 // for testing purposes
 app.get('/test', (req, res) => {
-  res.status(200).send();
+  res.status(200).json({
+    id: 0,
+    message: 'OK - Im the parent',
+    child: {
+      id: 1,
+      message: 'I am a child element',
+    },
+  });
 });
 
 // catch 404 and forward to error handler

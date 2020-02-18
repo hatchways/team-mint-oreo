@@ -8,16 +8,25 @@ const app = require('../app.js');
 chai.should();
 chai.use(chaiHttp);
 
-describe('/GET test', () => {
-  it('it should return 200', done => {
-    chai
-      .request(app)
-      .get('/test/')
-      .send()
-      .end((err, res) => {
-        res.should.have.status(200);
-        done();
-      });
+describe('/test', () => {
+  describe('GET', () => {
+    it('it should return JSON', done => {
+      chai
+        .request(app)
+        .get('/test/')
+        .send()
+        .end((err, res) => {
+          res.should.have.status(200);
+          res.body.should.be.a('Object');
+          res.body.should.have.property('id');
+          res.body.id.should.be.a('integer');
+          res.body.should.have.property('message');
+          res.body.message.should.be.a('string');
+          res.body.should.have.property('child');
+          res.body.child.should.be.a('Object');
+          done();
+        });
+    });
   });
 });
 
