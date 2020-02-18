@@ -7,6 +7,10 @@ const chatroomSchema = new Schema({
     type: [Schema.Types.ObjectId],
     ref: 'User',
   },
+  isDM: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const Chatroom = mongoose.model('Chatroom', chatroomSchema);

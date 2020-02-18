@@ -4,6 +4,7 @@ const db = require('../controllers');
 const jwt = require('../services/jwtService');
 const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
+const { chatroomPromiseToObject } = require('../services/formatDataService');
 
 const Error = require('../utils/Error');
 
@@ -79,24 +80,46 @@ router.get('/invitation/:id', async (req, res) => {
 
 router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
-  const { getChatsById, getFriendsById, getFieldById } = db.user;
+  const { getChatsIdsById, getFriendsFieldsById, getFieldById } = db.user;
   const email = await getFieldById('email', userId);
   const displayName = await getFieldById('displayName', userId);
   // const avatar = await getFieldById('avatar', userId); // TODO
 
+  // TAB PANEL INFO NEEDED?
+  // When friend is clicked, chatroom searches for that userDM
+  // If it doesnt exist, retrieve from database
+
+  // CHATROOM TAB PANEL:
+  // get all user chat Ids
+  // use Id's to get members of chat
+  // return to frontend chatId, isDM, userInfo: {displayName, id, isOnline}, lastActivity: {<userId> : <timestamp>}
+
+  // FRIENDS TAB PANEL
+  // get all friends: {displayName, isOnline, id, language }
+
+  // INVITATION TAB PANEL
+  // (email) search for invitations
   const data = await Promise.all([
-    getChatsById(userId),
-    getFriendsById(userId),
+    getChatsIdsById(userId),
+    getFriendsFieldsById(['displayName', 'socketId', 'id', 'language'], userId),
     db.invitation.getInvitations(email),
   ]);
 
-  const [chats, friends, invitations] = data;
-  console.log(data);
+  const [chatIds, friends, invitations] = data;
+
+  const chats = await Promise.all(
+    chatIds.map(id => {
+      return db.chatroom.getUsersByChatId(id);
+    })
+  );
+
+  const chatrooms = chatroomPromiseToObject(chatIds, chats);
+
   res.status(200).json({
-    id: userId,
+    userId,
     displayName,
     // avatar,
-    chats,
+    chatrooms,
     friends,
     invitations,
   });

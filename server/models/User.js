@@ -14,7 +14,7 @@ const userSchema = new Schema(
       required: true,
       min: 6,
     },
-    displayName: String,
+    displayName: { type: String, default: '' },
     friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     language: {
       type: String,
@@ -24,15 +24,8 @@ const userSchema = new Schema(
     chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],
     socketId: {
       type: String,
-      default: undefined,
+      default: null,
     },
-    pendingInvitations: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Invitation',
-      },
-    ],
-    lastActivity: Date,
   },
   { timestamps: true }
 );

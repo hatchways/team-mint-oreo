@@ -5,7 +5,7 @@ const registerSocketId = (socket, userId) => {
 };
 
 const joinChatrooms = async (socket, userId) => {
-  const chatroomList = await db.user.getChatsById(userId);
+  const chatroomList = await db.user.getChatsIdsById(userId);
 
   // No chatrooms available
   if (!chatroomList || chatroomList.length <= 0) {

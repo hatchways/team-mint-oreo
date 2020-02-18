@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import sizeMe from 'react-sizeme';
 import { useClientRect } from '../../utils/react-utils';
-
+import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 
 import Profile from '../../components/profile/profile.component';
@@ -21,10 +21,6 @@ const Sidebar = ({ size, socket }) => {
 
   const [tab, setTab] = useState(TabNames.CHATS);
   const { state: directoryState } = useContext(directoryStore);
-
-  const changeTab = (event, newValue) => {
-    setTab(newValue);
-  };
 
   useEffect(() => {
     const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
@@ -51,31 +47,33 @@ const Sidebar = ({ size, socket }) => {
   const [chatsList, setChatsList] = useState(tempChatData);
   const [invitesList, setInvitesList] = useState(tempInvitesList);
 
-  const fetchUserData = async () => {
-    const response = await fetch('user/data');
-    const data = await response.json();
-    return data;
-  };
+  useEffect(() => {
+    const fetchAndSetUserData = async () => {
+      const data = await Client.request('/user/data');
+      console.log(data);
+    };
+
+    console.log('Fetching user Data....');
+    fetchAndSetUserData();
+
+    // .then(data => {
+    //   console.log('sidebar component data', data);
+    //   setFriendsList(data.friends.friends);
+    //   setChatsList([...chatsList, ...data.chats]);
+    //   setIsLoading(false);
+    //   console.log('friendsLIst', data.friends.friends);
+    //   setUser({
+    //     ...user,
+    //     id: data.userId,
+    //   });
+    //   console.log('user', {
+    //     ...user,
+    //     id: data.userId,
+    //   });
+    // });
+  }, []);
 
   useEffect(() => {
-    // mounting point.
-    console.log('Fetching user Data....');
-    fetchUserData().then(data => {
-      console.log('sidebar component data', data);
-      setFriendsList(data.friends.friends);
-      // TODO: replace placeholder later
-      setChatsList([...chatsList, ...data.chats]);
-      setIsLoading(false);
-      console.log('friendsLIst', data.friends.friends);
-      setUser({
-        ...user,
-        id: data.id,
-      });
-      console.log('user', {
-        ...user,
-        id: data.id,
-      });
-    });
     socket.on('userOnline', userId => {
       setOnlineFriends([...onlineFriends, userId]);
     });
@@ -89,11 +87,15 @@ const Sidebar = ({ size, socket }) => {
         secondary,
       });
     });
-  }, []);
+  });
+
+  const changeTab = (event, newValue) => {
+    setTab(newValue);
+  };
 
   return (
     <Box p={2} paddingBottom={0} height={'98vh'}>
-      <Box paddingBottom={2} ref={upperRef}>
+      {/* <Box paddingBottom={2} ref={upperRef}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
             <Profile {...user} moreOptions={{ exists: true }} />
@@ -139,7 +141,7 @@ const Sidebar = ({ size, socket }) => {
             }))}
           />
         </SidebarTabPanel>
-      </Box>
+      </Box> */}
     </Box>
   );
 };
