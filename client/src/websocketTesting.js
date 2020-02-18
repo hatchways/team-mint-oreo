@@ -148,14 +148,14 @@ function WebsocketTesting() {
           <button type="button" onClick={connectedSockets}>
             log connected sockets EMIT
           </button>
-          <form style={{ display: 'flex' }}>
+          {/* <form style={{ display: 'flex' }}>
             <label>TO USER ID</label>
             <input type="text" onChange={changeInputUser} />
             <label>Message: </label>
             <input type="text" onChange={changeInputUser} />
 
             <button type="submit"> send message to this user</button>
-          </form>
+          </form> */}
         </div>
       </div>
     </>

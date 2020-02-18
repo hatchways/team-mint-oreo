@@ -58,16 +58,16 @@ const addInvitationByEmail = async (userEmail, invitationId) => {
 };
 
 const checkFriendship = async (userEmail, friendEmail) => {
-    try {
-        const user = await User.findOne({ email: userEmail }).populate('friends', 'email');
-        const friendExists = user.friends.some((friend) => {
-            return friend.email === friendEmail
-        });
-        return friendExists;
-    } catch(err) {
-        throw new Error(500, 'Check Friendship', err);
-    }
-}
+  try {
+    const user = await User.findOne({ email: userEmail }).populate('friends', 'email');
+    const friendExists = user.friends.some(friend => {
+      return friend.email === friendEmail;
+    });
+    return friendExists;
+  } catch (err) {
+    throw new Error(500, 'Check Friendship', err);
+  }
+};
 
 const getByEmail = async email => {
   try {
@@ -127,15 +127,10 @@ const getFriendsSocketsById = async id => {
 
 const getChatsById = async (userId, limit = 50, skip = 0) => {
   try {
-<<<<<<< HEAD
-    const data = await User.findById(id, 'chatrooms', { limit, skip, sort: 'desc' });
-    console.log('GET CHATS BY ID:', data);
-=======
     const data = await User.findById(userId, 'chatrooms', { limit, skip, sort: 'desc' }).populate({
       path: 'chatrooms',
     });
     console.log('getchatsbyid', data);
->>>>>>> wip
     return data.chatrooms;
   } catch (err) {
     throw new Error(500, 'Get Chats - ID', err);

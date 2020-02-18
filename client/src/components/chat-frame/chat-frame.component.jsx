@@ -35,23 +35,14 @@ const ChatFrame = ({ socket, userId }) => {
       if (!chatId) return;
       let messages;
       const data = await Client.request(`/chat/messages/${chatId}`);
-<<<<<<< HEAD
-      console.log(data);
-=======
       console.log('chatFrame getMessages', data);
->>>>>>> wip
     };
 
     try {
       getMessages();
-<<<<<<< HEAD
-    } catch (err) { }
-    console.log('chatid is', chatId);
-=======
     } catch (err) {
       // TODO: handle error
     }
->>>>>>> wip
   }, [chatId]);
 
   return (
