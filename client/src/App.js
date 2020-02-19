@@ -26,7 +26,7 @@ function App() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [userId]);
 
   return (
     <MuiThemeProvider theme={theme}>
@@ -41,12 +41,15 @@ function App() {
             <Route
               exact
               path="/login"
-              render={() => (userId ? <Redirect to="/dashboard" /> : <Login />)}
+              render={() => (userId ? <Redirect to="/dashboard" /> : <Login setId={setUserId} />)}
             />
             <Route
               exact
               path="/dashboard"
-              render={() => (userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />)}
+              render={props => {
+                if (props.location.state) setUserId(props.location.state.id);
+                return userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />;
+              }}
             />
             <Route path="/register" component={Register} />
             <Route path="/testing" component={WebsocketTesting} />

@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
       .json({
         success: true,
         status: 200,
-        userData,
+        id,
       });
   } catch (err) {
     console.log(err);
@@ -62,20 +62,20 @@ router.get('/getUser', async (req, res) => {
 
 // WORK AFTER COMING BACK
 router.get('/invitation/:id', async (req, res) => {
-    try {
-        const { userId } = res.locals;
-        console.log(userId);
-        const dbUser = await db.user.getById(userId);
-        const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
-        return res.status(200).json({
-            success: true,
-            data: updatedInvitation
-        });
-    } catch(err) {
-        return res.status(err.status).json({
-            error: err.message
-        });
-    }
+  try {
+    const { userId } = res.locals;
+    console.log(userId);
+    const dbUser = await db.user.getById(userId);
+    const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
+    return res.status(200).json({
+      success: true,
+      data: updatedInvitation,
+    });
+  } catch (err) {
+    return res.status(err.status).json({
+      error: err.message,
+    });
+  }
 });
 
 router.get('/data', isAuthorized, async (req, res) => {
