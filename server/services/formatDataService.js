@@ -14,15 +14,20 @@ const replaceSocketIdWithStatus = array => {
 
 const initialChatroomFetch = (chatIds, promiseResult) => {
   const result = promiseResult.map((chatroom, i) => {
-    const removedSockets = replaceSocketIdWithStatus(chatroom);
-    return { chatId: chatIds[i], users: removedSockets };
+    const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom);
+    return { chatId: chatIds[i], users: usersWithOnlineStatus };
   });
-
   return result;
+};
+
+const orderByLatestLast = array => {
+  const sortedArray = array.sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt));
+  return sortedArray;
 };
 
 module.exports = {
   replaceSocketIdWithStatus,
   flattenArray,
   initialChatroomFetch,
+  orderByLatestLast,
 };

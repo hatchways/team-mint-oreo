@@ -21,8 +21,9 @@ const ChatFrame = ({ socket, userId }) => {
     const getMessages = async () => {
       // if not cached, get messages from db
       if (!chatId) return;
-      const data = await Client.request(`/chat/messages/${chatId}`);
-      setMessages(data.reverse());
+      const { messages: data = [] } = await Client.request(`/chat/messages/${chatId}`);
+      console.log('Chatframe data fetch: ', data);
+      setMessages(data);
       setIsLoading(false);
     };
 
@@ -37,10 +38,10 @@ const ChatFrame = ({ socket, userId }) => {
     socket.on('receiveMsg', msg => {
       setMessages([...messages, msg]);
     });
-  }, [messages]);
+  }, [messages, socket]);
 
   return (
-    <Box height={'100vh'} overflow={'hidden'}>
+    <Box height="100vh" overflow="hidden">
       {!isLoading && (
         <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
           <Grid item>
@@ -52,29 +53,16 @@ const ChatFrame = ({ socket, userId }) => {
             />
           </Grid>
           <Grid item>
-            <Box paddingLeft={1}>
-              <Grid
-                container
-                direction="column"
-                justify="flex-end"
-                alignItems="stretch"
-                spacing={2}
-              >
-                <Grid item>
-                  {/* <button onClick={logMessages}> CLICK ME</button> */}
-                  <ChatMessages
-                    messages={messages}
-                    showOriginalText={showOriginalText}
-                    userId={userId}
-                    className={classes.messageBoxHeight}
-                    language={language}
-                  />
-                </Grid>
-                <Grid item>
-                  <MessageField socket={socket} chatId={chatId} userId={userId} />
-                </Grid>
-              </Grid>
-            </Box>
+            <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
+              <ChatMessages
+                messages={messages}
+                showOriginalText={showOriginalText}
+                userId={userId}
+                className={classes.messageBoxHeight}
+                language={language}
+              />
+              <MessageField socket={socket} chatId={chatId} userId={userId} />
+            </Grid>
           </Grid>
         </Grid>
       )}

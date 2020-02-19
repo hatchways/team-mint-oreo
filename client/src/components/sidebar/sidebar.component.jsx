@@ -5,9 +5,8 @@ import { useClientRect } from '../../utils/react-utils';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
-import Profile from '../../components/profile/profile.component';
-
-import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
+import Profile from '../profile/profile.component';
+import Tabs, { TabNames } from '../tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
 import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
@@ -83,10 +82,10 @@ const Sidebar = ({ size, socket }) => {
       setOnlineFriends([...onlineFriends, userId]);
     });
     socket.on('receiveMsg', incommingMessage => {
-      const chatId = incommingMessage.chatId;
+      const { chatId } = chatId;
       // using original text for now. crop to first 16 characters
       const msgText = incommingMessage.originalText;
-      const secondary = msgText.length > 15 ? `${msgText.subString(0, 13)}...` : msgText;
+      const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
       setChatsList([...chatsList], {
         ...chatsList.find(chatRoom => chatRoom.id === chatId),
         secondary,
