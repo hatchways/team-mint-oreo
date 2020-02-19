@@ -42,7 +42,7 @@ const getUsersByChatId = async chatId => {
     const usersInChat = await Chatroom.findById(chatId).populate({
       path: 'users',
       model: 'User',
-      select: ['displayName', 'id', 'email', 'socketId'],
+      select: ['displayName', 'id', 'email', 'socketId', 'language'],
     });
     return usersInChat.users;
   } catch (err) {
@@ -58,14 +58,11 @@ const removeUser = async (userId, chatId) => {
   }
 };
 
-const getLanguagesAndIds = async chatId => {
+const getLanguages = async chatId => {
   try {
     const usersInChatroom = await getUsersByChatId(chatId);
-    const data = usersInChatroom.map(({ id, language }) => ({
-      id,
-      language,
-    }));
-    return data;
+    const data = new Set(usersInChatroom.map(user => user.language));
+    return [...data];
   } catch (err) {
     throw new Error(500, 'Get Language & ID from Chat', err);
   }
@@ -82,6 +79,6 @@ module.exports = {
   getChatroomById,
   getUsersByChatId,
   removeUser,
-  getLanguagesAndIds,
+  getLanguages,
   getAllByUserId,
 };

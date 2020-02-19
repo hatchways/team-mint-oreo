@@ -13,8 +13,12 @@ const joinChatrooms = async (socket, userId) => {
     return;
   }
 
-  chatroomList.forEach(room => socket.join(room));
+  console.log(chatroomList);
+  socket.join(chatroomList, err => {
+    console.log('rooms: ', socket.rooms);
+  });
 };
+
 const notifyFriends = async (socket, userId) => {
   const friendSocketList = await db.user.getFriendsSocketsById(userId);
   if (!friendSocketList || !friendSocketList.length) {

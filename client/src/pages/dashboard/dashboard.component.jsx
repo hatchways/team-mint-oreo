@@ -26,7 +26,6 @@ const Dashboard = ({ userId }) => {
 
   useEffect(() => {
     socket.emit('login', { userId });
-
     return () => {
       socket.disconnect();
     };

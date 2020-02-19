@@ -34,10 +34,10 @@ const handleSocket = server => {
       //  addChatroom(socket, userId, chatId);
     });
 
-    socket.on('sendMsg', async ({ userId, language, chatId, originalText }) => {
+    socket.on('sendMsg', async msgObject => {
       const translations = await onSend.translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
-      onSend.sendMessage(socket, outgoingMsg);
+      onSend.sendMessage(io, outgoingMsg);
       db.message.createMessage(outgoingMsg);
     });
 

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 
 import ProfileAsButton from '../profile/profile-as-button.container';
 import { Grid } from '@material-ui/core';
@@ -9,15 +9,12 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 const SidebarTabPanelChats = ({ chatrooms, userId }) => {
   const { state: directoryState, dispatch } = useContext(directoryStore);
 
-  const { currentlyActive } = directoryState;
-
   const hideSidebar = () => {
     dispatch({
       type: DirectoryActionTypes.CLOSE_SIDEBAR,
     });
   };
   const handleClick = chatId => {
-    console.log('event curret', chatId);
     dispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,

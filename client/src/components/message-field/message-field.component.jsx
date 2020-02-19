@@ -13,7 +13,10 @@ const MessageField = ({ socket, chatId, userId }) => {
 
   const onSubmit = e => {
     e.preventDefault();
-    if (chatId) socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
+    if (chatId) {
+      console.log('Sending msg to ', chatId);
+      socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
+    }
   };
 
   const classes = useStyles();
@@ -23,8 +26,6 @@ const MessageField = ({ socket, chatId, userId }) => {
         className={classes.input}
         placeholder="Type Something ... "
         inputProps={{ 'aria-label': 'search listing' }}
-        // value={msgObject.originalText}
-        // onChange={handleChange}
       />
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />

@@ -9,33 +9,21 @@ import { useStyles } from './chat-frame.styles';
 
 const ChatFrame = ({ socket, userId }) => {
   const classes = useStyles();
+
   const {
     state: { currentlyActive: chatId, language },
   } = useContext(directoryStore);
 
-  const [messages, setMessage] = useState([]);
+  const [messages, setMessages] = useState([]);
   const [showOriginalText, toggleText] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    // const msgObject = {
-    //   userId, // of sender
-    //   originalText,
-    //   translations: {
-    //     'id1': 'asdf',
-    //     'id2': 'asdf'
-    //   },
-    //   timestamp
-    // }
-    socket.on('receiveMsg', msg => {
-      console.log('msg received!', msg);
-      setMessage([...messages]);
-    });
-
     const getMessages = async () => {
       // if not cached, get messages from db
       if (!chatId) return;
-      let messages;
       const data = await Client.request(`/chat/messages/${chatId}`);
-      console.log('chatFrame getMessages', data);
+      setMessages(data.reverse());
+      setIsLoading(false);
     };
 
     try {
@@ -45,35 +33,51 @@ const ChatFrame = ({ socket, userId }) => {
     }
   }, [chatId]);
 
+  useEffect(() => {
+    socket.on('receiveMsg', msg => {
+      setMessages([...messages, msg]);
+    });
+  }, [messages]);
+
   return (
     <Box height={'100vh'} overflow={'hidden'}>
-      <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-        <Grid item>
-          <ChatHeader
-            toggleText={() => {
-              toggleText(!showOriginalText);
-            }}
-            chatId={chatId}
-          />
-        </Grid>
-        <Grid item>
-          <Box paddingLeft={1}>
-            <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-              <Grid item>
-                <ChatMessages
-                  messages={messages}
-                  showOriginalText={showOriginalText}
-                  userId={userId}
-                  className={classes.messageBoxHeight}
-                />
+      {!isLoading && (
+        <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
+          <Grid item>
+            <ChatHeader
+              toggleText={() => {
+                toggleText(!showOriginalText);
+              }}
+              chatId={chatId}
+            />
+          </Grid>
+          <Grid item>
+            <Box paddingLeft={1}>
+              <Grid
+                container
+                direction="column"
+                justify="flex-end"
+                alignItems="stretch"
+                spacing={2}
+              >
+                <Grid item>
+                  {/* <button onClick={logMessages}> CLICK ME</button> */}
+                  <ChatMessages
+                    messages={messages}
+                    showOriginalText={showOriginalText}
+                    userId={userId}
+                    className={classes.messageBoxHeight}
+                    language={language}
+                  />
+                </Grid>
+                <Grid item>
+                  <MessageField socket={socket} chatId={chatId} userId={userId} />
+                </Grid>
               </Grid>
-              <Grid item>
-                <MessageField socket={socket} chatId={chatId} userId={userId} language={language} />
-              </Grid>
-            </Grid>
-          </Box>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Box>
   );
 };
