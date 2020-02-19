@@ -3,6 +3,8 @@ const db = require('../controllers');
 const onLogin = require('./login');
 const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
+const mailService = require('../services/mailService');
+const uuidv4 = require('uuid/v4');
 
 /* SOCKET METHODS */
 
@@ -44,7 +46,23 @@ const handleSocket = server => {
     socket.on('friendRequestSent', async ({ fromUser, toUser }) => {
       // await addFriend(socket, userId, friendEmail);
       try {
-        const newInvitation = await db.invitation.createInvitation(fromUser, toUser);
+        const invExists = await db.invitation.invitationExists(fromUser, toUser);
+        const alreadyFriends = await db.user.checkFriendship(fromUser, toUser);
+        // check for friendship or existing invitation
+        // If it does, we don't send notification mail in a first place
+        if(invExists || alreadyFriends) {
+            throw new Error('Invitation / Friend already registered');
+        } else {
+            const randomId = uuidv4();
+
+            mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
+                if(err) throw err;
+                if(isSent) console.log('Email successfully sent');
+            });
+
+            const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
+            console.log(newInvitation, " has been created");
+        }
 
         /* Maybe convert the userId into email? */
         /* Or we can possibly send the whole User query to fromUser & toUser
@@ -68,7 +86,6 @@ const handleSocket = server => {
       try {
         await acceptInvitation(socket, userId, friendId);
         db.invitation.deleteInvitation(invitationId);
-        db.user.removeInvitation(userId, invitationId);
       } catch (err) {
         console.error(err);
       }

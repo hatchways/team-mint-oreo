@@ -69,8 +69,8 @@ function WebsocketTesting() {
     event.preventDefault();
     socket.emit('friendRequestSent', {
       fromUser: userData['email'],
-      // toUser: 'sang.m.lee@mail.mcgill.ca',
-      toUser: 'y7ahfd@hotmail.com',
+      toUser: 'sang.m.lee@mail.mcgill.ca',
+      // toUser: 'y7ahfd@hotmail.com',
       // userId: '5e4634be7cd7323b7891381c',
       // friendEmail: 'gg@gg.gg'
     });
@@ -80,8 +80,8 @@ function WebsocketTesting() {
     event.preventDefault();
     socket.emit('friendRequestAccepted', {
       userId: userData['_id'],
-      friendId: '5e4b0dc85009545cc427991e',
-      invitationId: '5e4b75bc20f0a678dcdfc7be',
+      friendId: '5e4c6c5d90632f9b04ca7c80',
+      invitationId: '5e4d70777ca2229258c7f5af',
     });
   };
   const createFakeFriends = () => {

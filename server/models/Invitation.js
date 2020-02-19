@@ -9,8 +9,11 @@ const invitationModel = new Schema(
     },
     toUser: {
       type: String,
-      required: true,
     },
+    code: {
+        type: String,
+        required: true
+    }
   },
   {
     timestamps: true,

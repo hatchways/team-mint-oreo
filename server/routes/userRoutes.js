@@ -59,6 +59,24 @@ router.get('/getUser', async (req, res) => {
   res.json(dbUser);
 });
 
+// WORK AFTER COMING BACK
+router.get('/invitation/:id', async (req, res) => {
+    try {
+        const { userId } = res.locals;
+        console.log(userId);
+        const dbUser = await db.user.getById(userId);
+        const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
+        return res.status(200).json({
+            success: true,
+            data: updatedInvitation
+        });
+    } catch(err) {
+        return res.status(err.status).json({
+            error: err.message
+        });
+    }
+});
+
 router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsById, getFriendsById, getFieldById } = db.user;
