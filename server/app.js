@@ -56,7 +56,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  if (process.env.NODE_ENV !== 'test') console.log('logging error', err.status);
+  console.log('logging error', err.status);
   if (err.status === 401) res.clearCookie('user');
   res.json({ error: err });
 });

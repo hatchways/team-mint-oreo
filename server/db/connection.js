@@ -10,8 +10,7 @@ const connectDB = async () => {
       useUnifiedTopology: true,
     });
 
-    if (process.env.NODE_ENV !== 'test')
-      console.log(`MongoDB connected at ${conn.connection.host}`);
+    console.log(`MongoDB connected at ${conn.connection.host}`);
   } catch (err) {
     console.error(err);
     process.exit(1); // Exit out of the app with a failure
