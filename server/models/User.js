@@ -14,25 +14,19 @@ const userSchema = new Schema(
       required: true,
       min: 6,
     },
-    displayName: String,
+    displayName: { type: String, default: '' },
     friends: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     language: {
       type: String,
       required: true,
       default: 'english',
     },
+    avatar: String,
     chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],
     socketId: {
       type: String,
-      default: undefined,
+      default: null,
     },
-    pendingInvitations: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Invitation',
-      },
-    ],
-    lastActivity: Date,
   },
   { timestamps: true }
 );

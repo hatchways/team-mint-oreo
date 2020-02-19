@@ -7,7 +7,7 @@ import { useStyles, IOSSwitch } from './chat-header.styles';
 import Client from '../../utils/HTTPClient';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const ChatHeader = ({ chatId }) => {
+const ChatHeader = ({ chatId, toggleText }) => {
   const { dispatch } = useContext(directoryStore);
 
   const [title, setTitle] = useState('Group Chat');
@@ -71,7 +71,7 @@ const ChatHeader = ({ chatId }) => {
           >
             <Grid item>
               <Grid component="label" container alignItems="center">
-                <IOSSwitch value="checkedA" color="primary" />
+                <IOSSwitch value="checkedA" color="primary" onClick={toggleText} />
 
                 <Grid item>Off</Grid>
               </Grid>

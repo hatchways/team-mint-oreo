@@ -17,8 +17,6 @@ export default function Login() {
   const [values, setValues] = useState({ email: '', password: '' });
   const history = useHistory();
 
-  // const [formState, setFormState] = useState({});
-
   const handleChange = event => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
@@ -34,9 +32,10 @@ export default function Login() {
 
     if (response.status !== 200) {
       alert('Login unsuccessful');
+      // TODO: Show error message
     } else {
-      alert('Login successful');
-      window.location.reload();
+      console.log('login successful');
+      history.push('/dashboard');
     }
   };
 
@@ -137,7 +136,7 @@ export default function Login() {
                   color="primary"
                   className={classes.submit}
                 >
-                  Sign Up
+                  Log in
                 </Button>
               </Grid>
               <Grid container>

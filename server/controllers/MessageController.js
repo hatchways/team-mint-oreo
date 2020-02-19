@@ -19,10 +19,7 @@ const createMessage = async msg => {
 
 const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
   try {
-    const messages = await Message.find({ chatId }, null, skip)
-      .limit(limit)
-      .sort('-createdAt');
-
+    const messages = await Message.find({ chatId }, null, { skip, limit }).sort('-createdAt');
     return messages;
   } catch (err) {
     throw new Error(500, 'Get Message - ID', err);

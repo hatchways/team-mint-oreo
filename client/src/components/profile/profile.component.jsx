@@ -11,7 +11,7 @@ const Profile = (
     secondary = '',
     notifications = 0,
     moreOptions = null,
-    avatar: { url, fallback },
+    avatar,
     handleApproval = null,
     handleDisapproval = null,
     hideStatus = true,
@@ -20,6 +20,13 @@ const Profile = (
   width = 400
 ) => {
   const classes = useStyles();
+
+  /* FIX THIS LATER */
+  const url = avatar?.url || '';
+  const fallback = avatar?.fallback || '';
+
+  /* *************** */
+
   return (
     <Box minWidth={width} maxWidth={width}>
       <Box p={2}>

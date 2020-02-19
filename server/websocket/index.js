@@ -35,10 +35,9 @@ const handleSocket = server => {
     });
 
     socket.on('sendMsg', async msgObject => {
-      // ⚠️ Check if first message, if first message, create chatroom
       const translations = await onSend.translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
-      onSend.sendMessage(socket, outgoingMsg);
+      onSend.sendMessage(io, outgoingMsg);
       db.message.createMessage(outgoingMsg);
     });
 
@@ -91,8 +90,13 @@ const handleSocket = server => {
       }
     });
 
-    socket.on('isTyping', () => {});
-    socket.on('endTyping', () => {});
+    socket.on('isTyping', (userId, chatId) => {
+      socket.to(chatId).emit('isTyping', { userId });
+    });
+    socket.on('endTyping', (userId, chatId) => {
+      socket.to(chatId).emit('endTyping', { userId });
+    });
+
     socket.on('searching', () => {});
 
     socket.on('test', () => {

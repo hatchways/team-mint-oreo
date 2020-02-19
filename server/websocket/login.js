@@ -5,7 +5,7 @@ const registerSocketId = (socket, userId) => {
 };
 
 const joinChatrooms = async (socket, userId) => {
-  const chatroomList = await db.user.getChatsById(userId);
+  const chatroomList = await db.user.getChatsIdsById(userId);
 
   // No chatrooms available
   if (!chatroomList || chatroomList.length <= 0) {
@@ -13,15 +13,19 @@ const joinChatrooms = async (socket, userId) => {
     return;
   }
 
-  chatroomList.forEach(room => socket.join(room));
+  console.log(chatroomList);
+  socket.join(chatroomList, err => {
+    console.log('rooms: ', socket.rooms);
+  });
 };
+
 const notifyFriends = async (socket, userId) => {
   const friendSocketList = await db.user.getFriendsSocketsById(userId);
   if (!friendSocketList || !friendSocketList.length) {
     console.log('No friends are online');
     return;
   }
-  friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', userId));
+  friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', { userId }));
 };
 
 module.exports = {

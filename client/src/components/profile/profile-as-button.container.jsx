@@ -13,15 +13,9 @@ const ProfileAsButton = ({ id, handleClick = () => {}, isActive = false, ...prop
     else setClassName(classes.unselected);
   }, [isActive]);
   return (
-    <CardActionArea
-      onClick={handleClick}
-      key={id}
-      id={id}
-      disableTouchRipple
-      className={` ${classes.rounded}`}
-    >
+    <CardActionArea onClick={handleClick} disableTouchRipple className={` ${classes.rounded}`}>
       <Box className={`${className} ${classes.pad10}  ${classes.rounded}`}>
-        <Profile {...props} id={id} />
+        <Profile {...props} />
       </Box>
     </CardActionArea>
   );

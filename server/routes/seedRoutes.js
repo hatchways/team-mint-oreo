@@ -31,4 +31,22 @@ router.get('/friends', async (req, res) => {
   }
 });
 
+router.get('/friendsToChat', async (req, res) => {
+  const { userId } = res.locals;
+  const { friends } = await db.user.getFriendsFieldsById('id', userId);
+
+  const chatIds = await Promise.all(
+    friends.map(friend => {
+      return db.chatroom.createChatroom([userId, friend['_id']]);
+    })
+  );
+  console.log('SEED, ADD FRIENDS TO CHAT', chatIds);
+
+  Promise.all(
+    chatIds.map(id => {
+      return db.user.addChatById(userId, id);
+    })
+  );
+});
+
 module.exports = router;

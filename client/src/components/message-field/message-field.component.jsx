@@ -4,21 +4,20 @@ import Send from '@material-ui/icons/Send';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { useStyles } from './message-field.styles';
 
-const MessageField = ({ emit, chatId, userId }) => {
-  const [msgObject, setMsgObject] = useState({ chatId: '', userId: '', originalText: '' });
+const MessageField = ({ socket, chatId, userId }) => {
+  const [msgContent, setMsgContent] = useState('');
 
   const handleChange = e => {
-    setMsgObject({ ...msgObject, originalText: e.target.value });
+    setMsgContent(e.target.value);
   };
 
   const onSubmit = e => {
     e.preventDefault();
-    emit('sendMsg', msgObject);
+    if (chatId) {
+      console.log('Sending msg to ', chatId);
+      socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
+    }
   };
-
-  useEffect(() => {
-    setMsgObject({ chatId, userId, originalText: '' });
-  }, [chatId, userId]);
 
   const classes = useStyles();
   return (
@@ -27,8 +26,6 @@ const MessageField = ({ emit, chatId, userId }) => {
         className={classes.input}
         placeholder="Type Something ... "
         inputProps={{ 'aria-label': 'search listing' }}
-        // value={msgObject.originalText}
-        // onChange={handleChange}
       />
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />

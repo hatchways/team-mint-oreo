@@ -1,5 +1,11 @@
 const User = require('../models/User');
 
+/**USER METHODS */
+
+const getAllUsers = () => {
+  return User.find();
+};
+
 const createUser = async userData => {
   console.log(`Creating User...${userData.email}`);
   const newUser = new User(userData);
@@ -11,17 +17,65 @@ const createUser = async userData => {
   }
 };
 
-const addChatById = async (userId, chatId) => {
+const getById = async id => {
   try {
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { $addToSet: { chatrooms: chatId } },
-      { new: true }
-    );
+    const data = await User.findById(id);
+    return data;
   } catch (err) {
-    throw new Error(500, 'Add Chats - ID', err);
+    throw new Error(500, 'Get User - ID', err);
   }
 };
+
+const getByEmail = async email => {
+  try {
+    const user = await User.findOne({ email });
+    return user;
+  } catch (err) {
+    throw new Error(500, 'Get User - Email', err);
+  }
+};
+
+const getFieldById = async (field, id) => {
+  try {
+    const data = await User.findById(id, `${field}`);
+    console.log(`field: ${field} => `, data);
+    return data;
+  } catch (err) {
+    throw new Error(500, 'Get (Field) - ID', err);
+  }
+};
+
+const checkFriendship = async (userEmail, friendEmail) => {
+  try {
+    const user = await User.findOne({ email: userEmail }).populate('friends', 'email');
+    const friendExists = user.friends.some(friend => {
+      return friend.email === friendEmail;
+    });
+    return friendExists;
+  } catch (err) {
+    throw new Error(500, 'Check Friendship', err);
+  }
+};
+
+/** USER SOCKET METHODS */
+
+const setSocketIdById = async (userId, socketId) => {
+  try {
+    const data = await User.findByIdAndUpdate(userId, { socketId }, { new: true });
+  } catch (err) {
+    throw new Error(500, 'Get SocketID - ID', err);
+  }
+};
+
+const clearSocketId = socketId => {
+  try {
+    User.findOneAndUpdate({ socketId }, { socketId: undefined });
+  } catch (err) {
+    throw new Error(500, 'Clear SocketID', err);
+  }
+};
+
+/**FRIEND METHODS */
 
 const addFriend = async (userId, friendId) => {
   try {
@@ -44,52 +98,6 @@ const addFriend = async (userId, friendId) => {
   }
 };
 
-const addInvitationByEmail = async (userEmail, invitationId) => {
-  try {
-    const updatedUser = await User.findOneAndUpdate(
-      { email: userEmail },
-      { $addToSet: { pendingInvitations: invitationId } },
-      { new: true }
-    );
-    console.log('User Updated: ', updatedUser);
-  } catch (err) {
-    throw new Error(500, 'Add Invitation - ID', err);
-  }
-};
-
-const checkFriendship = async (userEmail, friendEmail) => {
-    try {
-        const user = await User.findOne({ email: userEmail }).populate('friends', 'email');
-        const friendExists = user.friends.some((friend) => {
-            return friend.email === friendEmail
-        });
-        return friendExists;
-    } catch(err) {
-        throw new Error(500, 'Check Friendship', err);
-    }
-}
-
-const getByEmail = async email => {
-  try {
-    const user = await User.findOne({ email });
-    return user;
-  } catch (err) {
-    throw new Error(500, 'Get User - Email', err);
-  }
-};
-
-const getAllUsers = () => {
-  return User.find();
-};
-
-const getById = async id => {
-  try {
-    const data = await User.findById(id).populate('friends');
-    return data;
-  } catch (err) {
-    throw new Error(500, 'Get User - ID', err);
-  }
-};
 const getFriendsById = async id => {
   try {
     // find the user with by the id and get the friends field
@@ -104,10 +112,13 @@ const getFriendsById = async id => {
   }
 };
 
-const getFriendsFieldsById = async (id, fields) => {
+const getFriendsFieldsById = async (fields, id) => {
   try {
-    const data = await User.findById(id, 'friends').populate({ path: 'friends', select: fields });
-    return data;
+    const { friends } = await User.findById(id, 'friends').populate({
+      path: 'friends',
+      select: fields,
+    });
+    return friends;
   } catch (err) {
     throw new Error(500, 'Get Friends - ID', err);
   }
@@ -125,68 +136,72 @@ const getFriendsSocketsById = async id => {
   }
 };
 
-const getChatsById = async (id, limit = 50, skip = 0) => {
+/**CHATROOM METHODS */
+
+const getChatsIdsById = async (userId, limit = 50, skip = 0) => {
   try {
-    const data = await User.findById(id, 'chatrooms', { limit, skip, sort: 'desc' });
+    const data = await User.findById(userId, 'chatrooms', { limit, skip, sort: 'desc' }).populate({
+      path: 'chatrooms',
+    });
+    console.log('getchatsbyid', data);
     return data.chatrooms;
   } catch (err) {
     throw new Error(500, 'Get Chats - ID', err);
   }
 };
 
-const getFieldById = async (field, id) => {
+const addChatById = async (userId, chatId) => {
   try {
-    const data = await User.findById(id, `${field}`);
-    console.log(`field: ${field} => `, data);
-    return data;
-  } catch (err) {
-    throw new Error(500, 'Get (Field) - ID', err);
-  }
-};
-
-const setSocketIdById = async (userId, socketId) => {
-  try {
-    const data = await User.findByIdAndUpdate(userId, { socketId }, { new: true });
-  } catch (err) {
-    throw new Error(500, 'Get SocketID - ID', err);
-  }
-};
-
-const clearSocketId = socketId => {
-  try {
-    User.findOneAndUpdate({ socketId }, { socketId: undefined });
-  } catch (err) {
-    throw new Error(500, 'Clear SocketID', err);
-  }
-};
-
-const removeInvitation = async (userId, invitationId) => {
-  try {
-    const data = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       userId,
-      { $pull: { pendingInvitations: invitationId } },
+      { $addToSet: { chatrooms: chatId } },
       { new: true }
     );
   } catch (err) {
-    throw new Error(500, 'Remove Invitation - ID', err);
+    throw new Error(500, 'Add Chats - ID', err);
   }
 };
+
+// const addInvitationById = async (userId, invitationId) => {
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(
+//       userId,
+//       { $addToSet: { pendingInvitations: invitationId } },
+//       { new: true }
+//     );
+//     console.log('User Updated: ', updatedUser);
+//   } catch (err) {
+//     throw new Error(500, 'Add Invitation - ID', err);
+//   }
+// };
+
+// const removeInvitation = async (userId, invitationId) => {
+//   try {
+//     const data = await User.findByIdAndUpdate(
+//       userId,
+//       { $pull: { pendingInvitations: invitationId } },
+//       { new: true }
+//     );
+//   } catch (err) {
+//     throw new Error(500, 'Remove Invitation - ID', err);
+//   }
+// };
 
 module.exports = {
   createUser,
   addChatById,
-  addInvitationByEmail,
   addFriend,
   checkFriendship,
   getByEmail,
   getById,
   getFriendsById,
-  getChatsById,
+  getChatsIdsById,
   getFieldById,
   setSocketIdById,
   clearSocketId,
   getFriendsSocketsById,
   getAllUsers,
-  removeInvitation,
+  // addInvitationById,
+  // removeInvitation,
   getFriendsFieldsById,
 };

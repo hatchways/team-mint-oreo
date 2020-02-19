@@ -2,29 +2,24 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import sizeMe from 'react-sizeme';
 import { useClientRect } from '../../utils/react-utils';
-
+import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
-
-import Profile from '../../components/profile/profile.component';
-
-import { default as Tabs, TabNames } from '../../components/tabs/tabs.component';
+import DirectoryActionTypes from '../../store/directory/directory.types';
+import Profile from '../profile/profile.component';
+import Tabs, { TabNames } from '../tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
 import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
-import { tempChatData, tempInvitesList } from './temp_data';
+// import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ size, socket }) => {
   const [upperRect, upperRef] = useClientRect();
   const [height, setHeight] = useState(0);
 
   const [tab, setTab] = useState(TabNames.CHATS);
-  const { state: directoryState } = useContext(directoryStore);
-
-  const changeTab = (event, newValue) => {
-    setTab(newValue);
-  };
+  const { state: directoryState, dispatch } = useContext(directoryStore);
 
   useEffect(() => {
     const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
@@ -48,48 +43,59 @@ const Sidebar = ({ size, socket }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
-  const [chatsList, setChatsList] = useState(tempChatData);
-  const [invitesList, setInvitesList] = useState(tempInvitesList);
-
-  const fetchUserData = async () => {
-    const response = await fetch('user/data');
-    const data = await response.json();
-    return data;
-  };
+  const [chatsList, setChatsList] = useState([]);
+  const [invitesList, setInvitesList] = useState([]);
 
   useEffect(() => {
-    // mounting point.
-    console.log('Fetching user Data....');
-    fetchUserData().then(data => {
+    let isMounted = true;
+    const fetchAndSetUserData = async () => {
+      const data = await Client.request('/user/data');
       console.log(data);
-      setFriendsList(data.friends.friends);
-      // TODO: replace placeholder later
-      setChatsList([...chatsList, ...data.chats]);
-      setIsLoading(false);
-      console.log('friendsLIst', data.friends.friends);
-      setUser({
-        ...user,
-        id: data.id,
-      });
-      console.log('user', {
-        ...user,
-        id: data.id,
-      });
-    });
+      const {
+        friends = [],
+        chatrooms = [],
+        invitations = [],
+        displayName,
+        userId,
+        language,
+      } = data;
+      if (isMounted) {
+        setFriendsList(friends);
+        setChatsList(chatrooms);
+        setInvitesList(invitations);
+        setIsLoading(false);
+        setUser({ name: displayName, id: userId });
+        dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
+      }
+    };
+
+    console.log('Fetching user Data....');
+    fetchAndSetUserData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
     socket.on('userOnline', userId => {
       setOnlineFriends([...onlineFriends, userId]);
     });
     socket.on('receiveMsg', incommingMessage => {
-      const chatId = incommingMessage.chatId;
+      const { chatId } = chatId;
       // using original text for now. crop to first 16 characters
       const msgText = incommingMessage.originalText;
-      const secondary = msgText.length > 15 ? `${msgText.subString(0, 13)}...` : msgText;
+      const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
       setChatsList([...chatsList], {
         ...chatsList.find(chatRoom => chatRoom.id === chatId),
         secondary,
       });
     });
-  }, []);
+  });
+
+  const changeTab = (event, newValue) => {
+    setTab(newValue);
+  };
 
   return (
     <Box p={2} paddingBottom={0} height={'98vh'}>
@@ -110,7 +116,7 @@ const Sidebar = ({ size, socket }) => {
       </Box>
       <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
         <SidebarTabPanel value={tab} index={TabNames.CHATS}>
-          <SidebarTabPanelChats profilesList={chatsList} />
+          <SidebarTabPanelChats chatrooms={chatsList} userId={user.id} />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
           <SidebarTabPanelContacts

@@ -6,12 +6,6 @@ const socket = io('http://localhost:3001');
 
 function WebsocketTesting() {
   const [userData, setUserData] = useState(false);
-  const [socketEvent, setSocketEvent] = useState({});
-
-  const onChange = e => {
-    const { name, value } = e.target;
-    setSocketEvent({ ...socketEvent, [name]: value });
-  };
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -91,8 +85,12 @@ function WebsocketTesting() {
     fetch('/seed/rooms');
   };
 
-  const emitSocket = () => {
+  const getUserData = () => {
     fetch('/user/data');
+  };
+
+  const addFriendsToChatrooms = () => {
+    fetch('/seed/friendsToChat');
   };
 
   return (
@@ -100,14 +98,14 @@ function WebsocketTesting() {
       <div style={{ display: 'flex' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <p>{`USER HAS VALID JWT: ${!!userData}`}</p>
-          <p>{`USERID: ${userData['_id']}`}</p>
+          <p>{`USERID: ${userData?.['_id']}`}</p>
           <div style={{ display: 'flex' }}>
             <p>Friends: </p>
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {userData.friends &&
+              {userData?.friends &&
                 userData.friends.map(friend => (
                   <p>
-                    {friend['_id']}: {friend.displayName}
+                    {friend?.['_id']}: {friend.displayName}
                   </p>
                 ))}
             </div>
@@ -124,8 +122,8 @@ function WebsocketTesting() {
           <button type="button" onClick={logout}>
             LOGOUT
           </button>
-          <button type="button" onClick={emitSocket}>
-            SOCKET EMIT
+          <button type="button" onClick={getUserData}>
+            GET USER DATA
           </button>
           <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
           <br />
@@ -144,10 +142,20 @@ function WebsocketTesting() {
           <button type="button" onClick={createFakeFriends}>
             SEED FRIENDS
           </button>
-
+          <button type="button" onClick={addFriendsToChatrooms}>
+            Add Friends to chatroom
+          </button>
           <button type="button" onClick={connectedSockets}>
             log connected sockets EMIT
           </button>
+          {/* <form style={{ display: 'flex' }}>
+            <label>TO USER ID</label>
+            <input type="text" onChange={changeInputUser} />
+            <label>Message: </label>
+            <input type="text" onChange={changeInputUser} />
+
+            <button type="submit"> send message to this user</button>
+          </form> */}
         </div>
       </div>
     </>
