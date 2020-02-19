@@ -57,9 +57,9 @@ function WebsocketTesting() {
     event.preventDefault();
     if (message) {
       socket.emit('sendMsg', {
-        userId: '5e459bd631f1035e2811137d',
+        userId: userData['_id'],
         // userId: '5e4634be7cd7323b7891381c',
-        chatId: '5e45f6f81c9d440000a138fe',
+        chatId: '5e4817349395a70f90fb6392',
         originalText: message,
       });
     }
@@ -68,8 +68,9 @@ function WebsocketTesting() {
   const sendFriendReq = event => {
     event.preventDefault();
     socket.emit('friendRequestSent', {
-      userId: '5e459bd631f1035e2811137d',
-      friendEmail: 'sang.m.lee@mail.mcgill.ca',
+      fromUser: userData['email'],
+      toUser: 'sang.m.lee@mail.mcgill.ca',
+      // toUser: 'y7ahfd@hotmail.com',
       // userId: '5e4634be7cd7323b7891381c',
       // friendEmail: 'gg@gg.gg'
     });
@@ -78,9 +79,9 @@ function WebsocketTesting() {
   const acceptFriendReq = event => {
     event.preventDefault();
     socket.emit('friendRequestAccepted', {
-      userId: '5e459bd631f1035e2811137d',
-      friendId: '5e4634be7cd7323b7891381c',
-      invitationId: '5e472c167607676f241d4240',
+      userId: userData['_id'],
+      friendId: '5e4c6c5d90632f9b04ca7c80',
+      invitationId: '5e4d70777ca2229258c7f5af',
     });
   };
   const createFakeFriends = () => {

@@ -2,6 +2,9 @@ const socketio = require('socket.io');
 const db = require('../controllers');
 const onLogin = require('./login');
 const onSend = require('./sendMsg');
+const onFriendReq = require('./friendRequest');
+const mailService = require('../services/mailService');
+const uuidv4 = require('uuid/v4');
 
 /* SOCKET METHODS */
 
@@ -40,19 +43,35 @@ const handleSocket = server => {
     });
 
     // current user is sending the friend an invitation request
-    socket.on('friendRequestSent', async ({ userId, friendEmail }) => {
+    socket.on('friendRequestSent', async ({ fromUser, toUser }) => {
       // await addFriend(socket, userId, friendEmail);
       try {
-        const newInvitation = await db.invitation.createInvitation(userId, friendEmail);
+        const invExists = await db.invitation.invitationExists(fromUser, toUser);
+        const alreadyFriends = await db.user.checkFriendship(fromUser, toUser);
+        // check for friendship or existing invitation
+        // If it does, we don't send notification mail in a first place
+        if(invExists || alreadyFriends) {
+            throw new Error('Invitation / Friend already registered');
+        } else {
+            const randomId = uuidv4();
+
+            mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
+                if(err) throw err;
+                if(isSent) console.log('Email successfully sent');
+            });
+
+            const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
+            console.log(newInvitation, " has been created");
+        }
 
         /* Maybe convert the userId into email? */
         /* Or we can possibly send the whole User query to fromUser & toUser
                 that was returned from mongo */
 
         // This socket identifies from who, to who, and the identifier of invitation itself
-        socket.to(friendEmail).emit('friendRequestReceived', {
-          fromUser: userId,
-          toUser: friendEmail,
+        socket.to(toUser).emit('friendRequestReceived', {
+          fromUser: fromUser,
+          toUser: toUser,
           invitatioin: newInvitation.id,
         });
       } catch (err) {
@@ -67,7 +86,6 @@ const handleSocket = server => {
       try {
         await acceptInvitation(socket, userId, friendId);
         db.invitation.deleteInvitation(invitationId);
-        db.user.removeInvitation(userId, invitationId);
       } catch (err) {
         console.error(err);
       }

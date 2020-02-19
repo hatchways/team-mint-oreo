@@ -44,10 +44,10 @@ const addFriend = async (userId, friendId) => {
   }
 };
 
-const addInvitationById = async (userId, invitationId) => {
+const addInvitationByEmail = async (userEmail, invitationId) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
+    const updatedUser = await User.findOneAndUpdate(
+      { email: userEmail },
       { $addToSet: { pendingInvitations: invitationId } },
       { new: true }
     );
@@ -56,6 +56,18 @@ const addInvitationById = async (userId, invitationId) => {
     throw new Error(500, 'Add Invitation - ID', err);
   }
 };
+
+const checkFriendship = async (userEmail, friendEmail) => {
+    try {
+        const user = await User.findOne({ email: userEmail }).populate('friends', 'email');
+        const friendExists = user.friends.some((friend) => {
+            return friend.email === friendEmail
+        });
+        return friendExists;
+    } catch(err) {
+        throw new Error(500, 'Check Friendship', err);
+    }
+}
 
 const getByEmail = async email => {
   try {
@@ -163,8 +175,9 @@ const removeInvitation = async (userId, invitationId) => {
 module.exports = {
   createUser,
   addChatById,
-  addInvitationById,
+  addInvitationByEmail,
   addFriend,
+  checkFriendship,
   getByEmail,
   getById,
   getFriendsById,
