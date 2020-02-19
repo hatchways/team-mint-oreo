@@ -4,13 +4,17 @@ require('dotenv').config({ path: dotEnvPath });
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+const sinon = require('sinon');
 const app = require('../app.js');
 chai.should();
 chai.use(chaiHttp);
 
+const mongoose = require('mongoose');
+const dbHandler = require('./db-handler');
+
 describe('ROUTE /user/', () => {
   describe('GET /register', () => {
-    it('it should return 404', done => {
+    it('should return 404', done => {
       chai
         .request(app)
         .get('/user/register')
@@ -26,28 +30,11 @@ describe('ROUTE /user/', () => {
     });
   });
   describe('POST /register', () => {
-    it('it should return 400 when given no data', done => {
+    it('should return 400 when given no data', done => {
       chai
         .request(app)
         .post('/user/register')
         .send()
-        .end((err, res) => {
-          res.should.have.status(400);
-          res.body.should.be.a('Object');
-          res.body.should.have.property('error');
-          res.body.error.should.be.a('Object');
-          res.body.error.should.have.property('message').eql('Bad Request');
-          done();
-        });
-    });
-    it('it should return 400 when given bad data', done => {
-      const data = {
-        email: '',
-      };
-      chai
-        .request(app)
-        .post('/user/register')
-        .send(data)
         .end((err, res) => {
           res.should.have.status(400);
           res.body.should.be.a('Object');
