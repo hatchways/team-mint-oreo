@@ -33,28 +33,47 @@ describe('ROUTE /user/', () => {
   });
   describe('POST /register', () => {
     before(async () => {
+      console.log('connect');
       await dbHandler.connect();
     });
     beforeEach(() => {});
     afterEach(async () => {
+      console.log('clear');
       await dbHandler.clearDatabase();
     });
     after(async () => {
+      console.log('close');
       await dbHandler.closeDatabase();
     });
     it('should create User when given proper data', done => {
       chai
         .request(app)
         .post('/user/register')
-        .send({
-          email: 'example@example.com',
-          password: 'password12345',
-        })
+        .send(exampleUser)
         .end((err, res) => {
           res.should.have.status(201);
+          console.log('body', res.body);
           done();
         });
     });
+    /* feature currently unimplemented, test will fail
+    it('should disallow multiple users with the same email', done => {
+      chai
+        .request(app)
+        .post('/user/register')
+        .send(exampleUser)
+        .end((err, res) => {
+          res.should.have.status(201);
+          chai
+            .request(app)
+            .post('/user/register')
+            .send(exampleUser)
+            .end((err, res) => {
+              res.should.have.status(400);
+              done();
+            });
+        });
+    }); */
 
     it('should return 400 when given no data', done => {
       chai
@@ -72,3 +91,8 @@ describe('ROUTE /user/', () => {
     });
   });
 });
+
+const exampleUser = {
+  email: 'example@example.com',
+  password: 'password12345',
+};
