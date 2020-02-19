@@ -14,7 +14,9 @@ router.post('/register', async (req, res) => {
     const { email, password } = req.body;
     validateCredentials(email, password);
     const hashedPassword = await bcrypt.encrypt(password);
-    const { id = null } = await db.user.createUser({ email, password: hashedPassword });
+    const dbResponse = await db.user.createUser({ email, password: hashedPassword });
+    console.log('dbResponse', dbResponse);
+    const { id = null } = dbResponse;
     if (id) res.sendStatus(201);
   } catch (error) {
     res.status(400).json({

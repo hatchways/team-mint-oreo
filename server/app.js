@@ -20,7 +20,7 @@ const app = express();
 // Start the DB
 connectDB();
 
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'test') app.use(logger('dev'));
 app.use(json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
@@ -56,7 +56,7 @@ app.use((err, req, res, next) => {
 
   // render the error page
   res.status(err.status || 500);
-  console.log('logging error', err.status);
+  if (process.env.NODE_ENV !== 'test') console.log('logging error', err.status);
   if (err.status === 401) res.clearCookie('user');
   res.json({ error: err });
 });
