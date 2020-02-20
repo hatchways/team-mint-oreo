@@ -20,6 +20,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
       default: 'english',
+      lowercase: true,
+      trim: true,
     },
     avatar: String,
     chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],

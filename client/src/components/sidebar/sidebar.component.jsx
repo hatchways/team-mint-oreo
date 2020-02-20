@@ -93,12 +93,10 @@ const Sidebar = ({ size, socket }) => {
     // });
   });
 
-  const onContactClick = async friendUserId => {
-    console.log(friendUserId);
+  const onContactClick = async friendDmId => {
+    console.log(friendDmId);
     // search for existing chatroom in state
-    let userDMRoom = chatsList.find(
-      room => room.isDM && room.users.some(user => user._id === friendUserId)
-    );
+    let userDMRoom = chatsList.find(chat => chat.id === friendDmId);
     if (!userDMRoom) {
       userDMRoom = await Client.request('/endpointthatgetsdmroom');
     }

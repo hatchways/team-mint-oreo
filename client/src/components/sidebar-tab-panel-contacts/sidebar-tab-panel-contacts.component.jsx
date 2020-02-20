@@ -32,7 +32,7 @@ const SidebarTabPanelContacts = ({ contactList, user, clickHandler }) => {
             {...contact}
             name={contact.displayName}
             hideStatus={false}
-            handleClick={() => clickHandler(contact['_id'])}
+            handleClick={() => clickHandler(contact.dmChatId)}
           />
         </Grid>
       ))}

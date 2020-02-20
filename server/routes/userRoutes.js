@@ -96,13 +96,14 @@ router.get('/data', isAuthorized, async (req, res) => {
   // return to frontend chatId, isDM, userInfo: {displayName, id, isOnline, avatar}, lastActivity: {<userId> : <timestamp>}
 
   // FRIENDS TAB PANEL
-  // get all friends: {displayName, isOnline, id, email, avatar }
+  // get all friends: {displayName, isOnline, id, avatar }
+  // should also contain the dm chat id
 
   // INVITATION TAB PANEL
   // (email) search for invitations
   const data = await Promise.all([
     getChatsIdsById(userId),
-    getFriendsFieldsById(['displayName', 'socketId', 'id', 'email'], userId),
+    getFriendsFieldsById(['displayName', 'socketId', 'id', 'avatar'], userId),
     db.invitation.getInvitations(email),
   ]);
 
@@ -116,8 +117,16 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
-  const chatrooms = format.initialChatroomFetch(chatroomsWithUsers);
-  const friends = format.replaceSocketIdWithStatus(friendsData);
+  const friendsDmIds = await Promise.all(
+    friendsData.map(friend => {
+      return db.chatroom.getDmIdOfUsers(userId, friend.id);
+    })
+  );
+
+  console.log('FRIENDS DM IDS', friendsDmIds);
+
+  const chatrooms = format.chatroomData(chatroomsWithUsers);
+  const friends = format.friendsData(friendsData, friendsDmIds);
 
   res.status(200).json({
     userId,

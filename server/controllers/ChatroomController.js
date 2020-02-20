@@ -76,6 +76,11 @@ const getAllByUserId = async userId => {
   console.log('getallusersbyid', data);
 };
 
+const getDmIdOfUsers = async (userId, friendId) => {
+  const { id } = await Chatroom.findOne({ isDM: true, users: { $all: [userId, friendId] } }, 'id');
+  return id;
+};
+
 module.exports = {
   addUser,
   createChatroom,
@@ -84,4 +89,5 @@ module.exports = {
   removeUser,
   getLanguages,
   getAllByUserId,
+  getDmIdOfUsers,
 };

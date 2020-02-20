@@ -6,13 +6,13 @@ const flattenArray = array => {
 
 const replaceSocketIdWithStatus = userList => {
   return userList.map(user => {
-    const { socketId, _id, email, displayName, avatar } = user;
-    const userObject = { _id, email, displayName, avatar, isOnline: !!socketId };
+    const { socketId, _id, displayName, avatar } = user;
+    const userObject = { _id, displayName, avatar, isOnline: !!socketId };
     return userObject;
   });
 };
 
-const initialChatroomFetch = chatroomData => {
+const chatroomData = chatroomData => {
   /**
    * This function should take an array of chatroom objects, containing their
    * status as a DM chatroom, their ChatID, and the user's object.
@@ -33,6 +33,15 @@ const initialChatroomFetch = chatroomData => {
   return result;
 };
 
+const friendsData = (friendsData, DmIds) => {
+  const formattedFriends = replaceSocketIdWithStatus(friendsData);
+  const friendsWithDmInfo = formattedFriends.map((friend, i) => ({
+    ...friend,
+    dmChatId: DmIds[i],
+  }));
+  return friendsWithDmInfo;
+};
+
 const orderByLatestLast = array => {
   const sortedArray = array.sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt));
   return sortedArray;
@@ -41,6 +50,7 @@ const orderByLatestLast = array => {
 module.exports = {
   replaceSocketIdWithStatus,
   flattenArray,
-  initialChatroomFetch,
+  chatroomData,
   orderByLatestLast,
+  friendsData,
 };
