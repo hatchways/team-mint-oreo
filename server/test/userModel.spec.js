@@ -1,5 +1,4 @@
 var expect = require('chai').expect;
-const mongoose = require('mongoose');
 const dbHandler = require('./db-handler');
 
 var User = require('../models/User');
@@ -15,7 +14,7 @@ describe('user', () => {
   });
 });
 
-describe('createUser', () => {
+describe('UserModel', () => {
   before(async () => {
     await dbHandler.connect();
   });

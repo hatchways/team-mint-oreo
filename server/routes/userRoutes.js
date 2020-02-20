@@ -10,23 +10,27 @@ const Error = require('../utils/Error');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
+  const { email, password, language } = req.body;
   try {
-    const { email, password } = req.body;
+    // Check for existing accound
+    const existingUser = db.user.getByEmail(email);
+    if (existingUser) throw new Error(400, `User with email ${email} already exists`);
     validateCredentials(email, password);
     const hashedPassword = await bcrypt.encrypt(password);
-    const dbResponse = await db.user.createUser({ email, password: hashedPassword });
-    console.log('dbResponse', dbResponse);
-    const { id = null } = dbResponse;
+    const { id = null } = await db.user.createUser({ email, password: hashedPassword, language });
     if (id) res.sendStatus(201);
-  } catch (error) {
-    res.status(400).json({
-      error: {
-        message: 'Bad Request',
-      },
+  } catch (err) {
+    console.error(err);
+    if (err.status === 400) {
+      return res.status(400).json({
+        error: err.message,
+      });
+    }
+    return res.status(500).json({
+      error: 'Something went wrong...',
     });
   }
 });
-
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;

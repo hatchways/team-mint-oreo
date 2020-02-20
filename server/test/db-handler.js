@@ -17,7 +17,7 @@ module.exports.connect = async () => {
     useUnifiedTopology: true,
   };
 
-  await mongoose.connect(uri, mongooseOpts);
+  return await mongoose.connect(uri, mongooseOpts);
 };
 
 /**
