@@ -6,6 +6,7 @@ const createChatroom = async userIds => {
   try {
     console.log('creating chatroom');
     // const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
+    if (userIds.length < 2) throw new Error(400, 'Needs at least 2 users');
     const newChat = await Chatroom.create({ users: userIds });
     console.log(newChat);
     return newChat.id;
@@ -26,12 +27,14 @@ const addUser = async (userId, chatId) => {
   }
 };
 
-const getChatroomById = async chatId => {
+const getChatroomById = async (chatId, { select }) => {
   try {
-    const chatroom = await Chatroom.findById(chatId);
-    return chatroom.id;
-    // const { id = null } = await Chatroom.findById(chatId);
-    // return id;
+    const chatroom = await Chatroom.findById(chatId).populate({
+      path: 'users',
+      model: 'User',
+      select,
+    });
+    return chatroom;
   } catch (err) {
     throw new Error(500, 'Get Chatroom', err);
   }

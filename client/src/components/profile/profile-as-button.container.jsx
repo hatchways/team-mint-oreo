@@ -4,7 +4,7 @@ import { CardActionArea, Box } from '@material-ui/core';
 import Profile from './profile.component';
 import { useStyles } from './profile.styles';
 
-const ProfileAsButton = ({ id, handleClick = () => {}, isActive = false, ...props }) => {
+const ProfileAsButton = ({ id, handleClick, isActive = false, ...props }) => {
   const classes = useStyles();
   const [className, setClassName] = useState(classes.unselected);
 

@@ -81,7 +81,7 @@ router.get('/invitation/:id', async (req, res) => {
 router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsIdsById, getFriendsFieldsById, getFieldById } = db.user;
-  const email = await getFieldById('email', userId);
+  const { email } = await getFieldById('email', userId);
   const { displayName, language } = await getFieldById('displayName language', userId);
   // const avatar = await getFieldById('avatar', userId); // TODO
 
@@ -106,16 +106,19 @@ router.get('/data', isAuthorized, async (req, res) => {
     db.invitation.getInvitations(email),
   ]);
 
-  let [chatIds, friends, invitations] = data;
+  const [chatroomIds, friendsData, invitationData] = data;
 
-  const chats = await Promise.all(
-    chatIds.map(id => {
-      return db.chatroom.getUsersByChatId(id);
+  const chatroomsWithUsers = await Promise.all(
+    chatroomIds.map(id => {
+      return db.chatroom.getChatroomById(id, {
+        select: ['displayName', 'id', 'socketId', 'avatar'],
+      });
     })
   );
 
-  const chatrooms = format.initialChatroomFetch(chatIds, chats);
-  friends = format.replaceSocketIdWithStatus(friends);
+  const chatrooms = format.initialChatroomFetch(chatroomsWithUsers);
+  const friends = format.replaceSocketIdWithStatus(friendsData);
+
   res.status(200).json({
     userId,
     language,
@@ -123,7 +126,7 @@ router.get('/data', isAuthorized, async (req, res) => {
     // avatar,
     chatrooms,
     friends,
-    invitations,
+    invitations: invitationData,
   });
 });
 
