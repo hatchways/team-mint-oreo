@@ -7,7 +7,7 @@ const catchAsyncError = require('../middleware/catchAsyncError');
 
 const router = express.Router();
 
-router.use('/user', userRoutes);
+router.use('/user', userRoutes.router);
 router.use('/chat', chatRoutes);
 router.use('/invite', inviteRoutes);
 router.use('/seed', seedRoutes);

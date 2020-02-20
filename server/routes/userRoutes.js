@@ -9,7 +9,7 @@ const Error = require('../utils/Error');
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+const onCreateUser = async (req, res) => {
   const { email, password, language } = req.body;
   try {
     // Check for existing accound
@@ -31,7 +31,9 @@ router.post('/register', async (req, res) => {
       error: 'Something went wrong...',
     });
   }
-});
+};
+router.post('/register', onCreateUser);
+
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -122,4 +124,4 @@ router.get('/test', async (req, res) => {
   console.log('************************');
 });
 
-module.exports = router;
+module.exports = { router, onCreateUser };
