@@ -16,16 +16,19 @@ const MessageField = ({ socket, chatId, userId }) => {
     if (chatId) {
       console.log('Sending msg to ', chatId);
       socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
+      setMsgContent('');
     }
   };
 
   const classes = useStyles();
   return (
-    <Box component="form" className={classes.root} onChange={handleChange} onSubmit={onSubmit}>
+    <Box component="form" className={classes.root} onSubmit={onSubmit}>
       <InputBase
         className={classes.input}
         placeholder="Type Something ... "
         inputProps={{ 'aria-label': 'search listing' }}
+        onChange={handleChange}
+        value={msgContent}
       />
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />

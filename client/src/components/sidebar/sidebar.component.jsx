@@ -81,20 +81,31 @@ const Sidebar = ({ size, socket }) => {
     socket.on('userOnline', userId => {
       setOnlineFriends([...onlineFriends, userId]);
     });
-    socket.on('receiveMsg', incommingMessage => {
-      const { chatId } = chatId;
-      // using original text for now. crop to first 16 characters
-      const msgText = incommingMessage.originalText;
-      const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
-      setChatsList([...chatsList], {
-        ...chatsList.find(chatRoom => chatRoom.id === chatId),
-        secondary,
-      });
-    });
+    // socket.on('receiveMsg', incommingMessage => {
+    //   const { chatId } = chatId;
+    //   // using original text for now. crop to first 16 characters
+    //   const msgText = incommingMessage.originalText;
+    //   const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
+    //   setChatsList([...chatsList], {
+    //     ...chatsList.find(chatRoom => chatRoom.id === chatId),
+    //     secondary,
+    //   });
+    // });
   });
 
-  const onContactClick = e => {
-    console.log(e);
+  const onContactClick = async friendUserId => {
+    console.log(friendUserId);
+    // search for existing chatroom in state
+    let userDMRoom = chatsList.find(
+      room => room.isDM && room.users.some(user => user._id === friendUserId)
+    );
+    if (!userDMRoom) {
+      userDMRoom = await Client.request('/endpointthatgetsdmroom');
+    }
+
+    setTab(TabNames.CHATS);
+    dispatch({ type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE, payload: userDMRoom.chatId });
+    console.log('USER DM ROOM', userDMRoom);
   };
 
   const changeTab = (event, newValue) => {
