@@ -49,4 +49,13 @@ router.get('/friendsToChat', async (req, res) => {
   );
 });
 
+router.post('/makeFriends', async (req, res) => {
+  const { recipientId } = req.body;
+  const { userId } = res.locals;
+  db.user.addFriend(userId, recipientId);
+  const chatId = await db.chatroom.createChatroom([userId, recipientId]);
+  db.user.addChatById(userId, chatId);
+  db.user.addChatById(recipientId, chatId);
+});
+
 module.exports = router;
