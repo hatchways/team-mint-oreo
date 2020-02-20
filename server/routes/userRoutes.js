@@ -13,7 +13,8 @@ router.post('/register', async (req, res) => {
   const { email, password, language } = req.body;
   try {
     // Check for existing accound
-    const existingUser = db.user.getByEmail(email);
+    const existingUser = await db.user.getByEmail(email);
+    console.log('existing user', existingUser);
     if (existingUser) throw new Error(400, `User with email ${email} already exists`);
     validateCredentials(email, password);
     const hashedPassword = await bcrypt.encrypt(password);
