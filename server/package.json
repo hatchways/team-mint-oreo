@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon -V ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
-    "test": "env NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
+    "test": "env NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000 --reporter dot"
   },
   "dependencies": {
     "bcrypt": "^3.0.8",

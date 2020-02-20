@@ -30,6 +30,7 @@ describe('ROUTE /user/', () => {
         });
     });
   });
+  /*
   describe('POST /register', () => {
     it('should return 400 when given no data', done => {
       chai
@@ -43,7 +44,7 @@ describe('ROUTE /user/', () => {
           done();
         });
     });
-  });
+  });*/
 });
 
 const exampleUser = {
