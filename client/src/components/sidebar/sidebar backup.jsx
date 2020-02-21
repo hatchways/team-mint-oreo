@@ -1,5 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Box, Grid } from '@material-ui/core';
+import sizeMe from 'react-sizeme';
+import { useClientRect } from '../../utils/react-utils';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
@@ -12,8 +14,22 @@ import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-p
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 // import { tempChatData, tempInvitesList } from './temp_data';
 
-const Sidebar = ({ socket }) => {
-  const { state: activeChatId, dispatch } = useContext(directoryStore);
+const Sidebar = ({ size, socket }) => {
+  const [upperRect, upperRef] = useClientRect();
+  const [height, setHeight] = useState(0);
+
+  useEffect(() => {
+    const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
+    const sum = list.reduce(
+      (accumulator, currentElement) =>
+        currentElement !== null && accumulator + Math.round(currentElement),
+      0
+    );
+
+    setHeight(sum);
+  }, [upperRect, size]);
+
+  const { state: directoryState, dispatch } = useContext(directoryStore);
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
     id: 1,
@@ -26,6 +42,7 @@ const Sidebar = ({ socket }) => {
   const [tab, setTab] = useState(TabNames.CHATS);
   const [isLoading, setIsLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
+  const [onlineFriends, setOnlineFriends] = useState([]);
   const [chatsList, setChatsList] = useState([]);
   const [invitesList, setInvitesList] = useState([]);
 
@@ -43,11 +60,11 @@ const Sidebar = ({ socket }) => {
         language,
       } = data;
       if (isMounted) {
-        setIsLoading(false);
-        setChatsList(chatrooms);
-        setUser({ name: displayName, id: userId });
         setFriendsList(friends);
+        setChatsList(chatrooms);
         setInvitesList(invitations);
+        setIsLoading(false);
+        setUser({ name: displayName, id: userId });
         dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
       }
     };
@@ -60,27 +77,29 @@ const Sidebar = ({ socket }) => {
   }, []);
 
   useEffect(() => {
-    socket.on('receiveMsg', msgObject => {
-      const { chatId } = msgObject;
-      if (chatId === activeChatId) return;
-
-      const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
-      if (chatroomIndex < 0) {
-        // retrieve chat info from db
-      } else {
-        const newChatList = [...chatsList];
-        newChatList.unshift(...newChatList.splice(chatroomIndex, 1));
-        setChatsList(newChatList);
-      }
+    socket.on('userOnline', userId => {
+      setOnlineFriends([...onlineFriends, userId]);
     });
+    // socket.on('receiveMsg', incommingMessage => {
+    //   const { chatId } = chatId;
+    //   // using original text for now. crop to first 16 characters
+    //   const msgText = incommingMessage.originalText;
+    //   const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
+    //   setChatsList([...chatsList], {
+    //     ...chatsList.find(chatRoom => chatRoom.id === chatId),
+    //     secondary,
+    //   });
+    // });
   });
 
   const onContactClick = async friendDmId => {
+    console.log(friendDmId);
     // search for existing chatroom in state
-    let userDMRoom = chatsList.find(chat => chat.chatId === friendDmId);
+    let userDMRoom = chatsList.find(chat => chat.id === friendDmId);
     if (!userDMRoom) {
-      userDMRoom = await Client.request(`/chat/${friendDmId}`);
+      userDMRoom = await Client.request('/endpointthatgetsdmroom');
     }
+
     setTab(TabNames.CHATS);
     dispatch({ type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE, payload: userDMRoom.chatId });
     console.log('USER DM ROOM', userDMRoom);
@@ -89,15 +108,16 @@ const Sidebar = ({ socket }) => {
   const changeTab = (event, newValue) => {
     setTab(newValue);
   };
+
   return (
-    <Box p={2} display="flex" flexDirection="column" overflow="hidden" maxHeight="98vh">
-      <Box paddingBottom={2} flex="1">
+    <Box p={2} paddingBottom={0} height="98vh">
+      <Box paddingBottom={2}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
             <Profile {...user} moreOptions={{ exists: true }} />
           </Grid>
           <Grid item>
-            <Tabs value={tab} onChange={changeTab} />
+            <Tabs value={tab} onChange={changeTab}></Tabs>
           </Grid>
           <Grid item>
             <Box marginTop={1}>
@@ -106,7 +126,7 @@ const Sidebar = ({ socket }) => {
           </Grid>
         </Grid>
       </Box>
-      <Box style={{ overflow: 'auto' }} flex="4">
+      <Box minHeight={height} maxHeight={height} style={{ overflow: 'auto' }}>
         <SidebarTabPanel value={tab} index={TabNames.CHATS}>
           <SidebarTabPanelChats chatrooms={chatsList} userId={user.id} />
         </SidebarTabPanel>
@@ -115,24 +135,17 @@ const Sidebar = ({ socket }) => {
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
           <SidebarTabPanelInvites
-            profilesList={invitesList.map(({ user: { _id, displayName, avatar }, ...otherArgs }) => ({
-              id: _id,
-              name: displayName,
+            profilesList={invitesList.map(({ user: { id, name, avatar }, ...otherArgs }) => ({
+              id,
+              name,
               avatar,
               ...otherArgs,
             }))}
-            socket={ socket }
-            currentUser={ user }
           />
-          {/* =====THIS IS A TEMPORARY CHANGE TO THE CODE====== */}
-          {/*<SidebarTabPanelInvites
-            profilesList={ invitesList }
-            socket={ socket }
-          />*/}
         </SidebarTabPanel>
       </Box>
     </Box>
   );
 };
 
-export default Sidebar;
+export default sizeMe({ monitorHeight: true })(Sidebar);

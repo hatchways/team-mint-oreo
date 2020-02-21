@@ -25,10 +25,11 @@ const MessageField = ({ socket, chatId, userId }) => {
     <Box component="form" className={classes.root} onSubmit={onSubmit}>
       <InputBase
         className={classes.input}
-        placeholder="Type Something ... "
+        placeholder={chatId ? 'Type Something ... ' : 'Select a chat'}
         inputProps={{ 'aria-label': 'search listing' }}
         onChange={handleChange}
         value={msgContent}
+        disabled={!chatId}
       />
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />
