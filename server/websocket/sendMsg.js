@@ -1,8 +1,10 @@
 const db = require('../controllers');
 const { cache } = require('../utils/Cache');
+const translateService = require('../services/translateService');
 
 const getLanguageList = async chatId => {
   const list = cache.get(chatId) || (await db.chatroom.getLanguages(chatId));
+  // const list = await db.chatroom.getLanguages(chatId);
   cache.set(chatId, list);
   return list;
 };
@@ -10,9 +12,8 @@ const getLanguageList = async chatId => {
 const translateMessage = async ({ userId, language, chatId, originalText }) => {
   // id and language list is an array of objects: {id, language}
   const languageList = await getLanguageList(chatId);
-  const translationAPI = { translate: (x, y) => x };
   const translatedText = await Promise.all(
-    languageList.map(language => translationAPI.translate(originalText, language))
+    languageList.map(language => translateService.translateLang(originalText, language))
   );
 
   // returns an object with the shape {language: translatedText}

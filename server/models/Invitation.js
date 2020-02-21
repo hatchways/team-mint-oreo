@@ -11,9 +11,9 @@ const invitationModel = new Schema(
       type: String,
     },
     code: {
-        type: String,
-        required: true
-    }
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

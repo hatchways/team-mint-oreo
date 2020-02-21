@@ -18,6 +18,7 @@ import Client from '../../utils/HTTPClient';
 export default function Register() {
   const [values, setValues] = useState({
     email: '',
+    displayName: '',
     password: '',
     confirmPassword: '',
     language: '',
@@ -117,6 +118,28 @@ export default function Register() {
                 margin="normal"
                 required
                 fullWidth
+                id="displayName"
+                label="Display Name"
+                name="displayName"
+                autoFocus
+                value={values.displayName}
+                onChange={handleChange}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.label,
+                    focused: classes.focusedLabel,
+                  },
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.underline,
+                  },
+                }}
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
                 name="password"
                 label="Password"
                 type="password"
@@ -163,8 +186,9 @@ export default function Register() {
                 <InputLabel className={classes.label}>Select primary language</InputLabel>
                 <NativeSelect value={values.language} onChange={handleChange} name="language">
                   <option value="" />
-                  <option value="english">English</option>
-                  <option value="french">French</option>
+                  <option value="en">English</option>
+                  <option value="fr">French</option>
+                  <option value="ko">Korean</option>
                 </NativeSelect>
               </FormControl>
               <Grid container className={classes.alignCenter}>

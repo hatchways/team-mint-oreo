@@ -59,7 +59,7 @@ function WebsocketTesting() {
       socket.emit('sendMsg', {
         userId: userData['_id'],
         // userId: '5e4634be7cd7323b7891381c',
-        chatId: '5e4817349395a70f90fb6392',
+        chatId: '5e4def20e79cb155fb6383a2',
         originalText: message,
       });
     }
