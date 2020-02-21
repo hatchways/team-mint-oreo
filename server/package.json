@@ -8,6 +8,7 @@
     "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
   },
   "dependencies": {
+    "@google-cloud/translate": "^5.1.6",
     "@sendgrid/mail": "^6.5.2",
     "bcrypt": "^3.0.8",
     "cookie-parser": "~1.4.4",

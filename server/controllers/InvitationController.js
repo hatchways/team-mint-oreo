@@ -8,7 +8,7 @@ const createInvitation = async (fromUserEmail, toUserEmail, assignedId) => {
     const invitation = new Invitation({
       fromUser: fromUserEmail,
       toUser: toUserEmail,
-      code: assignedId
+      code: assignedId,
     });
     // Invitation is successfully created
     const savedInvitation = await invitation.save();
@@ -25,13 +25,13 @@ const createInvitation = async (fromUserEmail, toUserEmail, assignedId) => {
 };
 
 const invitationExists = async (fromUser, toUser) => {
-    try {
-        const invitation = await Invitation.findOne({ fromUser, toUser });
-        return invitation !== null ? true : false;
-    } catch(err) {
-        throw new Error(500, 'Invitation Existence', err);
-    }
-}
+  try {
+    const invitation = await Invitation.findOne({ fromUser, toUser });
+    return invitation !== null ? true : false;
+  } catch (err) {
+    throw new Error(500, 'Invitation Existence', err);
+  }
+};
 
 const getInvitations = async email => {
   try {
@@ -52,21 +52,19 @@ const deleteInvitation = async invitationId => {
 };
 
 const updateToUser = async (code, toUser) => {
-    try {
-        const invitation = await Invitation.findOneAndUpdate({ code },
-                                                             { toUser },
-                                                             { new: true });
-        console.log('Updated Invitation: ', invitation);
-        return invitation;
-    } catch(err) {
-        throw new Error(500, 'Update To User', err);
-    }
-}
+  try {
+    const invitation = await Invitation.findOneAndUpdate({ code }, { toUser }, { new: true });
+    console.log('Updated Invitation: ', invitation);
+    return invitation;
+  } catch (err) {
+    throw new Error(500, 'Update To User', err);
+  }
+};
 
 module.exports = {
   createInvitation,
   invitationExists,
   getInvitations,
   deleteInvitation,
-  updateToUser
+  updateToUser,
 };

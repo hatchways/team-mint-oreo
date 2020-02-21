@@ -4,27 +4,25 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendInvitationEmail = (fromUser, toUser, randomId, done) => {
-    try {
-
-
-        const msg = {
-            to: toUser,
-            from: fromUser,
-            subject: 'New Invitation Notification',
-            text: 'New Invitation from user ' + fromUser + ' has arrived!',
-            html: `<p>Accept / Decline friend request in
+  try {
+    const msg = {
+      to: toUser,
+      from: fromUser,
+      subject: 'New Invitation Notification',
+      text: 'New Invitation from user ' + fromUser + ' has arrived!',
+      html: `<p>Accept / Decline friend request in
                     <a href='http://localhost:3000/invitation/' + ${randomId}>here</a>
-                   </p>`
-        };
+                   </p>`,
+    };
 
-        sgMail.send(msg);
-        return done(null, true);
-    } catch(err) {
-        console.error(err);
-        return done(err);
-    }
-}
+    sgMail.send(msg);
+    return done(null, true);
+  } catch (err) {
+    console.error(err);
+    return done(err);
+  }
+};
 
 module.exports = {
-    sendInvitationEmail
+  sendInvitationEmail,
 };

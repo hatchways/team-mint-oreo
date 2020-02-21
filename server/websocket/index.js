@@ -49,18 +49,18 @@ const handleSocket = server => {
         const alreadyFriends = await db.user.checkFriendship(fromUser, toUser);
         // check for friendship or existing invitation
         // If it does, we don't send notification mail in a first place
-        if(invExists || alreadyFriends) {
-            throw new Error('Invitation / Friend already registered');
+        if (invExists || alreadyFriends) {
+          throw new Error('Invitation / Friend already registered');
         } else {
-            const randomId = uuidv4();
+          const randomId = uuidv4();
 
-            mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
-                if(err) throw err;
-                if(isSent) console.log('Email successfully sent');
-            });
+          mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
+            if (err) throw err;
+            if (isSent) console.log('Email successfully sent');
+          });
 
-            const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
-            console.log(newInvitation, " has been created");
+          const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
+          console.log(newInvitation, ' has been created');
         }
 
         /* Maybe convert the userId into email? */
