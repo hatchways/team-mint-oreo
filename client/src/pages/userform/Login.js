@@ -16,7 +16,6 @@ import Client from '../../utils/HTTPClient';
 export default function Login() {
   const [values, setValues] = useState({ email: '', password: '' });
   const history = useHistory();
-
   const handleChange = event => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
@@ -34,8 +33,7 @@ export default function Login() {
       alert('Login unsuccessful');
       // TODO: Show error message
     } else {
-      console.log('login successful');
-      history.push('/dashboard');
+      history.push('/dashboard', { id: response.id });
     }
   };
 
@@ -51,6 +49,7 @@ export default function Login() {
             <br />
             with any language
           </Typography>
+          <button onClick={() => history.push({})}>CLICK ME</button>
         </Box>
       </Grid>
       <Grid

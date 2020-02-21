@@ -18,9 +18,6 @@ const Sidebar = ({ size, socket }) => {
   const [upperRect, upperRef] = useClientRect();
   const [height, setHeight] = useState(0);
 
-  const [tab, setTab] = useState(TabNames.CHATS);
-  const { state: directoryState, dispatch } = useContext(directoryStore);
-
   useEffect(() => {
     const list = [size.height, upperRect !== null ? -upperRect.height : null, -60];
     const sum = list.reduce(
@@ -32,6 +29,7 @@ const Sidebar = ({ size, socket }) => {
     setHeight(sum);
   }, [upperRect, size]);
 
+  const { state: directoryState, dispatch } = useContext(directoryStore);
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
     id: 1,
@@ -40,6 +38,8 @@ const Sidebar = ({ size, socket }) => {
       fallback: 'L',
     },
   });
+
+  const [tab, setTab] = useState(TabNames.CHATS);
   const [isLoading, setIsLoading] = useState(true);
   const [friendsList, setFriendsList] = useState([]);
   const [onlineFriends, setOnlineFriends] = useState([]);
@@ -49,14 +49,15 @@ const Sidebar = ({ size, socket }) => {
   useEffect(() => {
     let isMounted = true;
     const fetchAndSetUserData = async () => {
+      console.log('fired');
       const data = await Client.request('/user/data');
       console.log(data);
       const {
         friends = [],
         chatrooms = [],
         invitations = [],
-        displayName,
-        userId,
+        displayName = '',
+        userId = '',
         language,
       } = data;
       if (isMounted) {
@@ -68,7 +69,6 @@ const Sidebar = ({ size, socket }) => {
         dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
       }
     };
-
     console.log('Fetching user Data....');
     fetchAndSetUserData();
 
@@ -81,17 +81,30 @@ const Sidebar = ({ size, socket }) => {
     socket.on('userOnline', userId => {
       setOnlineFriends([...onlineFriends, userId]);
     });
-    socket.on('receiveMsg', incommingMessage => {
-      const { chatId } = chatId;
-      // using original text for now. crop to first 16 characters
-      const msgText = incommingMessage.originalText;
-      const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
-      setChatsList([...chatsList], {
-        ...chatsList.find(chatRoom => chatRoom.id === chatId),
-        secondary,
-      });
-    });
+    // socket.on('receiveMsg', incommingMessage => {
+    //   const { chatId } = chatId;
+    //   // using original text for now. crop to first 16 characters
+    //   const msgText = incommingMessage.originalText;
+    //   const secondary = msgText.length > 15 ? `${msgText.substring(0, 13)}...` : msgText;
+    //   setChatsList([...chatsList], {
+    //     ...chatsList.find(chatRoom => chatRoom.id === chatId),
+    //     secondary,
+    //   });
+    // });
   });
+
+  const onContactClick = async friendDmId => {
+    console.log(friendDmId);
+    // search for existing chatroom in state
+    let userDMRoom = chatsList.find(chat => chat.id === friendDmId);
+    if (!userDMRoom) {
+      userDMRoom = await Client.request('/endpointthatgetsdmroom');
+    }
+
+    setTab(TabNames.CHATS);
+    dispatch({ type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE, payload: userDMRoom.chatId });
+    console.log('USER DM ROOM', userDMRoom);
+  };
 
   const changeTab = (event, newValue) => {
     setTab(newValue);
@@ -119,21 +132,7 @@ const Sidebar = ({ size, socket }) => {
           <SidebarTabPanelChats chatrooms={chatsList} userId={user.id} />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
-          <SidebarTabPanelContacts
-            user={user}
-            profilesList={
-              !isLoading &&
-              friendsList.map(({ _id, displayName }) => ({
-                id: _id,
-                name: displayName,
-                avatar: {
-                  url: '',
-                  fallback: displayName[0].toUpperCase(),
-                },
-                isOnline: onlineFriends.includes(_id),
-              }))
-            }
-          />
+          <SidebarTabPanelContacts contactList={friendsList} clickHandler={onContactClick} />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
           <SidebarTabPanelInvites

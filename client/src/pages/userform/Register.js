@@ -198,7 +198,7 @@ export default function Register() {
                   color="primary"
                   className={classes.submit}
                 >
-                  Sign In
+                  Create Account
                 </Button>
               </Grid>
             </form>

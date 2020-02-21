@@ -8,7 +8,7 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 
 import { createChatroom } from '../../utils/axios-utils';
 
-const SidebarTabPanelContacts = ({ profilesList, user }) => {
+const SidebarTabPanelContacts = ({ contactList, user, clickHandler }) => {
   const { dispatch } = useContext(directoryStore);
 
   const handleToggle = () => {
@@ -26,18 +26,13 @@ const SidebarTabPanelContacts = ({ profilesList, user }) => {
           + Invite Friends
         </Button>
       </Grid>
-      {profilesList.map(profile => (
-        <Grid item key={profile.id}>
+      {contactList.map(contact => (
+        <Grid item key={contact['_id']}>
           <ProfileAsButton
-            key={profile.id}
-            id={profile.id}
-            {...profile}
-            isOnline={profile.isOnline}
+            {...contact}
+            name={contact.displayName}
             hideStatus={false}
-            handleClick={e => {
-              console.log('clicked', profile, user);
-              createChatroom(profile.id, user.id);
-            }}
+            handleClick={() => clickHandler(contact.dmChatId)}
           />
         </Grid>
       ))}

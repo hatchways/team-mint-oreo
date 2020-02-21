@@ -6,7 +6,13 @@ const socket = io('http://localhost:3001');
 
 function WebsocketTesting() {
   const [userData, setUserData] = useState(false);
+  const [formData, setFormData] = useState({});
   const [message, setMessage] = useState('');
+
+  const onChange = e => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   useEffect(() => {
     const checkToken = async () => {
@@ -93,6 +99,11 @@ function WebsocketTesting() {
     fetch('/seed/friendsToChat');
   };
 
+  const makeFriends = () => {
+    const { recipientId } = formData;
+    Client.request('/seed/makeFriends', 'POST', { recipientId });
+  };
+
   return (
     <>
       <div style={{ display: 'flex' }}>
@@ -110,7 +121,6 @@ function WebsocketTesting() {
                 ))}
             </div>
           </div>
-          <p>Chatrooms: </p>
         </div>
         <div>
           <button type="button" onClick={createUser}>
@@ -126,15 +136,35 @@ function WebsocketTesting() {
             GET USER DATA
           </button>
           <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
-          <br />
           <button onClick={acceptFriendReq}>ACCEPT FRIEND REQUEST</button>
+          <br />
+          <label>Make friends with: </label>
           <input
             type="text"
-            placeholder="message test"
-            value={message}
-            onChange={({ target: { value } }) => setMessage(value)}
+            placeholder="recipient ID"
+            value={formData.recipientId}
+            name="recipientId"
+            onChange={onChange}
+          ></input>
+          <button onClick={makeFriends}>Make friends and add to chatroom</button>
+          <br />
+          <label>Send message: </label>
+          <input
+            type="text"
+            placeholder="recipient ID"
+            value={formData.recipientId}
+            name="recipientId"
+            onChange={onChange}
+          ></input>
+          <input
+            type="text"
+            placeholder="message"
+            name="message"
+            value={formData.message}
+            onChange={onChange}
             onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
           />
+          <br />
 
           <button type="button" onClick={createFakeRooms}>
             SEED CHATROOMS
