@@ -7,7 +7,10 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const SidebarTabPanelChats = ({ chatrooms, userId }) => {
-  const { state: directoryState, dispatch } = useContext(directoryStore);
+  const {
+    state: { activeChatId },
+    dispatch,
+  } = useContext(directoryStore);
 
   const hideSidebar = () => {
     dispatch({
@@ -15,6 +18,7 @@ const SidebarTabPanelChats = ({ chatrooms, userId }) => {
     });
   };
   const handleClick = chatId => {
+    console.log('ACTIVE CHAT ID, SIDEBAR CHATS', activeChatId);
     dispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,
@@ -25,7 +29,7 @@ const SidebarTabPanelChats = ({ chatrooms, userId }) => {
   const filterSelf = chatroom => chatroom.users.filter(user => user._id !== userId);
 
   const checkIfAnyOnline = chatroom => {
-    filterSelf(chatroom).some(user => user.isOnline);
+    return filterSelf(chatroom).some(user => user.isOnline);
   };
 
   const generateNames = chatroom => {
@@ -57,6 +61,7 @@ const SidebarTabPanelChats = ({ chatrooms, userId }) => {
               name={generateNames(chatroom)}
               {...chatroom}
               handleClick={() => handleClick(chatId)}
+              hideStatus={false}
               isOnline={checkIfAnyOnline(chatroom)}
             />
           </Grid>
@@ -66,4 +71,4 @@ const SidebarTabPanelChats = ({ chatrooms, userId }) => {
   );
 };
 
-export default SidebarTabPanelChats;
+export default React.memo(SidebarTabPanelChats);

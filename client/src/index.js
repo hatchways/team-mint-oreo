@@ -4,13 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import { CookiesProvider } from 'react-cookie';
-
-const app = (
-  <CookiesProvider>
-    <App />
-  </CookiesProvider>
-);
+const app = <App />;
 
 ReactDOM.render(app, document.getElementById('root'));
 

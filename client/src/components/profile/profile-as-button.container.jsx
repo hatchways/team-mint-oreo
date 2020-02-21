@@ -6,15 +6,11 @@ import { useStyles } from './profile.styles';
 
 const ProfileAsButton = ({ id, handleClick, isActive = false, ...props }) => {
   const classes = useStyles();
-  const [className, setClassName] = useState(classes.unselected);
 
-  useEffect(() => {
-    if (isActive) setClassName(classes.selected);
-    else setClassName(classes.unselected);
-  }, [isActive]);
+  const { selected, unselected } = classes;
   return (
     <CardActionArea onClick={handleClick} disableTouchRipple className={` ${classes.rounded}`}>
-      <Box className={`${className} ${classes.pad10}  ${classes.rounded}`}>
+      <Box className={`${isActive ? selected : unselected} ${classes.pad10}  ${classes.rounded}`}>
         <Profile {...props} />
       </Box>
     </CardActionArea>

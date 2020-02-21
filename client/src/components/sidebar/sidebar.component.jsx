@@ -13,7 +13,10 @@ import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-pan
 // import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ socket }) => {
-  const { state: activeChatId, dispatch } = useContext(directoryStore);
+  const {
+    state: { activeChatId },
+    dispatch,
+  } = useContext(directoryStore);
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
     id: 1,
@@ -80,6 +83,7 @@ const Sidebar = ({ socket }) => {
     let userDMRoom = chatsList.find(chat => chat.chatId === friendDmId);
     if (!userDMRoom) {
       userDMRoom = await Client.request(`/chat/${friendDmId}`);
+      setChatsList([...chatsList, userDMRoom]);
     }
     setTab(TabNames.CHATS);
     dispatch({ type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE, payload: userDMRoom.chatId });
