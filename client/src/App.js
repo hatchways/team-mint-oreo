@@ -1,3 +1,4 @@
+import CssBaseline from '@material-ui/core/CssBaseline';
 import React, { useState, useEffect } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
@@ -18,7 +19,7 @@ function App() {
       const { userId = null } = await Client.request('/user/verify');
       if (isMounted) {
         setIsLoading(false);
-        await setUserId(userId);
+        setUserId(userId);
       }
     };
     checkToken();
@@ -27,9 +28,9 @@ function App() {
       isMounted = false;
     };
   }, [userId]);
-
   return (
     <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       {!isLoading && (
         <BrowserRouter>
           <Switch>
