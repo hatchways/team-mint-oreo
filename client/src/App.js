@@ -7,6 +7,7 @@ import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
 import Login from './pages/userform/Login';
 import Register from './pages/userform/Register';
+import Uploader from './pages/uploader/uploader.component';
 
 function App() {
   const [userId, setUserId] = useState(false);
@@ -51,6 +52,7 @@ function App() {
                 return userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />;
               }}
             />
+            <Route path="/upload" component={Uploader} />
             <Route path="/register" component={Register} />
             <Route path="/testing" component={WebsocketTesting} />
           </Switch>

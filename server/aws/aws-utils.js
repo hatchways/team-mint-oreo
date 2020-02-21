@@ -12,7 +12,7 @@ const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 
 const s3 = new AWS.S3();
 
-const uploadMintPic = async () => {
+const uploadMintPic = () => {
   const fileContent = fs.readFileSync('./aws/mintoreo.png');
 
   const bucketParams = {
@@ -31,7 +31,7 @@ const uploadMintPic = async () => {
       }
     });
   });
-  return await s3UploadPromise;
+  return s3UploadPromise;
 };
 
 module.exports = {
