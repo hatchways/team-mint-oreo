@@ -4,6 +4,7 @@
   "rules": {
     "semi": 1,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/prop-types": 1
+    "react/prop-types": 1,
+    "no-underscore-dangle": [1, { "allow": ["_id"] }]
   }
 }

@@ -25,7 +25,7 @@ const Profile = (
   /* FIX THIS LATER */
   const url = avatar?.url || '';
   const fallback = avatar?.fallback || '';
-
+  console.log('name isOnline', name, isOnline);
   /* *************** */
 
   return (
@@ -104,4 +104,4 @@ const Profile = (
   );
 };
 
-export default Profile;
+export default React.memo(Profile);

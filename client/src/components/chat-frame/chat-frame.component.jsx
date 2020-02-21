@@ -11,7 +11,7 @@ const ChatFrame = ({ socket, userId }) => {
   const classes = useStyles();
 
   const {
-    state: { currentlyActive: chatId, language },
+    state: { activeChatId: chatId, language },
   } = useContext(directoryStore);
 
   const [messages, setMessages] = useState([]);
@@ -42,30 +42,28 @@ const ChatFrame = ({ socket, userId }) => {
 
   return (
     <Box height="100vh" overflow="hidden">
-      {!isLoading && (
-        <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-          <Grid item>
-            <ChatHeader
-              toggleText={() => {
-                toggleText(!showOriginalText);
-              }}
-              chatId={chatId}
+      <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
+        <Grid item>
+          <ChatHeader
+            toggleText={() => {
+              toggleText(!showOriginalText);
+            }}
+            chatId={chatId}
+          />
+        </Grid>
+        <Grid item>
+          <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
+            <ChatMessages
+              messages={messages}
+              showOriginalText={showOriginalText}
+              userId={userId}
+              className={classes.messageBoxHeight}
+              language={language}
             />
-          </Grid>
-          <Grid item>
-            <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-              <ChatMessages
-                messages={messages}
-                showOriginalText={showOriginalText}
-                userId={userId}
-                className={classes.messageBoxHeight}
-                language={language}
-              />
-              <MessageField socket={socket} chatId={chatId} userId={userId} />
-            </Grid>
+            <MessageField socket={socket} chatId={chatId} userId={userId} />
           </Grid>
         </Grid>
-      )}
+      </Grid>
     </Box>
   );
 };

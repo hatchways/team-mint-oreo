@@ -24,11 +24,13 @@ const chatroomData = chatroomData => {
    *  - In the future, lastActivity and possibly messages
    */
 
+  // console.log(chatroomData);
   const result = chatroomData.map(chatroom => {
+    // console.log(chatroom);
     // Replaces the socketId with the key 'isOnline : <boolean>'
     const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
     // isDM needs to be explicit since ...rest contains db methods
-    return { isDM: chatroom.isDM, chatId: chatroom['_id'], users: usersWithOnlineStatus };
+    return { isDM: chatroom.isDM, chatId: chatroom._id, users: usersWithOnlineStatus };
   });
   return result;
 };

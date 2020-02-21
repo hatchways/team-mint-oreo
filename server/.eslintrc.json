@@ -9,6 +9,7 @@
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
   },
+  "plugins": ["import"],
   "parserOptions": {
     "ecmaVersion": 2018
   },
@@ -20,6 +21,7 @@
     "indent": 0,
     "object-curly-spacing": 0,
     "no-multiple-empty-lines": 0,
-    "arrow-parens": 0
+    "arrow-parens": 0,
+    "no-underscore-dangle": [1, { "allow": ["_id"] }]
   }
 }

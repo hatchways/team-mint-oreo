@@ -15,10 +15,10 @@ router.post('/register', async (req, res) => {
   validateCredentials(email, password);
   const hashedPassword = await bcrypt.encrypt(password);
   const { id = null } = await db.user.createUser({
-      email,
-      password: hashedPassword,
-      language,
-      displayName
+    email,
+    password: hashedPassword,
+    language,
+    displayName,
   });
   if (id) res.sendStatus(201);
 });
@@ -157,23 +157,9 @@ router.get('/logout', async (req, res) => {
   res.clearCookie('user').end();
 });
 
-router.get('/test', async (req, res) => {
-  console.log('************************');
-  console.log('***TEST RESULTS HERE****');
-  console.log('************************');
-
-  // seedService.createUsers();
-  // const users = await seedService.getAllUsers();
-  // console.log(users, users.length);
-  // for (let i = 0; i <= users.length / 2; i++) {
-  //   const random = Math.floor(Math.random() * users.length);
-  //   const { id } = db.chatroom.createChatroom([users[random].id, users.pop().id]);
-  //   console.log('new chat id', id);
-  // }
-
-  console.log('************************');
-  console.log('***TEST RESULTS HERE****');
-  console.log('************************');
+router.get('/delete', isAuthorized, async (req, res) => {
+  console.log('deleting...');
+  db.user.removeUser(res.locals.userId);
 });
 
 module.exports = router;

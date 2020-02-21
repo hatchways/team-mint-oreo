@@ -11,7 +11,7 @@ import ChatMessage from '../chat-message/chat-message.component';
 const ChatMessages = ({ height }) => {
   const [messagesList, setMessagesList] = useState([]);
   const {
-    state: { currentlyActive },
+    state: { activeChatId },
   } = useContext(directoryStore);
 
   const {
@@ -21,10 +21,10 @@ const ChatMessages = ({ height }) => {
   const { state: conversationState } = useContext(conversationStore);
 
   useEffect(() => {
-    if (currentlyActive !== null && conversationState[currentlyActive] !== undefined)
-      setMessagesList(conversationState[currentlyActive]);
+    if (activeChatId !== null && conversationState[activeChatId] !== undefined)
+      setMessagesList(conversationState[activeChatId]);
     else setMessagesList([]);
-  }, [currentlyActive]);
+  }, [activeChatId]);
 
   useEffect(() => {
     //    console.log(messagesList);
