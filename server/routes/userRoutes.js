@@ -128,10 +128,18 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
+  const fromUserList = await Promise.all(
+    invitationData.map(invitation => {
+      return db.user.getByEmail(invitation.fromUser);
+    })
+  );
+
   console.log('FRIENDS DM IDS', friendsDmIds);
+  // console.log('FROM USER INFO ', fromUserList);
 
   const chatrooms = format.chatroomData(chatroomsWithUsers);
   const friends = format.friendsData(friendsData, friendsDmIds);
+  const invitations = format.invitationsData(invitationData, fromUserList);
 
   res.status(200).json({
     userId,
@@ -141,7 +149,7 @@ router.get('/data', isAuthorized, async (req, res) => {
     // avatar,
     chatrooms,
     friends,
-    invitations: invitationData,
+    invitations: invitations,
   });
 });
 

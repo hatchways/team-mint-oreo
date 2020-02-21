@@ -42,6 +42,17 @@ const friendsData = (friendsData, DmIds) => {
   return friendsWithDmInfo;
 };
 
+const invitationsData = (invitationsData, fromUserList) => {
+  const invitationsList = invitationsData.map((invitation, i) => {
+      return {
+          invitation,
+          user: fromUserList[i]
+      }
+  });
+  console.log('invitationsList: ', invitationsList);
+  return invitationsList;
+}
+
 const orderByLatestLast = array => {
   const sortedArray = array.sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt));
   return sortedArray;
@@ -53,4 +64,5 @@ module.exports = {
   chatroomData,
   orderByLatestLast,
   friendsData,
+  invitationsData,
 };

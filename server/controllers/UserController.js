@@ -79,6 +79,8 @@ const clearSocketId = socketId => {
 
 const addFriend = async (userId, friendId) => {
   try {
+    console.log('userId: ', userId);
+    console.log('friendId: ', friendId);
     // Add each other as friends
     const user = await User.findByIdAndUpdate(
       userId,
@@ -154,6 +156,8 @@ const addChatById = async (userId, chatId) => {
       { $addToSet: { chatrooms: chatId } },
       { new: true }
     );
+
+    return user;
   } catch (err) {
     throw new Error(500, 'Add Chats - ID', err);
   }

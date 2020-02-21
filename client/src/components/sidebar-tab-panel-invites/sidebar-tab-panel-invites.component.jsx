@@ -6,7 +6,7 @@ import { Grid, Button } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const SidebarTabPanelInvites = ({ profilesList, socket }) => {
+const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
   const { dispatch } = useContext(directoryStore);
 
   const handleToggle = () => {
@@ -14,6 +14,17 @@ const SidebarTabPanelInvites = ({ profilesList, socket }) => {
       type: DirectoryActionTypes.TOGGLE_BACKDROP,
     });
   };
+
+  const handleApproval = (event, profile) => {
+      socket.emit('friendRequestAccepted', {
+          userId: currentUser.id,
+          friendId: profile.id,
+          invitationId: profile.invitation._id
+      });
+      // console.log('profile: ', profile);
+      // console.log('currentUser: ', currentUser)
+      alert('Friend Request Accepted!');
+  }
 
   return (
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
@@ -28,7 +39,7 @@ const SidebarTabPanelInvites = ({ profilesList, socket }) => {
             <ProfileWithBorder
               id={profile.id}
               {...profile}
-              handleApproval={() => {}}
+              handleApproval={(event) => handleApproval(event, profile)}
               handleDisapproval={() => {}}
             />
           </Grid>
