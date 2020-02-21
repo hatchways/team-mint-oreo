@@ -9,11 +9,6 @@ router.get('/messages/:chatId', async (req, res) => {
   res.status(200).json({ messages: sortedMessages });
 });
 
-router.get('/verify/:chatId', async (req, res) => {
-  const { chatId } = req.params;
-  db.chatroom.getChatroomById(chatId);
-});
-
 router.post('/new', async (req, res) => {
   const { userIds } = req.body; // in form of array
   const chatId = await db.chatroom.createChatroom(userIds);

@@ -140,10 +140,7 @@ const getFriendsSocketsById = async id => {
 
 const getChatsIdsById = async (userId, limit = 50, skip = 0) => {
   try {
-    const data = await User.findById(userId, 'chatrooms', { limit, skip, sort: 'desc' }).populate({
-      path: 'chatrooms',
-    });
-    console.log('getchatsbyid', data);
+    const data = await User.findById(userId, 'chatrooms', { limit, skip, sort: 'desc' });
     return data.chatrooms;
   } catch (err) {
     throw new Error(500, 'Get Chats - ID', err);
@@ -195,13 +192,13 @@ module.exports = {
   getByEmail,
   getById,
   getFriendsById,
-  getChatsIdsById,
   getFieldById,
   setSocketIdById,
   clearSocketId,
   getFriendsSocketsById,
   getAllUsers,
+  getFriendsFieldsById,
+  getChatsIdsById,
   // addInvitationById,
   // removeInvitation,
-  getFriendsFieldsById,
 };

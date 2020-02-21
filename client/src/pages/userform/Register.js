@@ -163,8 +163,8 @@ export default function Register() {
                 <InputLabel className={classes.label}>Select primary language</InputLabel>
                 <NativeSelect value={values.language} onChange={handleChange} name="language">
                   <option value="" />
-                  <option value="English">English</option>
-                  <option value="French">French</option>
+                  <option value="english">English</option>
+                  <option value="french">French</option>
                 </NativeSelect>
               </FormControl>
               <Grid container className={classes.alignCenter}>
@@ -174,7 +174,7 @@ export default function Register() {
                   color="primary"
                   className={classes.submit}
                 >
-                  Sign In
+                  Create Account
                 </Button>
               </Grid>
             </form>

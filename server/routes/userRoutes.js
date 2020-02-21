@@ -37,7 +37,7 @@ router.post('/login', async (req, res) => {
       .json({
         success: true,
         status: 200,
-        userData,
+        id,
       });
   } catch (err) {
     console.log(err);
@@ -62,26 +62,26 @@ router.get('/getUser', async (req, res) => {
 
 // WORK AFTER COMING BACK
 router.get('/invitation/:id', async (req, res) => {
-    try {
-        const { userId } = res.locals;
-        console.log(userId);
-        const dbUser = await db.user.getById(userId);
-        const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
-        return res.status(200).json({
-            success: true,
-            data: updatedInvitation
-        });
-    } catch(err) {
-        return res.status(err.status).json({
-            error: err.message
-        });
-    }
+  try {
+    const { userId } = res.locals;
+    console.log(userId);
+    const dbUser = await db.user.getById(userId);
+    const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
+    return res.status(200).json({
+      success: true,
+      data: updatedInvitation,
+    });
+  } catch (err) {
+    return res.status(err.status).json({
+      error: err.message,
+    });
+  }
 });
 
 router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsIdsById, getFriendsFieldsById, getFieldById } = db.user;
-  const email = await getFieldById('email', userId);
+  const { email } = await getFieldById('email', userId);
   const { displayName, language } = await getFieldById('displayName language', userId);
   // const avatar = await getFieldById('avatar', userId); // TODO
 
@@ -96,26 +96,38 @@ router.get('/data', isAuthorized, async (req, res) => {
   // return to frontend chatId, isDM, userInfo: {displayName, id, isOnline, avatar}, lastActivity: {<userId> : <timestamp>}
 
   // FRIENDS TAB PANEL
-  // get all friends: {displayName, isOnline, id, email, avatar }
+  // get all friends: {displayName, isOnline, id, avatar }
+  // should also contain the dm chat id
 
   // INVITATION TAB PANEL
   // (email) search for invitations
   const data = await Promise.all([
     getChatsIdsById(userId),
-    getFriendsFieldsById(['displayName', 'socketId', 'id', 'email'], userId),
+    getFriendsFieldsById(['displayName', 'socketId', 'id', 'avatar'], userId),
     db.invitation.getInvitations(email),
   ]);
 
-  let [chatIds, friends, invitations] = data;
+  const [chatroomIds, friendsData, invitationData] = data;
 
-  const chats = await Promise.all(
-    chatIds.map(id => {
-      return db.chatroom.getUsersByChatId(id);
+  const chatroomsWithUsers = await Promise.all(
+    chatroomIds.map(id => {
+      return db.chatroom.getChatroomById(id, {
+        select: ['displayName', 'id', 'socketId', 'avatar'],
+      });
     })
   );
 
-  const chatrooms = format.initialChatroomFetch(chatIds, chats);
-  friends = format.replaceSocketIdWithStatus(friends);
+  const friendsDmIds = await Promise.all(
+    friendsData.map(friend => {
+      return db.chatroom.getDmIdOfUsers(userId, friend.id);
+    })
+  );
+
+  console.log('FRIENDS DM IDS', friendsDmIds);
+
+  const chatrooms = format.chatroomData(chatroomsWithUsers);
+  const friends = format.friendsData(friendsData, friendsDmIds);
+
   res.status(200).json({
     userId,
     language,
@@ -123,7 +135,7 @@ router.get('/data', isAuthorized, async (req, res) => {
     // avatar,
     chatrooms,
     friends,
-    invitations,
+    invitations: invitationData,
   });
 });
 

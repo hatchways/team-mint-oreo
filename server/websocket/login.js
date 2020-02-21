@@ -13,10 +13,7 @@ const joinChatrooms = async (socket, userId) => {
     return;
   }
 
-  console.log(chatroomList);
-  socket.join(chatroomList, err => {
-    console.log('rooms: ', socket.rooms);
-  });
+  socket.join(chatroomList);
 };
 
 const notifyFriends = async (socket, userId) => {

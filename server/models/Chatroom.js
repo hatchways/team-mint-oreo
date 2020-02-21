@@ -11,6 +11,9 @@ const chatroomSchema = new Schema({
     type: Boolean,
     default: true,
   },
+  activityMap: {
+    type: Date,
+  },
 });
 
 const Chatroom = mongoose.model('Chatroom', chatroomSchema);
