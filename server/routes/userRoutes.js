@@ -15,10 +15,10 @@ router.post('/register', async (req, res) => {
   validateCredentials(email, password);
   const hashedPassword = await bcrypt.encrypt(password);
   const { id = null } = await db.user.createUser({
-      email,
-      password: hashedPassword,
-      language,
-      displayName 
+    email,
+    password: hashedPassword,
+    language,
+    displayName,
   });
   if (id) res.sendStatus(201);
 });
