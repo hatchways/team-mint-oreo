@@ -9,12 +9,11 @@ const Error = require('../utils/Error');
 
 const router = express.Router();
 
-const onCreateUser = async (req, res) => {
+router.post('/register', async (req, res) => {
   const { email, password, language } = req.body;
   try {
     // Check for existing accound
-    const existingUser = await db.user.getByEmail(email);
-    console.log('existing user', existingUser);
+    const existingUser = db.user.getByEmail(email);
     if (existingUser) throw new Error(400, `User with email ${email} already exists`);
     validateCredentials(email, password);
     const hashedPassword = await bcrypt.encrypt(password);
@@ -31,9 +30,7 @@ const onCreateUser = async (req, res) => {
       error: 'Something went wrong...',
     });
   }
-};
-router.post('/register', onCreateUser);
-
+});
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -124,4 +121,4 @@ router.get('/test', async (req, res) => {
   console.log('************************');
 });
 
-module.exports = { router, onCreateUser };
+module.exports = router;

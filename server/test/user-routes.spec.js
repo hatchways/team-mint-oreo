@@ -11,6 +11,7 @@ const sinon = require('sinon');
 sinon.stub(console, 'log');
 
 const app = require('../app.js');
+const mongoose = require('mongoose');
 
 describe('ROUTE /user/', () => {
   describe('GET /register', () => {
@@ -29,4 +30,24 @@ describe('ROUTE /user/', () => {
         });
     });
   });
+  /*
+  describe('POST /register', () => {
+    it('should return 400 when given no data', done => {
+      chai
+        .request(app)
+        .post('/user/register')
+        .send()
+        .end((err, res) => {
+          res.should.have.status(400);
+          res.body.should.be.a('Object');
+          res.body.should.have.property('error');
+          done();
+        });
+    });
+  });*/
 });
+
+const exampleUser = {
+  email: 'example@example.com',
+  password: 'password12345',
+};
