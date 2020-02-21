@@ -7,6 +7,7 @@ import { useStyles } from './profile.styles';
 
 const Profile = (
   {
+    invitation,   // THIS IS A TEMPORARY VALUE
     name,
     secondary = '',
     notifications = 0,
@@ -49,6 +50,7 @@ const Profile = (
           <Grid item xs>
             {secondary === '' ? (
               <Typography>{name}</Typography>
+              /*<Typography>{fromUser}</Typography>*/
             ) : (
               <div>
                 <Grid container direction="column">
@@ -84,7 +86,7 @@ const Profile = (
             <Grid item xs>
               <Grid container direction="row" justify="flex-end" alignItems="center">
                 <Grid item>
-                  <IconButton>
+                  <IconButton onClick={(event) => handleApproval(event)}>
                     <Check />
                   </IconButton>
                 </Grid>

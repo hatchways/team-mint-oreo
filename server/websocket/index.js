@@ -85,6 +85,10 @@ const handleSocket = server => {
       try {
         await acceptInvitation(socket, userId, friendId);
         db.invitation.deleteInvitation(invitationId);
+
+        // Automatically creates a chatroom, and assign users in there
+        const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
+        
       } catch (err) {
         console.error(err);
       }

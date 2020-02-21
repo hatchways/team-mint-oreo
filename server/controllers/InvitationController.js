@@ -36,7 +36,8 @@ const invitationExists = async (fromUser, toUser) => {
 const getInvitations = async email => {
   try {
     const incoming = await Invitation.find({ toUser: email });
-    console.log(incoming);
+    console.log('incoming: ', incoming);
+    return incoming;
   } catch (err) {
     throw new Error(500, 'Get Invitation', err);
   }

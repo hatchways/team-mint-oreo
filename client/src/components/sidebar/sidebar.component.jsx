@@ -136,13 +136,20 @@ const Sidebar = ({ size, socket }) => {
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
           <SidebarTabPanelInvites
-            profilesList={invitesList.map(({ user: { id, name, avatar }, ...otherArgs }) => ({
-              id,
-              name,
+            profilesList={invitesList.map(({ user: { _id, displayName, avatar }, ...otherArgs }) => ({
+              id: _id,
+              name: displayName,
               avatar,
               ...otherArgs,
             }))}
+            socket={ socket }
+            currentUser={ user }
           />
+          {/* =====THIS IS A TEMPORARY CHANGE TO THE CODE====== */}
+          {/*<SidebarTabPanelInvites
+            profilesList={ invitesList }
+            socket={ socket }
+          />*/}
         </SidebarTabPanel>
       </Box>
     </Box>

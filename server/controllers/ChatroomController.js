@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Chatroom = require('../models/Chatroom');
 const Error = require('../utils/Error');
+const db = require('./index');
 
 const createChatroom = async userIds => {
   try {
@@ -8,7 +9,16 @@ const createChatroom = async userIds => {
     // const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
     if (userIds.length < 2) throw new Error(400, 'Needs at least 2 users');
     const newChat = await Chatroom.create({ users: userIds });
-    console.log(newChat);
+    console.log('New Chat Created: ', newChat);
+
+    // Assign the new chatroom to each user
+    const updatedUserInfos = await Promise.all(
+      userIds.map(userId => {
+        return db.user.addChatById(userId, newChat.id);
+      })
+    );
+    console.log('Updated User List: ', updatedUserInfos);
+
     return newChat.id;
   } catch (err) {
     throw new Error(500, 'Create Chat', err);

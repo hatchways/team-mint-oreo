@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       language,
-      displayName 
+      displayName
   });
   if (id) res.sendStatus(201);
 });
@@ -128,19 +128,28 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
+  const fromUserList = await Promise.all(
+    invitationData.map(invitation => {
+      return db.user.getByEmail(invitation.fromUser);
+    })
+  );
+
   console.log('FRIENDS DM IDS', friendsDmIds);
+  // console.log('FROM USER INFO ', fromUserList);
 
   const chatrooms = format.chatroomData(chatroomsWithUsers);
   const friends = format.friendsData(friendsData, friendsDmIds);
+  const invitations = format.invitationsData(invitationData, fromUserList);
 
   res.status(200).json({
     userId,
+    email,
     language,
     displayName,
     // avatar,
     chatrooms,
     friends,
-    invitations: invitationData,
+    invitations: invitations,
   });
 });
 
