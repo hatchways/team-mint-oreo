@@ -34,7 +34,7 @@ const Dashboard = ({ userId }) => {
   return (
     <Box>
       <SidebarDrawer socket={socket} />
-      <InviteFriendBackdrop />
+      <InviteFriendBackdrop socket={socket} />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>

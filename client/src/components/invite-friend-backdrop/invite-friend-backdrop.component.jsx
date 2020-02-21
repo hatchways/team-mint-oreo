@@ -17,8 +17,9 @@ import EmailField from '../email-field/email-field.component';
 import CopyField from '../copy-field/copy-field.component';
 
 import { useStyles } from './invite-friend-backdrop.styles';
+import Client from '../../utils/HTTPClient';
 
-const InviteFriendBackdrop = () => {
+const InviteFriendBackdrop = ({ socket }) => {
   const placeholder = "Friend's email address";
   const [emailFields, setEmailFields] = useState([
     {
@@ -67,9 +68,12 @@ const InviteFriendBackdrop = () => {
     setEmailFields(newList);
   };
 
-  const composeEmails = () => {
+  const composeEmails = async () => {
     const emailList = emailFields.map(field => field.value);
     console.log(emailList);
+    const userData = await Client.request('/user/data');
+    socket.emit('friendRequestSent', { fromUser: userData.email, toUser: emailList[0] });
+    alert('Friend Request Sent!');
   };
 
   useEffect(() => {

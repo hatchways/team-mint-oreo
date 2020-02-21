@@ -6,7 +6,7 @@ import { Grid, Button } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const SidebarTabPanelInvites = ({ profilesList }) => {
+const SidebarTabPanelInvites = ({ profilesList, socket }) => {
   const { dispatch } = useContext(directoryStore);
 
   const handleToggle = () => {

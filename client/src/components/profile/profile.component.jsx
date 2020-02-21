@@ -7,6 +7,7 @@ import { useStyles } from './profile.styles';
 
 const Profile = (
   {
+    //fromUser,   // THIS IS A TEMPORARY VALUE
     name,
     secondary = '',
     notifications = 0,
@@ -49,6 +50,7 @@ const Profile = (
           <Grid item xs>
             {secondary === '' ? (
               <Typography>{name}</Typography>
+              /*<Typography>{fromUser}</Typography>*/
             ) : (
               <div>
                 <Grid container direction="column">

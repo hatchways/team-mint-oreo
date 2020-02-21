@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       language,
-      displayName 
+      displayName
   });
   if (id) res.sendStatus(201);
 });
@@ -135,6 +135,7 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   res.status(200).json({
     userId,
+    email,
     language,
     displayName,
     // avatar,

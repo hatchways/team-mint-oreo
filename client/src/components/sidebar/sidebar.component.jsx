@@ -143,6 +143,11 @@ const Sidebar = ({ size, socket }) => {
               ...otherArgs,
             }))}
           />
+          {/* =====THIS IS A TEMPORARY CHANGE TO THE CODE====== */}
+          {/*<SidebarTabPanelInvites
+            profilesList={ invitesList }
+            socket={ socket }
+          />*/}
         </SidebarTabPanel>
       </Box>
     </Box>
