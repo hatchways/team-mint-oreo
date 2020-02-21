@@ -37,19 +37,6 @@ const addUser = async (userId, chatId) => {
   }
 };
 
-const getChatroomById = async (chatId, { select }) => {
-  try {
-    const chatroom = await Chatroom.findById(chatId).populate({
-      path: 'users',
-      model: 'User',
-      select,
-    });
-    return chatroom;
-  } catch (err) {
-    throw new Error(500, 'Get Chatroom', err);
-  }
-};
-
 const getUsersByChatId = async chatId => {
   try {
     const usersInChat = await Chatroom.findById(chatId).populate({
@@ -63,11 +50,26 @@ const getUsersByChatId = async chatId => {
   }
 };
 
-const removeUser = async (userId, chatId) => {
+const getAllByUserId = async userId => {
+  const data = await Chatroom.find({ users: userId });
+  console.log('getallusersbyid', data);
+};
+
+const getDmIdOfUsers = async (userId, friendId) => {
+  const { id } = await Chatroom.findOne({ isDM: true, users: { $all: [userId, friendId] } }, 'id');
+  return id;
+};
+
+const getChatroomById = async (chatId, { select }) => {
   try {
-    Chatroom.findByIdAndUpdate(chatId, { $pull: { users: userId } });
+    const chatroom = await Chatroom.findById(chatId).populate({
+      path: 'users',
+      model: 'User',
+      select,
+    });
+    return chatroom;
   } catch (err) {
-    throw new Error(500, 'Remove User', err);
+    throw new Error(500, 'Get Chatroom', err);
   }
 };
 
@@ -81,14 +83,21 @@ const getLanguages = async chatId => {
   }
 };
 
-const getAllByUserId = async userId => {
-  const data = await Chatroom.find({ users: userId });
-  console.log('getallusersbyid', data);
+const removeUser = async (userId, chatId) => {
+  try {
+    Chatroom.findByIdAndUpdate(chatId, { $pull: { users: userId } });
+  } catch (err) {
+    throw new Error(500, 'Remove User', err);
+  }
 };
 
-const getDmIdOfUsers = async (userId, friendId) => {
-  const { id } = await Chatroom.findOne({ isDM: true, users: { $all: [userId, friendId] } }, 'id');
-  return id;
+const updateActivty = async (userId, chatId) => {
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { $set: { [userId]: Date.now() } },
+    { new: true }
+  );
+  console.log(result);
 };
 
 module.exports = {
@@ -100,4 +109,5 @@ module.exports = {
   getLanguages,
   getAllByUserId,
   getDmIdOfUsers,
+  updateActivty,
 };

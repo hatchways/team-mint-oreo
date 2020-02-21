@@ -178,6 +178,7 @@ function WebsocketTesting() {
           <button type="button" onClick={connectedSockets}>
             log connected sockets EMIT
           </button>
+          <button onClick={() => fetch('/user/delete')}>DELETE USER</button>
           {/* <form style={{ display: 'flex' }}>
             <label>TO USER ID</label>
             <input type="text" onChange={changeInputUser} />

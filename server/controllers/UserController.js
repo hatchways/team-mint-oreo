@@ -57,6 +57,11 @@ const checkFriendship = async (userEmail, friendEmail) => {
   }
 };
 
+const removeUser = async userId => {
+  const result = await User.findOneAndDelete({ _id: userId });
+  console.log(result);
+};
+
 /** USER SOCKET METHODS */
 
 const setSocketIdById = async (userId, socketId) => {
@@ -203,6 +208,7 @@ module.exports = {
   getAllUsers,
   getFriendsFieldsById,
   getChatsIdsById,
+  removeUser,
   // addInvitationById,
   // removeInvitation,
 };

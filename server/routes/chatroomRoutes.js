@@ -17,4 +17,10 @@ router.post('/new', async (req, res) => {
   res.json({ chatId });
 });
 
+router.post('/update/activity', async (req, res) => {
+  const { chatId, userId } = req.body;
+  console.log('update activity', chatId, userId);
+  db.chatroom.updateActivty(userId, chatId);
+});
+
 module.exports = router;

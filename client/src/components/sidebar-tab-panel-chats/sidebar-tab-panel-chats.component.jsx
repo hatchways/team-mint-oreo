@@ -5,6 +5,7 @@ import { Grid } from '@material-ui/core';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
+import Client from '../../utils/HTTPClient';
 
 const SidebarTabPanelChats = ({ chatrooms, userId }) => {
   const {
@@ -19,6 +20,11 @@ const SidebarTabPanelChats = ({ chatrooms, userId }) => {
   };
   const handleClick = chatId => {
     console.log('ACTIVE CHAT ID, SIDEBAR CHATS', activeChatId);
+    try {
+      Client.request('/chat/update/activity', 'POST', { chatId, userId });
+    } catch (err) {
+      console.log(err);
+    }
     dispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,
