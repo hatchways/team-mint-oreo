@@ -1,4 +1,5 @@
 import React, { createRef, useState } from 'react';
+import { sendPicture } from '../../utils/axios-utils';
 const Uploader = () => {
   const [file, setFile] = useState({});
   const handleChange = e => {
@@ -7,14 +8,16 @@ const Uploader = () => {
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = reader.result;
-      setFile({ name: input.files[0].name, data: dataUrl });
+      const pic = { name: input.files[0].name, data: dataUrl };
+      setFile(pic);
+      sendPicture(pic);
     };
     reader.readAsDataURL(input.files[0]);
   };
 
   return (
     <div>
-      <input type="file" accept="image/*" onChange={handleChange} />
+      <input type="file" accept="image/x-png," onChange={handleChange} />
       <br />
       {file.name}
       <br />
