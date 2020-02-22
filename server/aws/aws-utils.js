@@ -38,6 +38,8 @@ const uploadMintPic = () => {
 };
 
 const uploadSaltedPic = pic => {
+  // name: string // the picture's name
+  // data: base64 string for picture data.
   const { data, name } = pic;
   const randomName = Math.floor(Math.random() * Math.floor(10)) + Date.now() + name;
   const saltedName = hashCode(randomName);
