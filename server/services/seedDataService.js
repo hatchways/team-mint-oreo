@@ -2,7 +2,7 @@ const db = require('../controllers');
 
 const createUsers = async () => {
   const NUM_OF_USERS = 10;
-  const languages = ['english', 'french', 'korean', 'chinese', 'spanish'];
+  const languages = ['en', 'fr', 'ko', 'zh-CN', 'es'];
   for (let i = 0; i < NUM_OF_USERS; i++) {
     const randomLanguage = languages[Math.floor(Math.random() * languages.length)];
     const user = {
