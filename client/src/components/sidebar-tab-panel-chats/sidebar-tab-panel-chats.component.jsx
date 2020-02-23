@@ -7,30 +7,10 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import DirectoryActionTypes from '../../store/directory/directory.types';
 import Client from '../../utils/HTTPClient';
 
-const SidebarTabPanelChats = ({ chatrooms, userId }) => {
+const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const {
     state: { activeChatId },
-    dispatch,
   } = useContext(directoryStore);
-
-  const hideSidebar = () => {
-    dispatch({
-      type: DirectoryActionTypes.CLOSE_SIDEBAR,
-    });
-  };
-  const handleClick = chatId => {
-    console.log('ACTIVE CHAT ID, SIDEBAR CHATS', activeChatId);
-    try {
-      Client.request('/chat/update/activity', 'POST', { chatId, userId });
-    } catch (err) {
-      console.log(err);
-    }
-    dispatch({
-      type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
-      payload: chatId,
-    });
-    hideSidebar();
-  };
 
   const filterSelf = chatroom => chatroom.users.filter(user => user._id !== userId);
 
@@ -66,7 +46,7 @@ const SidebarTabPanelChats = ({ chatrooms, userId }) => {
             <ProfileAsButton
               name={generateNames(chatroom)}
               {...chatroom}
-              handleClick={() => handleClick(chatId)}
+              handleClick={() => clickHandler(chatId)}
               hideStatus={false}
               isOnline={checkIfAnyOnline(chatroom)}
             />

@@ -65,8 +65,8 @@ const Sidebar = ({ socket }) => {
   useEffect(() => {
     socket.on('receiveMsg', msgObject => {
       const { chatId } = msgObject;
-      if (chatId === activeChatId) return;
-
+      if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
+      // updates location of chat in chatsList
       const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
       if (chatroomIndex < 0) {
         // retrieve chat info from db
@@ -78,16 +78,28 @@ const Sidebar = ({ socket }) => {
     });
   });
 
-  const onContactClick = async friendDmId => {
-    // search for existing chatroom in state
-    let userDMRoom = chatsList.find(chat => chat.chatId === friendDmId);
+  const changeActiveChat = async chatId => {
+    if (activeChatId) {
+      Client.request('/chat/update/activity', 'POST', { activeChatId, userId: user.id });
+    }
+    let userDMRoom = chatsList.find(chat => chat.chatId === chatId);
     if (!userDMRoom) {
-      userDMRoom = await Client.request(`/chat/${friendDmId}`);
+      userDMRoom = await Client.request(`/chat/${chatId}`);
       setChatsList([...chatsList, userDMRoom]);
     }
+    dispatch({
+      type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
+      payload: chatId,
+    });
+    dispatch({
+      type: DirectoryActionTypes.CLOSE_SIDEBAR,
+    });
+  };
+
+  const onContactClick = async friendDmId => {
+    // search for existing chatroom in state
+    changeActiveChat(friendDmId);
     setTab(TabNames.CHATS);
-    dispatch({ type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE, payload: userDMRoom.chatId });
-    console.log('USER DM ROOM', userDMRoom);
   };
 
   const changeTab = (event, newValue) => {
@@ -112,21 +124,27 @@ const Sidebar = ({ socket }) => {
       </Box>
       <Box style={{ overflow: 'auto' }} flex="4">
         <SidebarTabPanel value={tab} index={TabNames.CHATS}>
-          <SidebarTabPanelChats chatrooms={chatsList} userId={user.id} />
+          <SidebarTabPanelChats
+            chatrooms={chatsList}
+            userId={user.id}
+            clickHandler={changeActiveChat}
+          />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.CONTACTS}>
           <SidebarTabPanelContacts contactList={friendsList} clickHandler={onContactClick} />
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
           <SidebarTabPanelInvites
-            profilesList={invitesList.map(({ user: { _id, displayName, avatar }, ...otherArgs }) => ({
-              id: _id,
-              name: displayName,
-              avatar,
-              ...otherArgs,
-            }))}
-            socket={ socket }
-            currentUser={ user }
+            profilesList={invitesList.map(
+              ({ user: { _id, displayName, avatar }, ...otherArgs }) => ({
+                id: _id,
+                name: displayName,
+                avatar,
+                ...otherArgs,
+              })
+            )}
+            socket={socket}
+            currentUser={user}
           />
           {/* =====THIS IS A TEMPORARY CHANGE TO THE CODE====== */}
           {/*<SidebarTabPanelInvites

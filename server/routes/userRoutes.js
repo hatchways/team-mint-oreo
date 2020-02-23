@@ -116,12 +116,15 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   const chatroomsWithUsers = await Promise.all(
     chatroomIds.map(id => {
-      return db.chatroom.getChatroomById(id, {
-        select: ['displayName', 'id', 'socketId', 'avatar'],
-      });
+      return db.chatroom.getChatroomById(
+        id,
+        {
+          selectFromUsers: ['displayName', 'id', 'socketId', 'avatar'],
+        },
+        userId
+      );
     })
   );
-
   const friendsDmIds = await Promise.all(
     friendsData.map(friend => {
       return db.chatroom.getDmIdOfUsers(userId, friend.id);
@@ -134,12 +137,20 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
-  console.log('FRIENDS DM IDS', friendsDmIds);
+  const unreadMessages = await Promise.all(
+    chatroomsWithUsers.map(chatroom => {
+      return db.message.getUnreadCount(chatroom._id, chatroom.lastActivity);
+    })
+  );
+
+  // console.log('FRIENDS DM IDS', friendsDmIds);
   // console.log('FROM USER INFO ', fromUserList);
 
-  const chatrooms = format.chatroomData(chatroomsWithUsers);
+  const chatrooms = format.chatroomData(chatroomsWithUsers, userId);
   const friends = format.friendsData(friendsData, friendsDmIds);
   const invitations = format.invitationsData(invitationData, fromUserList);
+
+  console.log(chatrooms);
 
   res.status(200).json({
     userId,
@@ -149,7 +160,7 @@ router.get('/data', isAuthorized, async (req, res) => {
     // avatar,
     chatrooms,
     friends,
-    invitations: invitations,
+    invitations,
   });
 });
 

@@ -12,25 +12,32 @@ const replaceSocketIdWithStatus = userList => {
   });
 };
 
-const chatroomData = chatroomData => {
+const chatroomData = (chatroomData, userId) => {
   /**
    * This function should take an array of chatroom objects, containing their
-   * status as a DM chatroom, their ChatID, and the user's object.
-   * The user object only needs the following info:
-   *  - _id
-   *  - displayName
-   *  - isOnline (ie socketID)
-   *  - avatar
-   *  - In the future, lastActivity and possibly messages
+   * status as a DM chatroom, their ChatID, and the user objects.
+   *
+   * incoming ChatroomData looks as follows:
+   * {
+   * users: {<userObjects>},
+   * id,
+   * isDM,
+   * activityMap,
+   * }
+   *
+   * User only needs their own last activity
+   *
    */
 
   // console.log(chatroomData);
   const result = chatroomData.map(chatroom => {
-    // console.log(chatroom);
     // Replaces the socketId with the key 'isOnline : <boolean>'
     const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
-    // isDM needs to be explicit since ...rest contains db methods
-    return { isDM: chatroom.isDM, chatId: chatroom._id, users: usersWithOnlineStatus };
+    return {
+      ...chatroom,
+      chatId: chatroom._id,
+      users: usersWithOnlineStatus,
+    };
   });
   return result;
 };
@@ -46,14 +53,14 @@ const friendsData = (friendsData, DmIds) => {
 
 const invitationsData = (invitationsData, fromUserList) => {
   const invitationsList = invitationsData.map((invitation, i) => {
-      return {
-          invitation,
-          user: fromUserList[i]
-      }
+    return {
+      invitation,
+      user: fromUserList[i],
+    };
   });
   console.log('invitationsList: ', invitationsList);
   return invitationsList;
-}
+};
 
 const orderByLatestLast = array => {
   const sortedArray = array.sort((a, b) => Date.parse(a.createdAt) - Date.parse(b.createdAt));

@@ -12,7 +12,8 @@ const chatroomSchema = new Schema({
     default: true,
   },
   activityMap: {
-    type: Date,
+    type: Map,
+    of: Number,
   },
 });
 

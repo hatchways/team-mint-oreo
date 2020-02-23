@@ -1,16 +1,30 @@
-const mongoose = require('mongoose');
 const Chatroom = require('../models/Chatroom');
 const Error = require('../utils/Error');
 const db = require('./index');
 
+/*Needs a higher scope to be used in other methods */
+
+const updateActivty = async (userId, chatId) => {
+  // might have to use Map.set(userId, Date.now()) syntax
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { $set: { [userId]: Date.now() } },
+    { new: true }
+  );
+  console.log(result);
+};
+
+/******* */
+
 const createChatroom = async userIds => {
   try {
-    // const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
+    console.log('creating chatroom');
+    console.log(db);
     if (userIds.length < 2) throw new Error(400, 'Needs at least 2 users');
-    // const newChat = await Chatroom.create({ users: userIds });
-    const newChat = new Chatroom({ users: userIds });
-    const savedChat = await newChat.save();
-    console.log(savedChat, ' was saved in db');
+    const isDM = userIds.length === 2;
+    const activityMap = userIds.reduce((a, userId) => ({ ...a, [userId]: Date.now() }), {});
+    const newChat = await Chatroom.create({ users: userIds, isDM, activityMap });
+    console.log('New Chat Created: ', newChat);
 
     return newChat.id;
   } catch (err) {
@@ -22,7 +36,7 @@ const addUser = async (userId, chatId) => {
   try {
     const chatroom = await Chatroom.findByIdAndUpdate(
       chatId,
-      { $addToSet: { users: userId } },
+      { $addToSet: { users: userId }, activityMap: { userId: Date.now() } },
       { new: true }
     );
   } catch (err) {
@@ -39,7 +53,7 @@ const getUsersByChatId = async chatId => {
     });
     return usersInChat.users;
   } catch (err) {
-    if(err instanceof TypeError) {
+    if (err instanceof TypeError) {
       throw new TypeError('GetUsersByChatId:' + err.message, 400);
     }
     throw new Error(500, 'Internal Server Error at getUsersByChatId()', err);
@@ -56,14 +70,17 @@ const getDmIdOfUsers = async (userId, friendId) => {
   return id;
 };
 
-const getChatroomById = async (chatId, { select }) => {
+const getChatroomById = async (chatId, { selectFromUsers }, userId) => {
   try {
     const chatroom = await Chatroom.findById(chatId).populate({
       path: 'users',
       model: 'User',
-      select,
+      select: selectFromUsers,
     });
-    return chatroom;
+
+    const { activityMap, ...rest } = chatroom.toObject();
+    const withLastActivity = { ...rest, lastActivity: activityMap.get(userId) };
+    return withLastActivity;
   } catch (err) {
     throw new Error(500, 'Get Chatroom', err);
   }
@@ -75,7 +92,7 @@ const getLanguages = async chatId => {
     const data = new Set(usersInChatroom.map(user => user.language));
     return [...data];
   } catch (err) {
-    if(err instanceof TypeError) {
+    if (err instanceof TypeError) {
       throw new TypeError('getLanguages:' + err.message, 400);
     }
     throw new Error(500, 'Internal Server Error at getLanguages()', err);
@@ -90,13 +107,9 @@ const removeUser = async (userId, chatId) => {
   }
 };
 
-const updateActivty = async (userId, chatId) => {
-  const result = await Chatroom.findByIdAndUpdate(
-    chatId,
-    { $set: { [userId]: Date.now() } },
-    { new: true }
-  );
-  console.log(result);
+const removeChatroom = async chatId => {
+  const resp = await Chatroom.findOneAndDelete({ id: chatId });
+  console.log(`Chatroom deleted`, resp);
 };
 
 module.exports = {
@@ -109,4 +122,5 @@ module.exports = {
   getAllByUserId,
   getDmIdOfUsers,
   updateActivty,
+  removeChatroom,
 };

@@ -30,7 +30,13 @@ const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
   }
 };
 
+const getUnreadCount = async (chatId, latestTimestamp) => {
+  const count = await Message.count({ chatId, createdAt: { $gte: latestTimestamp } });
+  console.log('COUNT OF UNREADS', count);
+};
+
 module.exports = {
   createMessage,
   getAllByChatId,
+  getUnreadCount,
 };

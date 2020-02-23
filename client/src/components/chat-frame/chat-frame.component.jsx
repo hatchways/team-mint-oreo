@@ -36,10 +36,12 @@ const ChatFrame = ({ socket, userId }) => {
 
   useEffect(() => {
     socket.on('receiveMsg', msg => {
-      setMessages([...messages, msg]);
+      if (msg.chatId === chatId) {
+        setMessages([...messages, msg]);
+      }
     });
-  }, [messages, socket]);
-
+  }, [messages, chatId]);
+  console.log('chatframe, chatid', chatId);
   return (
     <Box height="100vh" overflow="hidden">
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
