@@ -58,4 +58,16 @@ router.post('/makeFriends', async (req, res) => {
   db.user.addChatById(recipientId, chatId);
 });
 
+router.get('/deleteFriendsAndChatrooms', async (req, res) => {
+  const { userId } = res.locals;
+  const friendsIds = await db.user.getFriendsFieldsById('id', userId);
+  friendsIds.forEach(friend => {
+    db.user.removeUser(friend);
+  });
+  const chatIds = await db.user.getChatsIdsById(userId);
+  chatIds.forEach(chatId => {
+    db.chatroom.removeChatroom(chatId);
+  });
+  db.user.clearChatrooms(userId);
+});
 module.exports = router;

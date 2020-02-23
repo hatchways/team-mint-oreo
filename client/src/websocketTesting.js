@@ -84,20 +84,6 @@ function WebsocketTesting() {
       invitationId: '5e4d70777ca2229258c7f5af',
     });
   };
-  const createFakeFriends = () => {
-    fetch('/seed/friends');
-  };
-  const createFakeRooms = () => {
-    fetch('/seed/rooms');
-  };
-
-  const getUserData = () => {
-    fetch('/user/data');
-  };
-
-  const addFriendsToChatrooms = () => {
-    fetch('/seed/friendsToChat');
-  };
 
   const makeFriends = () => {
     const { recipientId } = formData;
@@ -132,7 +118,7 @@ function WebsocketTesting() {
           <button type="button" onClick={logout}>
             LOGOUT
           </button>
-          <button type="button" onClick={getUserData}>
+          <button type="button" onClick={() => fetch('/user/data')}>
             GET USER DATA
           </button>
           <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
@@ -166,19 +152,22 @@ function WebsocketTesting() {
           />
           <br />
 
-          <button type="button" onClick={createFakeRooms}>
+          <button type="button" onClick={() => fetch('/seed/rooms')}>
             SEED CHATROOMS
           </button>
-          <button type="button" onClick={createFakeFriends}>
+          <button type="button" onClick={() => fetch('/seed/friends')}>
             SEED FRIENDS
           </button>
-          <button type="button" onClick={addFriendsToChatrooms}>
+          <button type="button" onClick={() => fetch('/seed/friendsToChat')}>
             Add Friends to chatroom
           </button>
           <button type="button" onClick={connectedSockets}>
             log connected sockets EMIT
           </button>
           <button onClick={() => fetch('/user/delete')}>DELETE USER</button>
+          <button type="button" onClick={() => fetch('/seed/deleteFriendsAndChatrooms')}>
+            DELETE FRIENDS
+          </button>
           {/* <form style={{ display: 'flex' }}>
             <label>TO USER ID</label>
             <input type="text" onChange={changeInputUser} />
