@@ -5,7 +5,6 @@ import { useClientRect } from '../../utils/react-utils';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
-import Profile from '../profile/profile.component';
 import Tabs, { TabNames } from '../tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
@@ -30,7 +29,7 @@ const Sidebar = ({ size, socket }) => {
     setHeight(sum);
   }, [upperRect, size]);
 
-  const { state: directoryState, dispatch } = useContext(directoryStore);
+  const { dispatch } = useContext(directoryStore);
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
     id: 1,

@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Profile from '../profile/profile.component';
 import { Menu, MenuItem } from '@material-ui/core';
+import { store as directoryStore } from '../../store/directory/directory.provider';
+import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const UserProfile = ({ user }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -10,6 +12,13 @@ const UserProfile = ({ user }) => {
 
   const handleUnExpand = () => {
     setAnchorEl(null);
+  };
+
+  const { dispatch } = useContext(directoryStore);
+
+  const handleShowProfile = () => {
+    dispatch({ type: DirectoryActionTypes.TOGGLE_PROFILE });
+    handleUnExpand();
   };
 
   return (
@@ -22,7 +31,7 @@ const UserProfile = ({ user }) => {
         open={Boolean(anchorEl)}
         onClose={handleUnExpand}
       >
-        <MenuItem onClick={handleUnExpand}>Profile</MenuItem>
+        <MenuItem onClick={handleShowProfile}>Profile</MenuItem>
         <MenuItem onClick={handleUnExpand}>Logout</MenuItem>
       </Menu>
     </div>

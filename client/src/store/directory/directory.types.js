@@ -6,6 +6,8 @@ const DirectoryActionTypes = {
   TOGGLE_SIDEBAR: 'TOGGLE_SIDEBAR',
   CLOSE_SIDEBAR: 'CLOSE_SIDEBAR',
   SET_LANGUAGE: 'SET_LANGUAGE',
+  TOGGLE_PROFILE: 'TOGGLE_PROFILE',
+  CLOSE_PROFILE: 'CLOSE_PROFILE',
 };
 
 export default DirectoryActionTypes;

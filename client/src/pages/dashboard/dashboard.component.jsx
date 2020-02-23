@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
-import { useHistory } from 'react-router-dom';
 import { Box, Grid, Hidden } from '@material-ui/core';
 import WithChatStates from '../../components/with-chat-states/with-chat-states.component';
 import Sidebar from '../../components/sidebar/sidebar.component';
-import Client from '../../utils/HTTPClient';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
 import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite-friend-backdrop.component';
 import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
+import SettingsBackdrop from '../../components/settings-backdrop/settings-backdrop.component';
 
 const socket = io('http://localhost:3001');
 
@@ -35,6 +34,7 @@ const Dashboard = ({ userId }) => {
     <Box>
       <SidebarDrawer socket={socket} />
       <InviteFriendBackdrop />
+      <SettingsBackdrop />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>
