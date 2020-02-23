@@ -12,6 +12,7 @@ import SearchField from '../search-field/search-field.component';
 import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
+import UserProfile from '../user-profile/user-profile.component';
 // import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ size, socket }) => {
@@ -115,7 +116,7 @@ const Sidebar = ({ size, socket }) => {
       <Box paddingBottom={2} ref={upperRef}>
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
-            <Profile {...user} moreOptions={{ exists: true }} />
+            <UserProfile user={user} />
           </Grid>
           <Grid item>
             <Tabs value={tab} onChange={changeTab}></Tabs>

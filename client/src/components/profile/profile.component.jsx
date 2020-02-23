@@ -16,6 +16,7 @@ const Profile = (
     handleDisapproval = null,
     hideStatus = true,
     isOnline = false,
+    onClick4More = () => {},
   },
   width = 400
 ) => {
@@ -73,7 +74,7 @@ const Profile = (
             <Grid item xs={2}>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <IconButton>
+                  <IconButton onClick={onClick4More}>
                     <MoreHoriz />
                   </IconButton>
                 </Grid>
