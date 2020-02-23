@@ -1,10 +1,10 @@
+const uuidv4 = require('uuid/v4');
 const socketio = require('socket.io');
 const db = require('../controllers');
 const onLogin = require('./login');
 const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
 const mailService = require('../services/mailService');
-const uuidv4 = require('uuid/v4');
 
 /* SOCKET METHODS */
 
@@ -20,17 +20,17 @@ const acceptInvitation = async (socket, userId, friendId) => {
 };
 
 const updateUserChatroom = async (userIds, chatId) => {
-    try {
-        const updatedUserInfos = await Promise.all(
-          userIds.map(userId => {
-            return db.user.addChatById(userId, chatId);
-          })
-        );
-        console.log('Updated User List: ', updatedUserInfos);
-    } catch(err) {
-        throw new Error(500, 'update user chatroom', err);
-    }
-}
+  try {
+    const updatedUserInfos = await Promise.all(
+      userIds.map(userId => {
+        return db.user.addChatById(userId, chatId);
+      })
+    );
+    console.log('Updated User List: ', updatedUserInfos);
+  } catch (err) {
+    throw new Error(500, 'update user chatroom', err);
+  }
+};
 
 /* SOCKET HANLDER */
 
@@ -48,14 +48,11 @@ const handleSocket = server => {
     });
 
     socket.on('sendMsg', async msgObject => {
-      try {
-        const translations = await onSend.translateMessage(msgObject);
-        const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
-        onSend.sendMessage(io, outgoingMsg);
-        await db.message.createMessage(outgoingMsg);
-      } catch(err) {
-        console.error('Sending message failed: ', err);
-      }
+      const translations = await onSend.translateMessage(msgObject);
+      const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
+      const { _id } = await db.message.createMessage(outgoingMsg);
+      onSend.sendMessage(io, { ...outgoingMsg, _id });
+      db.chatroom.updateLastMessage();
     });
 
     // current user is sending the friend an invitation request
@@ -69,19 +66,17 @@ const handleSocket = server => {
 
         // check for friendship or existing invitation
         // If it does, we don't send notification mail in a first place
-        if (invExists || alreadyFriends) {
-          throw new Error('Invitation / Friend already registered');
-        } else {
-          const randomId = uuidv4();
+        if (invExists || alreadyFriends) throw new Error('Invitation / Friend already registered');
 
-          mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
-            if (err) throw err;
-            if (isSent) console.log('Email successfully sent');
-          });
+        const randomId = uuidv4();
 
-          const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
-          console.log(newInvitation, ' has been created');
-        }
+        mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
+          if (err) throw err;
+          if (isSent) console.log('Email successfully sent');
+        });
+
+        const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
+        console.log(newInvitation, ' has been created');
 
         /* Maybe convert the userId into email? */
         /* Or we can possibly send the whole User query to fromUser & toUser
@@ -89,9 +84,9 @@ const handleSocket = server => {
 
         // This socket identifies from who, to who, and the identifier of invitation itself
         socket.to(toUser).emit('friendRequestReceived', {
-          fromUser: fromUser,
-          toUser: toUser,
-          invitatioin: newInvitation.id,
+          fromUser,
+          toUser,
+          invitation: newInvitation.id,
         });
       } catch (err) {
         // Error will occur if the user tries to add duplicate

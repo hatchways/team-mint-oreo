@@ -4,14 +4,21 @@ const db = require('./index');
 
 /*Needs a higher scope to be used in other methods */
 
-const updateActivty = async (userId, chatId) => {
+const updateLastMessage = async (userId, chatId) => {
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { lastMessageTimestamp: Date.now() },
+    { new: true }
+  );
+};
+
+const updateLastTimeVisited = async (userId, chatId) => {
   // might have to use Map.set(userId, Date.now()) syntax
   const result = await Chatroom.findByIdAndUpdate(
     chatId,
-    { $set: { [userId]: Date.now() } },
+    { activityMap: { [userId]: Date.now() } },
     { new: true }
   );
-  console.log(result);
 };
 
 /******* */
@@ -121,6 +128,7 @@ module.exports = {
   getLanguages,
   getAllByUserId,
   getDmIdOfUsers,
-  updateActivty,
+  updateLastTimeVisited,
   removeChatroom,
+  updateLastMessage,
 };

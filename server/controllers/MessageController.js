@@ -13,8 +13,9 @@ const createMessage = async msg => {
       ...rest,
     });
     console.log('New message created: ', newMessage);
+    return newMessage;
   } catch (err) {
-    if(err instanceof ValidationError) {
+    if (err instanceof ValidationError) {
       throw new Error(400, 'createMessage:' + err.message, err);
     }
     throw new Error(500, 'Internal Server Error at createMessage()', err);
@@ -31,7 +32,7 @@ const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
 };
 
 const getUnreadCount = async (chatId, latestTimestamp) => {
-  const count = await Message.count({ chatId, createdAt: { $gte: latestTimestamp } });
+  const count = await Message.countDocuments({ chatId, createdAt: { $gte: latestTimestamp } });
   console.log('COUNT OF UNREADS', count);
 };
 

@@ -150,8 +150,6 @@ router.get('/data', isAuthorized, async (req, res) => {
   const friends = format.friendsData(friendsData, friendsDmIds);
   const invitations = format.invitationsData(invitationData, fromUserList);
 
-  console.log(chatrooms);
-
   res.status(200).json({
     userId,
     email,

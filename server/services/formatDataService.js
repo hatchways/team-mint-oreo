@@ -29,8 +29,16 @@ const chatroomData = (chatroomData, userId) => {
    *
    */
 
-  // console.log(chatroomData);
-  const result = chatroomData.map(chatroom => {
+  console.log(chatroomData);
+  console.log('****************************');
+  const sortedData = chatroomData.sort((a, b) => {
+    const firstTimestamp = a.lastMessageTimestamp || Date.parse(a.createdAt);
+    const secondTimestamp = b.lastMessageTimestamp || Date.parse(b.createdAt);
+    return secondTimestamp - firstTimestamp;
+  });
+
+  console.log(sortedData);
+  const result = sortedData.map(chatroom => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
     const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
     return {
@@ -67,6 +75,11 @@ const orderByLatestLast = array => {
   return sortedArray;
 };
 
+const messagesData = messages => {
+  const sortedMessages = orderByLatestLast(messages);
+  return sortedMessages;
+};
+
 module.exports = {
   replaceSocketIdWithStatus,
   flattenArray,
@@ -74,4 +87,5 @@ module.exports = {
   orderByLatestLast,
   friendsData,
   invitationsData,
+  messagesData,
 };

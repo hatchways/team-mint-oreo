@@ -36,12 +36,14 @@ const ChatFrame = ({ socket, userId }) => {
 
   useEffect(() => {
     socket.on('receiveMsg', msg => {
+      console.log('msg received. ChatID: ', chatId, 'msgChatID:', msg.chatId);
       if (msg.chatId === chatId) {
+        console.log('appending msg to chatID:', chatId);
         setMessages([...messages, msg]);
       }
     });
   }, [messages, chatId]);
-  console.log('chatframe, chatid', chatId);
+  console.log('CHATFRAME ID:', chatId);
   return (
     <Box height="100vh" overflow="hidden">
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
