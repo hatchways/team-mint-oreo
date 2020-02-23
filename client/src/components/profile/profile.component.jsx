@@ -24,7 +24,8 @@ const Profile = (
 
   /* FIX THIS LATER */
   const url = avatar?.url || '';
-  const fallback = avatar?.fallback || '';
+  // fallback uses first 2 letters of name
+  const fallback = avatar?.fallback || name.substring(0, 2);
 
   /* *************** */
 
