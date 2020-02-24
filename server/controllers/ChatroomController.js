@@ -12,14 +12,6 @@ const createChatroom = async userIds => {
     const savedChat = await newChat.save();
     console.log(savedChat, ' was saved in db');
 
-    // Assign the new chatroom to each user
-    // const updatedUserInfos = await Promise.all(
-    //   userIds.map(userId => {
-    //     return db.user.addChatById(userId, newChat.id);
-    //   })
-    // );
-    // console.log('Updated User List: ', updatedUserInfos);
-
     return newChat.id;
   } catch (err) {
     throw new Error(500, 'Create Chat', err);
@@ -47,7 +39,10 @@ const getUsersByChatId = async chatId => {
     });
     return usersInChat.users;
   } catch (err) {
-    throw new Error(500, 'Get Users In Chat', err);
+    if(err instanceof TypeError) {
+      throw new TypeError('GetUsersByChatId:' + err.message, 400);
+    }
+    throw new Error(500, 'Internal Server Error at getUsersByChatId()', err);
   }
 };
 
@@ -80,7 +75,10 @@ const getLanguages = async chatId => {
     const data = new Set(usersInChatroom.map(user => user.language));
     return [...data];
   } catch (err) {
-    throw new Error(500, 'Get Language & ID from Chat', err);
+    if(err instanceof TypeError) {
+      throw new TypeError('getLanguages:' + err.message, 400);
+    }
+    throw new Error(500, 'Internal Server Error at getLanguages()', err);
   }
 };
 
