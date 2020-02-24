@@ -54,7 +54,7 @@ router.get('/verify', async (req, res) => {
   const { userId } = res.locals;
   const dbUser = await db.user.getById(userId);
   if (!dbUser) res.clearCookie('user');
-  res.json({ userId });
+  res.status(200).json({ userId });
 });
 
 router.get('/getUser', async (req, res) => {

@@ -64,6 +64,7 @@ const Sidebar = ({ socket }) => {
 
   useEffect(() => {
     socket.on('receiveMsg', msgObject => {
+      console.log('received msg in sidebar');
       const { chatId } = msgObject;
       if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
       // updates location of chat in chatsList

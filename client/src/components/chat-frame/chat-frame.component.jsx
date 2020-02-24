@@ -62,19 +62,20 @@ const ChatFrame = ({ socket, userId }) => {
   }, [chatId]);
 
   useEffect(() => {
-    console.log('UE RUNNING CHATID:', chatId);
-    socket.on('receiveMsg', msg => {
-      console.log('msg received. ChatID: ', chatId, 'msgChatID:', msg.chatId);
+    const updateMessages = msg => {
+      console.log('Chatframe ID: ', chatId, 'msg ID: ', msg.chatId);
       if (msg.chatId === chatId) {
         dispatch({ type: 'ADD_MESSAGE', payload: msg });
       }
-    });
-    return () => {
-      console.log('UNMOUNTING WITH CHAT ID', chatId);
     };
-  }, [chatId, socket]);
 
-  const memoMessages = useMemo(() => messages, [chatId, messages]);
+    socket.on('receiveMsg', updateMessages);
+    return () => {
+      socket.off('receiveMsg', updateMessages);
+    };
+  }, [chatId]);
+
+  const memoMessages = useMemo(() => messages, [messages]);
 
   return (
     <Box maxHeight="100vh" overflow="hidden">
@@ -84,7 +85,6 @@ const ChatFrame = ({ socket, userId }) => {
         </Grid>
         <Grid item>
           <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-            <div>{chatId}</div>
             <ChatMessages
               messages={memoMessages}
               showOriginalText={showOriginalText}

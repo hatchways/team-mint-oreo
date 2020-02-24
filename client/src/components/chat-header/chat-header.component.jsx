@@ -10,21 +10,21 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 const ChatHeader = ({ chatId, toggleText }) => {
   const { dispatch } = useContext(directoryStore);
 
-  // const [title, setTitle] = useState('Select a chatroom');
+  const [title, setTitle] = useState('Select a chatroom');
 
-  // useEffect(() => {
-  //   let isMounted = true;
-  //   const getHeaderInfo = async () => {
-  //     const data = await Client.request('/');
-  //     if (isMounted) setTitle(data.title);
-  //   };
+  useEffect(() => {
+    let isMounted = true;
+    const getHeaderInfo = async () => {
+      const data = await Client.request('/');
+      if (isMounted) setTitle(data.title);
+    };
 
-  //   // getHeaderInfo();
+    // getHeaderInfo();
 
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, [chatId]);
+    return () => {
+      isMounted = false;
+    };
+  }, [chatId]);
 
   const triggerSidebar = () => {
     dispatch({
@@ -59,7 +59,7 @@ const ChatHeader = ({ chatId, toggleText }) => {
                 alignItems="baseline"
                 spacing={1}
               >
-                <Typography>{chatId}</Typography>
+                <Typography>{title}</Typography>
                 <Grid item xs={12} sm>
                   Online
                 </Grid>

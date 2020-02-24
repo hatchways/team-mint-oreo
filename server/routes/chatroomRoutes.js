@@ -25,7 +25,7 @@ router.post('/update/activity', async (req, res) => {
   const { activeChatId: chatId, userId } = req.body;
   console.log('update activity', chatId, userId);
   const updated = await db.chatroom.updateLastTimeVisited(userId, chatId);
-  res.sendStatus(200);
+  res.status(200).json({});
 });
 
 module.exports = router;
