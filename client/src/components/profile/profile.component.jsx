@@ -24,8 +24,6 @@ const Profile = (
 
   /* FIX THIS LATER */
   const url = avatar;
-  // fallback uses first 2 letters of name
-  const fallback = name.substring(0, 2);
 
   /* *************** */
 
@@ -45,7 +43,7 @@ const Profile = (
                 horizontal: 'right',
               }}
             >
-              <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
+              <Avatar {...{ src: url, alt: name }} />
             </Badge>
           </Grid>
           <Grid item xs>
