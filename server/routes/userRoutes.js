@@ -147,6 +147,21 @@ router.get('/data', isAuthorized, async (req, res) => {
   });
 });
 
+router.get('/avatar', async (req, res) => {
+  try {
+    const { userId } = res.locals;
+    const { avatar } = await db.user.getFieldById('avatar', userId);
+    res.status(200).json({ avatar });
+  } catch (e) {
+    res.status(400).json({ error: e });
+  }
+});
+
+router.post('/avatar', async (req, res) => {
+  const { userId } = res.locals;
+  const { pic } = req.body;
+});
+
 router.get('/logout', async (req, res) => {
   res.clearCookie('user').end();
 });
