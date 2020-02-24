@@ -2,7 +2,7 @@ import DirectoryActionTypes from './directory.types';
 
 export const initialState = {
   // currently active conversation to display
-  currentlyActive: null,
+  activeChatId: null,
   showBackdrop: false,
   showSidebar: false,
   language: 'english',
@@ -11,7 +11,7 @@ export const initialState = {
 export const directoryReducer = (state, action) => {
   switch (action.type) {
     case DirectoryActionTypes.SET_CURRENTLY_ACTIVE:
-      return { ...state, currentlyActive: action.payload };
+      return { ...state, activeChatId: action.payload };
     case DirectoryActionTypes.TOGGLE_BACKDROP:
       return { ...state, showBackdrop: !state.showBackdrop };
     case DirectoryActionTypes.CLOSE_BACKDROP:

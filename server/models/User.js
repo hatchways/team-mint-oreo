@@ -19,7 +19,7 @@ const userSchema = new Schema(
     language: {
       type: String,
       required: true,
-      default: 'english',
+      default: 'en',
       lowercase: true,
       trim: true,
     },

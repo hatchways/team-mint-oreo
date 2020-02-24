@@ -23,7 +23,7 @@ router.post('/register', async (req, res) => {
     displayName,
     avatar: '',
   });
-  if (id) res.sendStatus(201);
+  if (id) res.status(201).json({ status: 201 });
 });
 
 router.post('/login', async (req, res) => {
@@ -49,7 +49,7 @@ router.post('/login', async (req, res) => {
       });
   } catch (err) {
     console.log(err);
-    res.sendStatus(err.status || 500);
+    res.status(err.status).json({ error: err });
   }
 });
 
@@ -57,7 +57,7 @@ router.get('/verify', async (req, res) => {
   const { userId } = res.locals;
   const dbUser = await db.user.getById(userId);
   if (!dbUser) res.clearCookie('user');
-  res.json({ userId });
+  res.status(200).json({ userId });
 });
 
 router.get('/getUser', async (req, res) => {
@@ -121,31 +121,49 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   const chatroomsWithUsers = await Promise.all(
     chatroomIds.map(id => {
-      return db.chatroom.getChatroomById(id, {
-        select: ['displayName', 'id', 'socketId', 'avatar'],
-      });
+      return db.chatroom.getChatroomById(
+        id,
+        {
+          selectFromUsers: ['displayName', 'id', 'socketId', 'avatar'],
+        },
+        userId
+      );
     })
   );
-
   const friendsDmIds = await Promise.all(
     friendsData.map(friend => {
       return db.chatroom.getDmIdOfUsers(userId, friend.id);
     })
   );
 
-  console.log('FRIENDS DM IDS', friendsDmIds);
+  const fromUserList = await Promise.all(
+    invitationData.map(invitation => {
+      return db.user.getByEmail(invitation.fromUser);
+    })
+  );
 
-  const chatrooms = format.chatroomData(chatroomsWithUsers);
+  const unreadMessages = await Promise.all(
+    chatroomsWithUsers.map(chatroom => {
+      return db.message.getUnreadCount(chatroom._id, chatroom.lastActivity);
+    })
+  );
+
+  // console.log('FRIENDS DM IDS', friendsDmIds);
+  // console.log('FROM USER INFO ', fromUserList);
+
+  const chatrooms = format.chatroomData(chatroomsWithUsers, userId);
   const friends = format.friendsData(friendsData, friendsDmIds);
+  const invitations = format.invitationsData(invitationData, fromUserList);
 
   res.status(200).json({
     userId,
+    email,
     language,
     displayName,
     avatar,
     chatrooms,
     friends,
-    invitations: invitationData,
+    invitations,
   });
 });
 
@@ -191,23 +209,9 @@ router.get('/logout', async (req, res) => {
   res.clearCookie('user').end();
 });
 
-router.get('/test', async (req, res) => {
-  console.log('************************');
-  console.log('***TEST RESULTS HERE****');
-  console.log('************************');
-
-  // seedService.createUsers();
-  // const users = await seedService.getAllUsers();
-  // console.log(users, users.length);
-  // for (let i = 0; i <= users.length / 2; i++) {
-  //   const random = Math.floor(Math.random() * users.length);
-  //   const { id } = db.chatroom.createChatroom([users[random].id, users.pop().id]);
-  //   console.log('new chat id', id);
-  // }
-
-  console.log('************************');
-  console.log('***TEST RESULTS HERE****');
-  console.log('************************');
+router.get('/delete', isAuthorized, async (req, res) => {
+  console.log('deleting...');
+  db.user.removeUser(res.locals.userId);
 });
 
 module.exports = router;

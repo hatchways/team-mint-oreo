@@ -7,6 +7,7 @@ import { useStyles } from './profile.styles';
 
 const Profile = (
   {
+    invitation, // THIS IS A TEMPORARY VALUE
     name,
     secondary = '',
     notifications = 0,
@@ -22,10 +23,7 @@ const Profile = (
 ) => {
   const classes = useStyles();
 
-  /* FIX THIS LATER */
   const url = avatar;
-
-  /* *************** */
 
   return (
     <Box minWidth={width} maxWidth={width}>
@@ -50,6 +48,7 @@ const Profile = (
             {secondary === '' ? (
               <Typography>{name}</Typography>
             ) : (
+              /*<Typography>{fromUser}</Typography>*/
               <div>
                 <Grid container direction="column">
                   <Grid item>
@@ -84,7 +83,7 @@ const Profile = (
             <Grid item xs>
               <Grid container direction="row" justify="flex-end" alignItems="center">
                 <Grid item>
-                  <IconButton>
+                  <IconButton onClick={event => handleApproval(event)}>
                     <Check />
                   </IconButton>
                 </Grid>
@@ -102,4 +101,4 @@ const Profile = (
   );
 };
 
-export default Profile;
+export default React.memo(Profile);

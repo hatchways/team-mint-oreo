@@ -4,9 +4,9 @@ const db = require('../controllers');
 router.get('/rooms', async (req, res) => {
   const { userId } = res.locals;
   const { friends } = await db.user.getFriendsFieldsById(userId, ['id']);
-  console.log(friends[1]['_id']);
+  console.log(friends[1]._id);
   for (let i = 0; i < 10; i++) {
-    db.chatroom.createChatroom([userId, friends[i]['_id']]);
+    db.chatroom.createChatroom([userId, friends[i]._id]);
   }
 });
 
@@ -36,7 +36,7 @@ router.get('/friendsToChat', async (req, res) => {
   const friends = await db.user.getFriendsFieldsById('id', userId);
   const chatIds = await Promise.all(
     friends.map(friend => {
-      return db.chatroom.createChatroom([userId, friend['_id']]);
+      return db.chatroom.createChatroom([userId, friend._id]);
     })
   );
 
@@ -58,4 +58,16 @@ router.post('/makeFriends', async (req, res) => {
   db.user.addChatById(recipientId, chatId);
 });
 
+router.get('/deleteFriendsAndChatrooms', async (req, res) => {
+  const { userId } = res.locals;
+  const friendsIds = await db.user.getFriendsFieldsById('id', userId);
+  friendsIds.forEach(friend => {
+    db.user.removeUser(friend);
+  });
+  const chatIds = await db.user.getChatsIdsById(userId);
+  chatIds.forEach(chatId => {
+    db.chatroom.removeChatroom(chatId);
+  });
+  db.user.clearChatrooms(userId);
+});
 module.exports = router;

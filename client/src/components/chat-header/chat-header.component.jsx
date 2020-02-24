@@ -10,7 +10,7 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 const ChatHeader = ({ chatId, toggleText }) => {
   const { dispatch } = useContext(directoryStore);
 
-  const [title, setTitle] = useState('Group Chat');
+  const [title, setTitle] = useState('Select a chatroom');
 
   useEffect(() => {
     let isMounted = true;
@@ -52,7 +52,13 @@ const ChatHeader = ({ chatId, toggleText }) => {
               </Box>
             </Hidden>
             <Grid item xs={8} sm>
-              <Grid container direction="row" justify="flex-start" alignItems="center" spacing={1}>
+              <Grid
+                container
+                direction="row"
+                justify="flex-start"
+                alignItems="baseline"
+                spacing={1}
+              >
                 <Typography>{title}</Typography>
                 <Grid item xs={12} sm>
                   Online
@@ -71,8 +77,11 @@ const ChatHeader = ({ chatId, toggleText }) => {
           >
             <Grid item>
               <Grid component="label" container alignItems="center">
-                <IOSSwitch value="checkedA" color="primary" onClick={toggleText} />
-
+                <IOSSwitch
+                  value="checkedA"
+                  color="primary"
+                  onClick={() => toggleText({ type: 'TOGGLE_TRANSLATION' })}
+                />
                 <Grid item>Off</Grid>
               </Grid>
             </Grid>

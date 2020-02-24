@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Error = require('../utils/Error');
 
 /**USER METHODS */
 
@@ -57,6 +58,11 @@ const checkFriendship = async (userEmail, friendEmail) => {
   }
 };
 
+const removeUser = async userId => {
+  const result = await User.findOneAndDelete({ _id: userId });
+  console.log('DELETING USER', result);
+};
+
 /** USER SOCKET METHODS */
 
 const setSocketIdById = async (userId, socketId) => {
@@ -79,6 +85,8 @@ const clearSocketId = socketId => {
 
 const addFriend = async (userId, friendId) => {
   try {
+    console.log('userId: ', userId);
+    console.log('friendId: ', friendId);
     // Add each other as friends
     const user = await User.findByIdAndUpdate(
       userId,
@@ -154,11 +162,17 @@ const addChatById = async (userId, chatId) => {
       { $addToSet: { chatrooms: chatId } },
       { new: true }
     );
+    console.log(user, ' has been assigned a room');
+    return user;
   } catch (err) {
     throw new Error(500, 'Add Chats - ID', err);
   }
 };
 
+const clearChatrooms = async userId => {
+  const { id } = await User.findOneAndUpdate(userId, { chatrooms: [] });
+  console.log(`User ${id} chatroom deleted`);
+};
 // const addInvitationById = async (userId, invitationId) => {
 //   try {
 //     const updatedUser = await User.findByIdAndUpdate(
@@ -205,6 +219,8 @@ module.exports = {
   getAllUsers,
   getFriendsFieldsById,
   getChatsIdsById,
+  removeUser,
+  clearChatrooms,
   // addInvitationById,
   // removeInvitation,
   addAvatar,

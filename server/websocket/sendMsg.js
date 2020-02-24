@@ -3,26 +3,41 @@ const { cache } = require('../utils/Cache');
 const translateService = require('../services/translateService');
 
 const getLanguageList = async chatId => {
-  const list = cache.get(chatId) || (await db.chatroom.getLanguages(chatId));
-  // const list = await db.chatroom.getLanguages(chatId);
-  cache.set(chatId, list);
-  return list;
+  try {
+    // const list = cache.get(chatId) || (await db.chatroom.getLanguages(chatId));
+    const list = await db.chatroom.getLanguages(chatId);
+    cache.set(chatId, list);
+    return list;
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new TypeError('getLanguageList:' + err.message, 400);
+    }
+    throw new Error(500, 'Internal Server Error at getLanguageList()', err);
+  }
 };
 
 const translateMessage = async ({ userId, language, chatId, originalText }) => {
-  // id and language list is an array of objects: {id, language}
-  const languageList = await getLanguageList(chatId);
-  const translatedText = await Promise.all(
-    languageList.map(language => translateService.translateLang(originalText, language))
-  );
+  try {
+    const languageList = await getLanguageList(chatId);
 
-  // returns an object with the shape {language: translatedText}
-  const idTranslationMap = languageList.reduce(
-    (a, language, i) => ({ ...a, [language]: translatedText[i] }),
-    {}
-  );
+    const translatedText = await Promise.all(
+      languageList.map(language => translateService.translateLang(originalText, language))
+    );
 
-  return idTranslationMap;
+    // returns an object with the shape {language: translatedText}
+    const idTranslationMap = languageList.reduce(
+      (a, language, i) => ({ ...a, [language]: translatedText[i] }),
+      {}
+    );
+
+    console.log('language map: ', idTranslationMap);
+    return idTranslationMap;
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new TypeError('translateMessage:' + err.message, 400);
+    }
+    throw new Error(500, 'Internal Server Error at translateMessage()', err);
+  }
 };
 
 const sendMessage = async (io, outgoingMsg) => {

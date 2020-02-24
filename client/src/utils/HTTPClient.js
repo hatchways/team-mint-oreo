@@ -19,8 +19,8 @@ const Client = {
       },
     });
 
-    if (resp.status !== 200) {
-      return { status: resp.status, message: resp.message };
+    if (resp.status > 300) {
+      console.error(resp.status, resp.message);
     }
 
     const data = await resp.json();

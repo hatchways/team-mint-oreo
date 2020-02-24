@@ -2,7 +2,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 export const useStyles = makeStyles(theme => ({
   root: {
-    padding: '15px 30px',
+    padding: '10px 30px',
     margin: '0px 40px',
     display: 'flex',
     alignItems: 'center',

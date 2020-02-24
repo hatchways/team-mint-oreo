@@ -25,7 +25,7 @@ const SidebarTabPanelContacts = ({ contactList, user, clickHandler }) => {
         </Button>
       </Grid>
       {contactList.map(contact => (
-        <Grid item key={contact['_id']}>
+        <Grid item key={contact._id}>
           <ProfileAsButton
             {...contact}
             name={contact.displayName}

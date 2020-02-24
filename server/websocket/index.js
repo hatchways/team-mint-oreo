@@ -1,10 +1,10 @@
+const uuidv4 = require('uuid/v4');
 const socketio = require('socket.io');
 const db = require('../controllers');
 const onLogin = require('./login');
 const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
 const mailService = require('../services/mailService');
-const uuidv4 = require('uuid/v4');
 
 /* SOCKET METHODS */
 
@@ -17,6 +17,19 @@ const addChatroom = async (socket, userId, chatId) => {
 
 const acceptInvitation = async (socket, userId, friendId) => {
   await db.user.addFriend(userId, friendId);
+};
+
+const updateUserChatroom = async (userIds, chatId) => {
+  try {
+    const updatedUserInfos = await Promise.all(
+      userIds.map(userId => {
+        return db.user.addChatById(userId, chatId);
+      })
+    );
+    console.log('Updated User List: ', updatedUserInfos);
+  } catch (err) {
+    throw new Error(500, 'update user chatroom', err);
+  }
 };
 
 /* SOCKET HANLDER */
@@ -37,8 +50,9 @@ const handleSocket = server => {
     socket.on('sendMsg', async msgObject => {
       const translations = await onSend.translateMessage(msgObject);
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
-      onSend.sendMessage(io, outgoingMsg);
-      db.message.createMessage(outgoingMsg);
+      const { _id } = await db.message.createMessage(outgoingMsg);
+      onSend.sendMessage(io, { ...outgoingMsg, _id });
+      db.chatroom.updateLastMessage(outgoingMsg.chatId);
     });
 
     // current user is sending the friend an invitation request
@@ -47,21 +61,22 @@ const handleSocket = server => {
       try {
         const invExists = await db.invitation.invitationExists(fromUser, toUser);
         const alreadyFriends = await db.user.checkFriendship(fromUser, toUser);
+        // const invExists = false;
+        // const alreadyFriends = false;
+
         // check for friendship or existing invitation
         // If it does, we don't send notification mail in a first place
-        if (invExists || alreadyFriends) {
-          throw new Error('Invitation / Friend already registered');
-        } else {
-          const randomId = uuidv4();
+        if (invExists || alreadyFriends) throw new Error('Invitation / Friend already registered');
 
-          mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
-            if (err) throw err;
-            if (isSent) console.log('Email successfully sent');
-          });
+        const randomId = uuidv4();
 
-          const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
-          console.log(newInvitation, ' has been created');
-        }
+        mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
+          if (err) throw err;
+          if (isSent) console.log('Email successfully sent');
+        });
+
+        const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
+        console.log(newInvitation, ' has been created');
 
         /* Maybe convert the userId into email? */
         /* Or we can possibly send the whole User query to fromUser & toUser
@@ -69,9 +84,9 @@ const handleSocket = server => {
 
         // This socket identifies from who, to who, and the identifier of invitation itself
         socket.to(toUser).emit('friendRequestReceived', {
-          fromUser: fromUser,
-          toUser: toUser,
-          invitatioin: newInvitation.id,
+          fromUser,
+          toUser,
+          invitation: newInvitation.id,
         });
       } catch (err) {
         // Error will occur if the user tries to add duplicate
@@ -85,6 +100,11 @@ const handleSocket = server => {
       try {
         await acceptInvitation(socket, userId, friendId);
         db.invitation.deleteInvitation(invitationId);
+
+        // Automatically creates a chatroom, and assign users in there
+        const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
+        console.log(newChatRoomId);
+        await updateUserChatroom([userId, friendId], newChatRoomId);
       } catch (err) {
         console.error(err);
       }
@@ -102,11 +122,14 @@ const handleSocket = server => {
     socket.on('test', () => {
       console.log('Connected sockets');
     });
-  });
+    socket.on('disconnect', reason => {
+      console.log(`${socket.id} has left the site. ${reason}`);
+      db.user.clearSocketId(socket.id);
+    });
 
-  io.on('disconnect', socket => {
-    console.log(`${socket.id} has left the site.`);
-    db.user.clearSocketId(socket.id);
+    socket.on('reconnecting', () => {
+      console.log('reconnecting socket..');
+    });
   });
 };
 

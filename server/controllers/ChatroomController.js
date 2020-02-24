@@ -1,14 +1,17 @@
-const mongoose = require('mongoose');
 const Chatroom = require('../models/Chatroom');
 const Error = require('../utils/Error');
+const db = require('./index');
 
 const createChatroom = async userIds => {
   try {
     console.log('creating chatroom');
-    // const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
+    console.log(db);
     if (userIds.length < 2) throw new Error(400, 'Needs at least 2 users');
-    const newChat = await Chatroom.create({ users: userIds });
-    console.log(newChat);
+    const isDM = userIds.length === 2;
+    const activityMap = userIds.reduce((a, userId) => ({ ...a, [userId]: Date.now() }), {});
+    const newChat = await Chatroom.create({ users: userIds, isDM, activityMap });
+    console.log('New Chat Created: ', newChat);
+
     return newChat.id;
   } catch (err) {
     throw new Error(500, 'Create Chat', err);
@@ -19,24 +22,11 @@ const addUser = async (userId, chatId) => {
   try {
     const chatroom = await Chatroom.findByIdAndUpdate(
       chatId,
-      { $addToSet: { users: userId } },
+      { $addToSet: { users: userId }, activityMap: { userId: Date.now() } },
       { new: true }
     );
   } catch (err) {
     throw new Error(500, 'Add User To Chat', err);
-  }
-};
-
-const getChatroomById = async (chatId, { select }) => {
-  try {
-    const chatroom = await Chatroom.findById(chatId).populate({
-      path: 'users',
-      model: 'User',
-      select,
-    });
-    return chatroom;
-  } catch (err) {
-    throw new Error(500, 'Get Chatroom', err);
   }
 };
 
@@ -49,25 +39,10 @@ const getUsersByChatId = async chatId => {
     });
     return usersInChat.users;
   } catch (err) {
-    throw new Error(500, 'Get Users In Chat', err);
-  }
-};
-
-const removeUser = async (userId, chatId) => {
-  try {
-    Chatroom.findByIdAndUpdate(chatId, { $pull: { users: userId } });
-  } catch (err) {
-    throw new Error(500, 'Remove User', err);
-  }
-};
-
-const getLanguages = async chatId => {
-  try {
-    const usersInChatroom = await getUsersByChatId(chatId);
-    const data = new Set(usersInChatroom.map(user => user.language));
-    return [...data];
-  } catch (err) {
-    throw new Error(500, 'Get Language & ID from Chat', err);
+    if (err instanceof TypeError) {
+      throw new TypeError('GetUsersByChatId:' + err.message, 400);
+    }
+    throw new Error(500, 'Internal Server Error at getUsersByChatId()', err);
   }
 };
 
@@ -81,6 +56,66 @@ const getDmIdOfUsers = async (userId, friendId) => {
   return id;
 };
 
+const getChatroomById = async (chatId, { selectFromUsers }, userId) => {
+  try {
+    const chatroom = await Chatroom.findById(chatId).populate({
+      path: 'users',
+      model: 'User',
+      select: selectFromUsers,
+    });
+
+    const { activityMap, ...rest } = chatroom.toObject();
+    const withLastActivity = { ...rest, lastActivity: activityMap.get(userId) };
+    return withLastActivity;
+  } catch (err) {
+    throw new Error(500, 'Get Chatroom', err);
+  }
+};
+
+const getLanguages = async chatId => {
+  try {
+    const usersInChatroom = await getUsersByChatId(chatId);
+    const data = new Set(usersInChatroom.map(user => user.language));
+    return [...data];
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new TypeError('getLanguages:' + err.message, 400);
+    }
+    throw new Error(500, 'Internal Server Error at getLanguages()', err);
+  }
+};
+
+const removeUser = async (userId, chatId) => {
+  try {
+    Chatroom.findByIdAndUpdate(chatId, { $pull: { users: userId } });
+  } catch (err) {
+    throw new Error(500, 'Remove User', err);
+  }
+};
+
+const removeChatroom = async chatId => {
+  const resp = await Chatroom.findOneAndDelete({ id: chatId });
+  console.log(`Chatroom deleted`, resp);
+};
+
+const updateLastMessage = async chatId => {
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { lastMessageTimestamp: Date.now() },
+    { new: true }
+  );
+};
+
+const updateLastTimeVisited = async (userId, chatId) => {
+  // might have to use Map.set(userId, Date.now()) syntax
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { activityMap: { [userId]: Date.now() } },
+    { new: true }
+  );
+  console.log(result);
+};
+
 module.exports = {
   addUser,
   createChatroom,
@@ -90,4 +125,7 @@ module.exports = {
   getLanguages,
   getAllByUserId,
   getDmIdOfUsers,
+  updateLastTimeVisited,
+  removeChatroom,
+  updateLastMessage,
 };
