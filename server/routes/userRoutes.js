@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
     language,
     displayName,
   });
-  if (id) res.sendStatus(201);
+  if (id) res.status(200).json({ status: 200 });
 });
 
 router.post('/login', async (req, res) => {
@@ -46,7 +46,7 @@ router.post('/login', async (req, res) => {
       });
   } catch (err) {
     console.log(err);
-    res.sendStatus(err.status || 500);
+    res.status(err.status).json({ error: err });
   }
 });
 

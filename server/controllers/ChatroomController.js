@@ -12,13 +12,9 @@ const updateLastMessage = async (userId, chatId) => {
   );
 };
 
-const updateLastTimeVisited = async (userId, chatId) => {
+const updateLastTimeVisited = (userId, chatId) => {
   // might have to use Map.set(userId, Date.now()) syntax
-  const result = await Chatroom.findByIdAndUpdate(
-    chatId,
-    { activityMap: { [userId]: Date.now() } },
-    { new: true }
-  );
+  Chatroom.findByIdAndUpdate(chatId, { activityMap: { [userId]: Date.now() } }, { new: true });
 };
 
 /******* */

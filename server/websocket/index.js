@@ -122,11 +122,14 @@ const handleSocket = server => {
     socket.on('test', () => {
       console.log('Connected sockets');
     });
-  });
+    socket.on('disconnect', reason => {
+      console.log(`${socket.id} has left the site. ${reason}`);
+      db.user.clearSocketId(socket.id);
+    });
 
-  io.on('disconnect', socket => {
-    console.log(`${socket.id} has left the site.`);
-    db.user.clearSocketId(socket.id);
+    socket.on('reconnecting', () => {
+      console.log('reconnecting socket..');
+    });
   });
 };
 

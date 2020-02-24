@@ -29,16 +29,13 @@ const chatroomData = (chatroomData, userId) => {
    *
    */
 
-  console.log(chatroomData);
-  console.log('****************************');
-  const sortedData = chatroomData.sort((a, b) => {
+  chatroomData.sort((a, b) => {
     const firstTimestamp = a.lastMessageTimestamp || Date.parse(a.createdAt);
     const secondTimestamp = b.lastMessageTimestamp || Date.parse(b.createdAt);
     return secondTimestamp - firstTimestamp;
   });
 
-  console.log(sortedData);
-  const result = sortedData.map(chatroom => {
+  const result = chatroomData.map(chatroom => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
     const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
     return {

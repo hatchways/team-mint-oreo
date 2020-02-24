@@ -77,8 +77,11 @@ const ChatHeader = ({ chatId, toggleText }) => {
           >
             <Grid item>
               <Grid component="label" container alignItems="center">
-                <IOSSwitch value="checkedA" color="primary" onClick={toggleText} />
-
+                <IOSSwitch
+                  value="checkedA"
+                  color="primary"
+                  onClick={() => toggleText({ type: 'TOGGLE_TRANSLATION' })}
+                />
                 <Grid item>Off</Grid>
               </Grid>
             </Grid>
