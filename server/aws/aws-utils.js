@@ -41,7 +41,7 @@ const uploadSaltedPic = pic => {
   // name: string // the picture's name
   // data: base64 string for picture data.
   const { data, name } = pic;
-  const randomName = Math.floor(Math.random() * Math.floor(10)) + Date.now() + name;
+  const randomName = Math.floor(Math.random() * Math.floor(1000)) + Date.now() + name;
   const saltedName = hashCode(randomName);
 
   // data is in base64 string representation of an image, need to convert
@@ -50,9 +50,11 @@ const uploadSaltedPic = pic => {
 
   const buf = Buffer(imageBody, 'base64');
 
+  const ending = name.substring(name.length - 4);
+  const cleanName = name.substring(0, name.length - 4);
   const bucketParams = {
     Bucket: BUCKET_NAME,
-    Key: `${saltedName}${name}`,
+    Key: `${cleanName}${saltedName}${ending}`,
     Body: buf,
     ContentType: 'image/x-png',
   };

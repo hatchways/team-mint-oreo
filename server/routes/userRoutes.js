@@ -6,6 +6,8 @@ const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
 const format = require('../services/formatDataService');
 
+const { uploadMintPic, uploadSaltedPic } = require('../aws/aws-utils');
+
 const Error = require('../utils/Error');
 
 const router = express.Router();
@@ -159,7 +161,16 @@ router.get('/avatar', async (req, res) => {
 
 router.post('/avatar', async (req, res) => {
   const { userId } = res.locals;
-  const { pic } = req.body;
+  const pic = req.body;
+  const awsResult = await uploadSaltedPic(pic);
+  const { Location: location } = awsResult;
+  console.log('Pic URL', location);
+  // we got the pic location now, time to update avatar
+  db.user.addAvatar(userId, location);
+  res.status(201).json({
+    success: true,
+    pic: location,
+  });
 });
 
 router.get('/logout', async (req, res) => {

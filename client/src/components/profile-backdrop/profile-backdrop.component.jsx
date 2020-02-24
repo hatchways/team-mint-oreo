@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Backdrop, Card, Grid, ClickAwayListener, Box, Avatar } from '@material-ui/core';
 import Client from '../../utils/HTTPClient';
-import Uploader from '../uploader/uploader.component';
+import ProfilePicUploader from '../profile-pic-uploader/profile-pic-uploader.component';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
@@ -19,11 +19,11 @@ const ProfileBackdrop = () => {
     dispatch({ type: DirectoryActionTypes.CLOSE_PROFILE });
   };
 
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState('');
   useEffect(() => {
     Client.request(`/user/avatar`)
       .then(res => {
-        setAvatar(res);
+        setAvatar(res.avatar);
         console.log(res);
       })
       .catch(err => {
@@ -51,10 +51,13 @@ const ProfileBackdrop = () => {
                     spacing={2}
                   >
                     <Grid item>
-                      <Avatar url={avatar} className={classes.avatarLarge} />
+                      <Avatar
+                        {...{ src: avatar, alt: 'ProfileName' }}
+                        className={classes.avatarLarge}
+                      />
                     </Grid>
                     <Grid xs>
-                      <Uploader />
+                      <ProfilePicUploader />
                     </Grid>
                   </Grid>
                 </Grid>

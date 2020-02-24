@@ -1,5 +1,6 @@
 const createError = require('http-errors');
 const express = require('express');
+const bodyParser = require('body-parser');
 const { join } = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -16,6 +17,7 @@ const connectDB = require('./db/connection');
 const { json, urlencoded } = express;
 
 const app = express();
+app.use(bodyParser.json({limit:'5mb'}))
 
 // Start the DB
 connectDB();
