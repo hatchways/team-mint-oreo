@@ -21,7 +21,7 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language 
 
   return (
     <Box className={className} style={{ overflow: 'auto' }}>
-      <Box maxWidth="99%">
+      <Box maxWidth="98%">
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
           {messages.map(message => {
             const isSender = message.userId === userId;
