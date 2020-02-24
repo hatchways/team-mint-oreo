@@ -67,7 +67,7 @@ const Sidebar = ({ size, socket }) => {
         dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
       }
     };
-    console.log('Fetching user Data....');
+    console.log('Fetch user Data....');
     fetchAndSetUserData();
 
     return () => {

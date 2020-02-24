@@ -154,23 +154,37 @@ router.get('/avatar', async (req, res) => {
     const { userId } = res.locals;
     const { avatar } = await db.user.getFieldById('avatar', userId);
     res.status(200).json({ avatar });
-  } catch (e) {
-    res.status(400).json({ error: e });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+});
+
+router.get('/avatar/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { avatar } = await db.user.getFieldById('avatar', userId);
+    res.status(200).json({ avatar });
+  } catch (err) {
+    res.status(400).json({ error: err });
   }
 });
 
 router.post('/avatar', async (req, res) => {
-  const { userId } = res.locals;
-  const pic = req.body;
-  const awsResult = await uploadSaltedPic(pic);
-  const { Location: location } = awsResult;
-  console.log('Pic URL', location);
-  // we got the pic location now, time to update avatar
-  db.user.addAvatar(userId, location);
-  res.status(201).json({
-    success: true,
-    pic: location,
-  });
+  try {
+    const { userId } = res.locals;
+    const pic = req.body;
+    const awsResult = await uploadSaltedPic(pic);
+    const { Location: location } = awsResult;
+    console.log('Pic URL', location);
+    // we got the pic location now, time to update avatar
+    db.user.addAvatar(userId, location);
+    res.status(201).json({
+      success: true,
+      pic: location,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 });
 
 router.get('/logout', async (req, res) => {
