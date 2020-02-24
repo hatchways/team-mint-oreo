@@ -48,10 +48,14 @@ const handleSocket = server => {
     });
 
     socket.on('sendMsg', async msgObject => {
-      const translations = await onSend.translateMessage(msgObject);
-      const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
-      onSend.sendMessage(io, outgoingMsg);
-      db.message.createMessage(outgoingMsg);
+      try {
+        const translations = await onSend.translateMessage(msgObject);
+        const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
+        onSend.sendMessage(io, outgoingMsg);
+        await db.message.createMessage(outgoingMsg);
+      } catch(err) {
+        console.error('Sending message failed: ', err);
+      }
     });
 
     // current user is sending the friend an invitation request
