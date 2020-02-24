@@ -161,7 +161,7 @@ const addChatById = async (userId, chatId) => {
       { $addToSet: { chatrooms: chatId } },
       { new: true }
     );
-
+    console.log(user, ' has been assigned a room');
     return user;
   } catch (err) {
     throw new Error(500, 'Add Chats - ID', err);

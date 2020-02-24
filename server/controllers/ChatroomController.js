@@ -5,19 +5,20 @@ const db = require('./index');
 
 const createChatroom = async userIds => {
   try {
-    console.log('creating chatroom');
     // const objectIdList = userIds.map(id => mongoose.Types.ObjectId(id));
     if (userIds.length < 2) throw new Error(400, 'Needs at least 2 users');
-    const newChat = await Chatroom.create({ users: userIds });
-    console.log('New Chat Created: ', newChat);
+    // const newChat = await Chatroom.create({ users: userIds });
+    const newChat = new Chatroom({ users: userIds });
+    const savedChat = await newChat.save();
+    console.log(savedChat, ' was saved in db');
 
     // Assign the new chatroom to each user
-    const updatedUserInfos = await Promise.all(
-      userIds.map(userId => {
-        return db.user.addChatById(userId, newChat.id);
-      })
-    );
-    console.log('Updated User List: ', updatedUserInfos);
+    // const updatedUserInfos = await Promise.all(
+    //   userIds.map(userId => {
+    //     return db.user.addChatById(userId, newChat.id);
+    //   })
+    // );
+    // console.log('Updated User List: ', updatedUserInfos);
 
     return newChat.id;
   } catch (err) {

@@ -19,6 +19,19 @@ const acceptInvitation = async (socket, userId, friendId) => {
   await db.user.addFriend(userId, friendId);
 };
 
+const updateUserChatroom = async (userIds, chatId) => {
+    try {
+        const updatedUserInfos = await Promise.all(
+          userIds.map(userId => {
+            return db.user.addChatById(userId, chatId);
+          })
+        );
+        console.log('Updated User List: ', updatedUserInfos);
+    } catch(err) {
+        throw new Error(500, 'update user chatroom', err);
+    }
+}
+
 /* SOCKET HANLDER */
 
 const handleSocket = server => {
@@ -47,6 +60,9 @@ const handleSocket = server => {
       try {
         const invExists = await db.invitation.invitationExists(fromUser, toUser);
         const alreadyFriends = await db.user.checkFriendship(fromUser, toUser);
+        // const invExists = false;
+        // const alreadyFriends = false;
+
         // check for friendship or existing invitation
         // If it does, we don't send notification mail in a first place
         if (invExists || alreadyFriends) {
@@ -88,7 +104,8 @@ const handleSocket = server => {
 
         // Automatically creates a chatroom, and assign users in there
         const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
-        
+        console.log(newChatRoomId);
+        await updateUserChatroom([userId, friendId], newChatRoomId);
       } catch (err) {
         console.error(err);
       }
