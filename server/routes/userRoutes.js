@@ -88,8 +88,10 @@ router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsIdsById, getFriendsFieldsById, getFieldById } = db.user;
   const { email } = await getFieldById('email', userId);
-  const { displayName, language } = await getFieldById('displayName language', userId);
-  // const avatar = await getFieldById('avatar', userId); // TODO
+  const { displayName, language, avatar } = await getFieldById(
+    'displayName language avatar',
+    userId
+  );
 
   // TAB PANEL INFO NEEDED?
   // When friend is clicked, chatroom searches for that userDM
@@ -138,7 +140,7 @@ router.get('/data', isAuthorized, async (req, res) => {
     userId,
     language,
     displayName,
-    // avatar,
+    avatar,
     chatrooms,
     friends,
     invitations: invitationData,

@@ -23,9 +23,9 @@ const Profile = (
   const classes = useStyles();
 
   /* FIX THIS LATER */
-  const url = avatar?.url || '';
+  const url = avatar;
   // fallback uses first 2 letters of name
-  const fallback = avatar?.fallback || name.substring(0, 2);
+  const fallback = name.substring(0, 2);
 
   /* *************** */
 

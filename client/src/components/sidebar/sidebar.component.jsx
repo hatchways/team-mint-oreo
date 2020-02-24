@@ -33,10 +33,7 @@ const Sidebar = ({ size, socket }) => {
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
     id: 1,
-    avatar: {
-      url: '',
-      fallback: 'L',
-    },
+    avatar: '',
   });
 
   const [tab, setTab] = useState(TabNames.CHATS);
@@ -57,19 +54,16 @@ const Sidebar = ({ size, socket }) => {
         chatrooms = [],
         invitations = [],
         displayName = '',
+        avatar = '',
         userId = '',
         language,
       } = data;
-      // AVATAR
-      const userData = await Client.request('/user/getUser');
-      console.log('userData', userData);
-      // TODO: remove above it reapeats /user/data
       if (isMounted) {
         setFriendsList(friends);
         setChatsList(chatrooms);
         setInvitesList(invitations);
         setIsLoading(false);
-        setUser({ name: displayName, id: userId });
+        setUser({ name: displayName, id: userId, avatar });
         dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
       }
     };
