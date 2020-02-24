@@ -60,6 +60,10 @@ const Sidebar = ({ size, socket }) => {
         userId = '',
         language,
       } = data;
+      // AVATAR
+      const userData = await Client.request('/user/getUser');
+      console.log('userData', userData);
+      // TODO: remove above it reapeats /user/data
       if (isMounted) {
         setFriendsList(friends);
         setChatsList(chatrooms);

@@ -19,6 +19,7 @@ router.post('/register', async (req, res) => {
     password: hashedPassword,
     language,
     displayName,
+    avatar: '',
   });
   if (id) res.sendStatus(201);
 });
