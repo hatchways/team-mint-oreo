@@ -49,7 +49,6 @@ export default function Login() {
             <br />
             with any language
           </Typography>
-          <button onClick={() => history.push({})}>CLICK ME</button>
         </Box>
       </Grid>
       <Grid

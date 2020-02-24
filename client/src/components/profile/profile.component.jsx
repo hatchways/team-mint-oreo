@@ -7,7 +7,7 @@ import { useStyles } from './profile.styles';
 
 const Profile = (
   {
-    invitation,   // THIS IS A TEMPORARY VALUE
+    invitation, // THIS IS A TEMPORARY VALUE
     name,
     secondary = '',
     notifications = 0,
@@ -25,7 +25,6 @@ const Profile = (
   /* FIX THIS LATER */
   const url = avatar?.url || '';
   const fallback = avatar?.fallback || '';
-  console.log('name isOnline', name, isOnline);
   /* *************** */
 
   return (
@@ -50,8 +49,8 @@ const Profile = (
           <Grid item xs>
             {secondary === '' ? (
               <Typography>{name}</Typography>
-              /*<Typography>{fromUser}</Typography>*/
             ) : (
+              /*<Typography>{fromUser}</Typography>*/
               <div>
                 <Grid container direction="column">
                   <Grid item>
@@ -86,7 +85,7 @@ const Profile = (
             <Grid item xs>
               <Grid container direction="row" justify="flex-end" alignItems="center">
                 <Grid item>
-                  <IconButton onClick={(event) => handleApproval(event)}>
+                  <IconButton onClick={event => handleApproval(event)}>
                     <Check />
                   </IconButton>
                 </Grid>

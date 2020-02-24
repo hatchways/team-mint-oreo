@@ -7,7 +7,7 @@ const socket = io('http://localhost:3001');
 function WebsocketTesting() {
   const [userData, setUserData] = useState(false);
   const [formData, setFormData] = useState({});
-  const [message, setMessage] = useState('');
+  // const [message, setMessage] = useState('');
 
   const onChange = e => {
     const { name, value } = e.target;
@@ -53,17 +53,17 @@ function WebsocketTesting() {
     fetch('/user/logout');
   };
 
-  const sendMessage = event => {
-    event.preventDefault();
-    if (message) {
-      socket.emit('sendMsg', {
-        userId: userData._id,
-        // userId: '5e4634be7cd7323b7891381c',
-        chatId: '5e4def20e79cb155fb6383a2',
-        originalText: message,
-      });
-    }
-  };
+  // const sendMessage = event => {
+  //   event.preventDefault();
+  //   if (message) {
+  //     socket.emit('sendMsg', {
+  //       userId: userData._id,
+  //       // userId: '5e4634be7cd7323b7891381c',
+  //       chatId: '5e4def20e79cb155fb6383a2',
+  //       originalText: message,
+  //     });
+  //   }
+  // };
 
   const sendFriendReq = event => {
     event.preventDefault();
@@ -83,20 +83,6 @@ function WebsocketTesting() {
       friendId: '5e4c6c5d90632f9b04ca7c80',
       invitationId: '5e4d70777ca2229258c7f5af',
     });
-  };
-  const createFakeFriends = () => {
-    fetch('/seed/friends');
-  };
-  const createFakeRooms = () => {
-    fetch('/seed/rooms');
-  };
-
-  const getUserData = () => {
-    fetch('/user/data');
-  };
-
-  const addFriendsToChatrooms = () => {
-    fetch('/seed/friendsToChat');
   };
 
   const makeFriends = () => {
@@ -132,7 +118,7 @@ function WebsocketTesting() {
           <button type="button" onClick={logout}>
             LOGOUT
           </button>
-          <button type="button" onClick={getUserData}>
+          <button type="button" onClick={() => fetch('/user/data')}>
             GET USER DATA
           </button>
           <button onClick={sendFriendReq}>SEND FRIEND REQUEST</button>
@@ -148,7 +134,7 @@ function WebsocketTesting() {
           ></input>
           <button onClick={makeFriends}>Make friends and add to chatroom</button>
           <br />
-          <label>Send message: </label>
+          {/* <label>Send message: </label>
           <input
             type="text"
             placeholder="recipient ID"
@@ -163,22 +149,25 @@ function WebsocketTesting() {
             value={formData.message}
             onChange={onChange}
             onKeyPress={event => (event.key === 'Enter' ? sendMessage(event) : null)}
-          />
+          /> */}
           <br />
 
-          <button type="button" onClick={createFakeRooms}>
+          <button type="button" onClick={() => fetch('/seed/rooms')}>
             SEED CHATROOMS
           </button>
-          <button type="button" onClick={createFakeFriends}>
+          <button type="button" onClick={() => fetch('/seed/friends')}>
             SEED FRIENDS
           </button>
-          <button type="button" onClick={addFriendsToChatrooms}>
+          <button type="button" onClick={() => fetch('/seed/friendsToChat')}>
             Add Friends to chatroom
           </button>
           <button type="button" onClick={connectedSockets}>
             log connected sockets EMIT
           </button>
           <button onClick={() => fetch('/user/delete')}>DELETE USER</button>
+          <button type="button" onClick={() => fetch('/seed/deleteFriendsAndChatrooms')}>
+            DELETE FRIENDS
+          </button>
           {/* <form style={{ display: 'flex' }}>
             <label>TO USER ID</label>
             <input type="text" onChange={changeInputUser} />

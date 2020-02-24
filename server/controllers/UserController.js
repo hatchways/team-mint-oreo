@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Error = require('../utils/Error');
 
 /**USER METHODS */
 
@@ -59,7 +60,7 @@ const checkFriendship = async (userEmail, friendEmail) => {
 
 const removeUser = async userId => {
   const result = await User.findOneAndDelete({ _id: userId });
-  console.log(result);
+  console.log('DELETING USER', result);
 };
 
 /** USER SOCKET METHODS */
@@ -168,6 +169,10 @@ const addChatById = async (userId, chatId) => {
   }
 };
 
+const clearChatrooms = async userId => {
+  const { id } = await User.findOneAndUpdate(userId, { chatrooms: [] });
+  console.log(`User ${id} chatroom deleted`);
+};
 // const addInvitationById = async (userId, invitationId) => {
 //   try {
 //     const updatedUser = await User.findByIdAndUpdate(
@@ -209,6 +214,7 @@ module.exports = {
   getFriendsFieldsById,
   getChatsIdsById,
   removeUser,
+  clearChatrooms,
   // addInvitationById,
   // removeInvitation,
 };

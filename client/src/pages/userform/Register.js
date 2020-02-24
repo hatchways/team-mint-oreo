@@ -21,7 +21,7 @@ export default function Register() {
     displayName: '',
     password: '',
     confirmPassword: '',
-    language: '',
+    language: 'en',
   });
   const history = useHistory();
 
@@ -185,7 +185,6 @@ export default function Register() {
               <FormControl required margin="normal" className={classes.formControl}>
                 <InputLabel className={classes.label}>Select primary language</InputLabel>
                 <NativeSelect value={values.language} onChange={handleChange} name="language">
-                  <option value="" />
                   <option value="en">English</option>
                   <option value="fr">French</option>
                   <option value="ko">Korean</option>

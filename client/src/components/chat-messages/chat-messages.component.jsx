@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { Box, Grid } from '@material-ui/core';
 
 import ChatMessage from '../chat-message/chat-message.component';
