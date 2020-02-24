@@ -198,6 +198,12 @@ const clearChatrooms = async userId => {
 //   }
 // };
 
+// add avatar
+const addAvatar = async (userId, avatarURL) => {
+  const user = await User.findByIdAndUpdate(userId, { avatar: avatarURL }, { new: true });
+  console.log(' new User Avatar: ', user.avatar);
+};
+
 module.exports = {
   createUser,
   addChatById,
@@ -217,4 +223,5 @@ module.exports = {
   clearChatrooms,
   // addInvitationById,
   // removeInvitation,
+  addAvatar,
 };

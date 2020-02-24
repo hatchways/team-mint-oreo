@@ -6,8 +6,6 @@ import { Grid, Button } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-import { createChatroom } from '../../utils/axios-utils';
-
 const SidebarTabPanelContacts = ({ contactList, user, clickHandler }) => {
   const { dispatch } = useContext(directoryStore);
 

@@ -17,15 +17,13 @@ const Profile = (
     handleDisapproval = null,
     hideStatus = true,
     isOnline = false,
+    onClick4More = () => {},
   },
   width = 400
 ) => {
   const classes = useStyles();
 
-  /* FIX THIS LATER */
-  const url = avatar?.url || '';
-  const fallback = avatar?.fallback || '';
-  /* *************** */
+  const url = avatar;
 
   return (
     <Box minWidth={width} maxWidth={width}>
@@ -43,7 +41,7 @@ const Profile = (
                 horizontal: 'right',
               }}
             >
-              <Avatar {...{ src: url, alt: name }}>{fallback}</Avatar>
+              <Avatar {...{ src: url, alt: name }} />
             </Badge>
           </Grid>
           <Grid item xs>
@@ -74,7 +72,7 @@ const Profile = (
             <Grid item xs={2}>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <IconButton>
+                  <IconButton onClick={onClick4More}>
                     <MoreHoriz />
                   </IconButton>
                 </Grid>

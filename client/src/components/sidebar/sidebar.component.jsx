@@ -3,13 +3,13 @@ import { Box, Grid } from '@material-ui/core';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
-import Profile from '../profile/profile.component';
 import Tabs, { TabNames } from '../tabs/tabs.component';
 import SidebarTabPanel from '../sidebar-tab-panel/sidebar-tab-panel.component';
 import SearchField from '../search-field/search-field.component';
 import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-chats.component';
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
+import UserProfile from '../user-profile/user-profile.component';
 // import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ socket, test }) => {
@@ -20,10 +20,7 @@ const Sidebar = ({ socket, test }) => {
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
     id: 1,
-    avatar: {
-      url: '',
-      fallback: 'L',
-    },
+    avatar: '',
   });
 
   const [tab, setTab] = useState(TabNames.CHATS);
@@ -42,20 +39,32 @@ const Sidebar = ({ socket, test }) => {
         chatrooms = [],
         invitations = [],
         displayName = '',
+        avatar = '',
         userId = '',
         language,
       } = data;
       if (isMounted) {
-        setIsLoading(false);
-        setChatsList(chatrooms);
-        setUser({ name: displayName, id: userId });
         setFriendsList(friends);
+        setChatsList(generateImagedChatrooms(chatrooms, userId));
         setInvitesList(invitations);
+        setIsLoading(false);
+        setUser({ name: displayName, id: userId, avatar });
         directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
       }
     };
-    console.log('Fetching user Data....');
+    console.log('Fetch user Data....');
     fetchAndSetUserData();
+
+    const generateImagedChatrooms = (chatrooms, userId) => {
+      return chatrooms.map(room => {
+        if (room.isDM)
+          return {
+            ...room,
+            avatar: room.users[0].userId === userId ? room.users[1].avatar : room.users[0].avatar,
+          };
+        else return room;
+      });
+    };
 
     return () => {
       isMounted = false;
@@ -117,7 +126,7 @@ const Sidebar = ({ socket, test }) => {
       <Box paddingBottom={2} flex="1">
         <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
           <Grid item>
-            <Profile {...user} moreOptions={{ exists: true }} />
+            <UserProfile user={user} />
           </Grid>
           <Grid item>
             <Tabs value={tab} onChange={changeTab} />

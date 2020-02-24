@@ -3,7 +3,7 @@ import { Box, Grid, Typography, Avatar, Paper } from '@material-ui/core';
 import format from '../../utils/relativeDateFormat';
 import { useStyles } from './chat-message.styles';
 
-const ChatMessage = ({ message, originalText, timestamp, isSender, isOriginal }) => {
+const ChatMessage = ({ message, originalText, timestamp, isSender, isOriginal, avatar = '' }) => {
   const classes = useStyles();
   return (
     <Grid
@@ -16,7 +16,7 @@ const ChatMessage = ({ message, originalText, timestamp, isSender, isOriginal })
       {!isSender && (
         <Grid item>
           <Box paddingTop={3}>
-            <Avatar {...{ src: '', alt: 'name' }}>A</Avatar>
+            <Avatar {...{ src: avatar, alt: 'name' }} />
           </Box>
         </Grid>
       )}

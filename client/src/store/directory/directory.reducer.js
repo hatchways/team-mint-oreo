@@ -6,6 +6,7 @@ export const initialState = {
   showBackdrop: false,
   showSidebar: false,
   language: 'english',
+  showProfile: false,
 };
 export const directoryReducer = (state, action) => {
   switch (action.type) {
@@ -19,6 +20,10 @@ export const directoryReducer = (state, action) => {
       return { ...state, showSidebar: !state.showSidebar };
     case DirectoryActionTypes.CLOSE_SIDEBAR:
       return { ...state, showSidebar: false };
+    case DirectoryActionTypes.TOGGLE_PROFILE:
+      return { ...state, showProfile: !state.showProfile };
+    case DirectoryActionTypes.CLOSE_PROFILE:
+      return { ...state, showProfile: false };
     case DirectoryActionTypes.SET_LANGUAGE:
       return { ...state, language: action.payload };
     default: {

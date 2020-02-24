@@ -6,6 +6,8 @@ const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
 const format = require('../services/formatDataService');
 
+const { uploadMintPic, uploadSaltedPic } = require('../aws/aws-utils');
+
 const Error = require('../utils/Error');
 
 const router = express.Router();
@@ -19,6 +21,7 @@ router.post('/register', async (req, res) => {
     password: hashedPassword,
     language,
     displayName,
+    avatar: '',
   });
   if (id) res.status(201).json({ status: 201 });
 });
@@ -87,8 +90,10 @@ router.get('/data', isAuthorized, async (req, res) => {
   const { userId } = res.locals;
   const { getChatsIdsById, getFriendsFieldsById, getFieldById } = db.user;
   const { email } = await getFieldById('email', userId);
-  const { displayName, language } = await getFieldById('displayName language', userId);
-  // const avatar = await getFieldById('avatar', userId); // TODO
+  const { displayName, language, avatar } = await getFieldById(
+    'displayName language avatar',
+    userId
+  );
 
   // TAB PANEL INFO NEEDED?
   // When friend is clicked, chatroom searches for that userDM
@@ -155,11 +160,49 @@ router.get('/data', isAuthorized, async (req, res) => {
     email,
     language,
     displayName,
-    // avatar,
+    avatar,
     chatrooms,
     friends,
     invitations,
   });
+});
+
+router.get('/avatar', async (req, res) => {
+  try {
+    const { userId } = res.locals;
+    const { avatar } = await db.user.getFieldById('avatar', userId);
+    res.status(200).json({ avatar });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+});
+
+router.get('/avatar/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { avatar } = await db.user.getFieldById('avatar', userId);
+    res.status(200).json({ avatar });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+});
+
+router.post('/avatar', async (req, res) => {
+  try {
+    const { userId } = res.locals;
+    const pic = req.body;
+    const awsResult = await uploadSaltedPic(pic);
+    const { Location: location } = awsResult;
+    console.log('Pic URL', location);
+    // we got the pic location now, time to update avatar
+    db.user.addAvatar(userId, location);
+    res.status(201).json({
+      success: true,
+      pic: location,
+    });
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
 });
 
 router.get('/logout', async (req, res) => {
