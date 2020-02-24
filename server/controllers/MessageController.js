@@ -24,6 +24,7 @@ const createMessage = async msg => {
 
 const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
   try {
+    console.log('getchatbyid');
     const messages = await Message.find({ chatId }, null, { skip, limit }).sort('-createdAt');
     return messages;
   } catch (err) {
@@ -32,8 +33,12 @@ const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
 };
 
 const getUnreadCount = async (chatId, latestTimestamp) => {
-  const count = await Message.countDocuments({ chatId, createdAt: { $gte: latestTimestamp } });
-  console.log('COUNT OF UNREADS', count);
+  const formattedDate = new Date(latestTimestamp);
+  const count = await Message.find({ chatId, createdAt: { $gte: formattedDate } }, 'createdAt');
+  if (count.length) {
+    console.log('COUNT OF UNREADS', count);
+    console.log(formattedDate);
+  }
 };
 
 module.exports = {

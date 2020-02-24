@@ -2,23 +2,6 @@ const Chatroom = require('../models/Chatroom');
 const Error = require('../utils/Error');
 const db = require('./index');
 
-/*Needs a higher scope to be used in other methods */
-
-const updateLastMessage = async (userId, chatId) => {
-  const result = await Chatroom.findByIdAndUpdate(
-    chatId,
-    { lastMessageTimestamp: Date.now() },
-    { new: true }
-  );
-};
-
-const updateLastTimeVisited = (userId, chatId) => {
-  // might have to use Map.set(userId, Date.now()) syntax
-  Chatroom.findByIdAndUpdate(chatId, { activityMap: { [userId]: Date.now() } }, { new: true });
-};
-
-/******* */
-
 const createChatroom = async userIds => {
   try {
     console.log('creating chatroom');
@@ -113,6 +96,24 @@ const removeUser = async (userId, chatId) => {
 const removeChatroom = async chatId => {
   const resp = await Chatroom.findOneAndDelete({ id: chatId });
   console.log(`Chatroom deleted`, resp);
+};
+
+const updateLastMessage = async chatId => {
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { lastMessageTimestamp: Date.now() },
+    { new: true }
+  );
+};
+
+const updateLastTimeVisited = async (userId, chatId) => {
+  // might have to use Map.set(userId, Date.now()) syntax
+  const result = await Chatroom.findByIdAndUpdate(
+    chatId,
+    { activityMap: { [userId]: Date.now() } },
+    { new: true }
+  );
+  console.log(result);
 };
 
 module.exports = {

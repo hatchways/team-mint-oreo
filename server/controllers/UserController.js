@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Error = require('../utils/Error');
 
 /**USER METHODS */
 

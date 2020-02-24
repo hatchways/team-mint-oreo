@@ -52,7 +52,7 @@ const handleSocket = server => {
       const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
       const { _id } = await db.message.createMessage(outgoingMsg);
       onSend.sendMessage(io, { ...outgoingMsg, _id });
-      db.chatroom.updateLastMessage();
+      db.chatroom.updateLastMessage(outgoingMsg.chatId);
     });
 
     // current user is sending the friend an invitation request

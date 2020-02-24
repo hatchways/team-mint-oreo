@@ -12,10 +12,10 @@ import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-p
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 // import { tempChatData, tempInvitesList } from './temp_data';
 
-const Sidebar = ({ socket }) => {
+const Sidebar = ({ socket, test }) => {
   const {
     state: { activeChatId },
-    dispatch,
+    dispatch: directoryDispatch,
   } = useContext(directoryStore);
   const [user, setUser] = useState({
     name: 'Ultimate Legend',
@@ -51,7 +51,7 @@ const Sidebar = ({ socket }) => {
         setUser({ name: displayName, id: userId });
         setFriendsList(friends);
         setInvitesList(invitations);
-        dispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
+        directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
       }
     };
     console.log('Fetching user Data....');
@@ -63,7 +63,7 @@ const Sidebar = ({ socket }) => {
   }, []);
 
   useEffect(() => {
-    socket.on('receiveMsg', msgObject => {
+    const updateChatLocation = msgObject => {
       console.log('received msg in sidebar');
       const { chatId } = msgObject;
       if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
@@ -76,7 +76,13 @@ const Sidebar = ({ socket }) => {
         newChatList.unshift(...newChatList.splice(chatroomIndex, 1));
         setChatsList(newChatList);
       }
-    });
+    };
+
+    socket.on('receiveMsg', updateChatLocation);
+
+    return () => {
+      socket.off('receiveMsg', updateChatLocation);
+    };
   });
 
   const changeActiveChat = async chatId => {
@@ -88,11 +94,11 @@ const Sidebar = ({ socket }) => {
       userDMRoom = await Client.request(`/chat/${chatId}`);
       setChatsList([...chatsList, userDMRoom]);
     }
-    dispatch({
+    directoryDispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,
     });
-    dispatch({
+    directoryDispatch({
       type: DirectoryActionTypes.CLOSE_SIDEBAR,
     });
   };

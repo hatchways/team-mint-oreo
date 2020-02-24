@@ -21,7 +21,7 @@ export default function Register() {
     displayName: '',
     password: '',
     confirmPassword: '',
-    language: '',
+    language: 'en',
   });
   const history = useHistory();
 

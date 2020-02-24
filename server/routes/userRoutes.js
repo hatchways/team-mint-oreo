@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
     language,
     displayName,
   });
-  if (id) res.status(200).json({ status: 200 });
+  if (id) res.status(201).json({ status: 201 });
 });
 
 router.post('/login', async (req, res) => {
