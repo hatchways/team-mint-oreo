@@ -52,7 +52,6 @@ function App() {
                 return userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />;
               }}
             />
-            <Route path="/upload" component={Uploader} />
             <Route path="/register" component={Register} />
             <Route path="/testing" component={WebsocketTesting} />
           </Switch>
