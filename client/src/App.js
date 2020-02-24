@@ -7,7 +7,6 @@ import theme from './themes/theme';
 import Dashboard from './pages/dashboard/dashboard.component';
 import Login from './pages/userform/Login';
 import Register from './pages/userform/Register';
-import Uploader from './pages/uploader/uploader.component';
 
 function App() {
   const [userId, setUserId] = useState(false);

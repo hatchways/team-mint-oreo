@@ -8,7 +8,7 @@ import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite
 import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
-import SettingsBackdrop from '../../components/settings-backdrop/settings-backdrop.component';
+import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
 
 const socket = io('http://localhost:3001');
 
@@ -34,7 +34,7 @@ const Dashboard = ({ userId }) => {
     <Box>
       <SidebarDrawer socket={socket} />
       <InviteFriendBackdrop />
-      <SettingsBackdrop />
+      <ProfileBackdrop />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>
