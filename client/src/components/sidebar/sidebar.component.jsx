@@ -60,7 +60,7 @@ const Sidebar = ({ size, socket }) => {
       } = data;
       if (isMounted) {
         setFriendsList(friends);
-        setChatsList(chatrooms);
+        setChatsList(generateImagedChatrooms(chatrooms, userId));
         setInvitesList(invitations);
         setIsLoading(false);
         setUser({ name: displayName, id: userId, avatar });
@@ -69,6 +69,17 @@ const Sidebar = ({ size, socket }) => {
     };
     console.log('Fetch user Data....');
     fetchAndSetUserData();
+
+    const generateImagedChatrooms = (chatrooms, userId) => {
+      return chatrooms.map(room => {
+        if (room.isDM)
+          return {
+            ...room,
+            avatar: room.users[0].userId === userId ? room.users[1].avatar : room.users[0].avatar,
+          };
+        else return room;
+      });
+    };
 
     return () => {
       isMounted = false;
