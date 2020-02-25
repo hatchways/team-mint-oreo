@@ -21,6 +21,7 @@ const updateWithClosure = () => {
   const MIN_SECONDS_BETWEEN_UPDATE = 10;
 
   const makeRequest = async (userId, activeChatId) => {
+    if (!userId || !activeChatId) return;
     const secondsSinceLastUpdate = (Date.now() - lastUpdated) / 1000;
     const isSameChat = lastChatId === activeChatId;
 

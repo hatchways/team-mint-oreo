@@ -78,7 +78,11 @@ const ChatFrame = ({ socket, userId }) => {
   const memoMessages = useMemo(() => messages, [messages]);
 
   return (
-    <Box maxHeight="100vh" overflow="hidden">
+    <Box
+      maxHeight="100vh"
+      overflow="hidden"
+      onClick={() => Client.updateChatActivity(userId, chatId)}
+    >
       <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
         <Grid item>
           <ChatHeader toggleText={dispatch} chatId={chatId} />
