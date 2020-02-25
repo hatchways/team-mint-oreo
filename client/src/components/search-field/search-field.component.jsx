@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { useStyles } from './search-field.styles';
 
-const SearchField = ({ socket }) => {
+const SearchField = ({ socket, activeTab, userId }) => {
   const classes = useStyles();
   const [searchParam, setSearchParam] = useState('');
 
@@ -14,7 +14,7 @@ const SearchField = ({ socket }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    socket.emit('searching', searchParam);
+    socket.emit('searching', { tab: activeTab, searchParam, userId });
   };
 
   return (

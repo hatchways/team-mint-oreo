@@ -6,6 +6,7 @@ const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
 const onProfilePic = require('./profilePic');
 const mailService = require('../services/mailService');
+const onSearch = require('./search');
 
 /* SOCKET METHODS */
 
@@ -116,7 +117,9 @@ const handleSocket = server => {
       socket.to(chatId).emit('endTyping', { userId });
     });
 
-    socket.on('searching', param => {});
+    socket.on('searching', async body => {
+      const result = await onSearch.search(body);
+    });
 
     socket.on('test', () => {
       console.log('Connected sockets');

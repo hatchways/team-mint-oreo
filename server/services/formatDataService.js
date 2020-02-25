@@ -31,9 +31,11 @@ const chatroomData = (chatroomData, unreadMessages) => {
 
   const result = chatroomData.map((chatroom, i) => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
-    const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
+
+    const { activityMap, ...rest } = chatroom.toObject();
+    const usersWithOnlineStatus = replaceSocketIdWithStatus(rest.users);
     return {
-      ...chatroom,
+      ...rest,
       chatId: chatroom._id,
       users: usersWithOnlineStatus,
       unreadMessages: unreadMessages[i],

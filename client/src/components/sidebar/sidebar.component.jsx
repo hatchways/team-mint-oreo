@@ -204,7 +204,7 @@ const Sidebar = ({ socket }) => {
           </Grid>
           <Grid item>
             <Box marginTop={1}>
-              <SearchField />
+              <SearchField activeTab={tab} socket={socket} userId={user.id} />
             </Box>
           </Grid>
         </Grid>
