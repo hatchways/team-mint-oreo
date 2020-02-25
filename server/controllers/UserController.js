@@ -15,7 +15,7 @@ const createUser = async userData => {
     const savedUser = await newUser.save();
     return savedUser;
   } catch (err) {
-    if(err instanceof ValidationError) {
+    if (err instanceof ValidationError) {
       throw new Error(400, 'createUser: ' + err.message, err);
     }
     throw new Error(500, 'Internal Server Error occured in createUser()', err);
@@ -36,7 +36,7 @@ const getByEmail = async email => {
     const user = await User.findOne({ email });
     return user;
   } catch (err) {
-    if(err instanceof ValidationError) {
+    if (err instanceof ValidationError) {
       throw new Error(400, 'getByEmail: ' + err.message, err);
     }
     throw new Error(500, 'Get User - Email', err);
@@ -53,17 +53,17 @@ const getFieldById = async (field, id) => {
   }
 };
 
-const getAssociatedUserByCode = async (code) => {
+const getAssociatedUserByCode = async code => {
   try {
     const user = await User.findOne({ inviteCode: code });
     return user;
-  } catch(err) {
-    if(err instanceof ValidationError) {
+  } catch (err) {
+    if (err instanceof ValidationError) {
       throw new Error(400, 'getAssociatedUserByCode: ' + err.message, err);
     }
     throw new Error(500, 'Internal Server Error at getAssociatedUserByCode()', err);
   }
-}
+};
 
 const checkFriendship = async (userEmail, friendEmail) => {
   try {
@@ -75,6 +75,12 @@ const checkFriendship = async (userEmail, friendEmail) => {
   } catch (err) {
     throw new Error(500, 'Check Friendship', err);
   }
+};
+
+const searchByName = async (name, userId) => {
+  //
+  const users = await User.find({ $text: { $search: name }, friends: { $in: [userId] } });
+  return users;
 };
 
 const removeUser = async userId => {
@@ -163,6 +169,11 @@ const getFriendsSocketsById = async id => {
   }
 };
 
+const deleteFriends = async id => {
+  const resp = await User.findByIdAndUpdate(id, { friends: [] });
+  console.log('deleting friends', resp);
+};
+
 /**CHATROOM METHODS */
 
 const getChatsIdsById = async (userId, limit = 50, skip = 0) => {
@@ -189,8 +200,8 @@ const addChatById = async (userId, chatId) => {
 };
 
 const clearChatrooms = async userId => {
-  const { id } = await User.findOneAndUpdate(userId, { chatrooms: [] });
-  console.log(`User ${id} chatroom deleted`);
+  const { id } = await User.findByIdAndUpdate(userId, { chatrooms: [] }, { new: true });
+  console.log(`User ${id} chatroom deleted for user`, userId);
 };
 // const addInvitationById = async (userId, invitationId) => {
 //   try {
@@ -250,4 +261,6 @@ module.exports = {
   // removeInvitation,
   addAvatar,
   getAvatar,
+  searchByName,
+  deleteFriends,
 };
