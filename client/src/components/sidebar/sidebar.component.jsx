@@ -10,7 +10,6 @@ import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-c
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 import UserProfile from '../user-profile/user-profile.component';
-// import { tempChatData, tempInvitesList } from './temp_data';
 
 const Sidebar = ({ socket, test }) => {
   const {
@@ -98,7 +97,7 @@ const Sidebar = ({ socket, test }) => {
 
   const changeActiveChat = async chatId => {
     if (activeChatId) {
-      Client.request('/chat/update/activity', 'POST', { activeChatId, userId: user.id });
+      Client.updateChatActivity(user.id, activeChatId);
     }
     let userDMRoom = chatsList.find(chat => chat.chatId === chatId);
     if (!userDMRoom) {

@@ -21,10 +21,10 @@ router.post('/new', async (req, res) => {
   res.json({ chatId });
 });
 
-router.post('/update/activity', async (req, res) => {
+router.put('/update/activity', async (req, res) => {
   const { activeChatId: chatId, userId } = req.body;
   console.log('update activity', chatId, userId);
-  const updated = await db.chatroom.updateLastTimeVisited(userId, chatId);
+  await db.chatroom.updateLastTimeVisited(userId, chatId);
   res.status(200).json({});
 });
 
