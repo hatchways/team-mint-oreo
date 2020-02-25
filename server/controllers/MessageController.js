@@ -33,12 +33,16 @@ const getAllByChatId = async (chatId, limit = 50, skip = 0) => {
 };
 
 const getUnreadCount = async (chatId, latestTimestamp) => {
+  if (!latestTimestamp) return 0;
   const formattedDate = new Date(latestTimestamp);
-  const count = await Message.find({ chatId, createdAt: { $gte: formattedDate } }, 'createdAt');
-  if (count.length) {
+  console.log('formattedDate', formattedDate);
+  const count = await Message.countDocuments({ chatId, createdAt: { $gte: formattedDate } });
+  if (count) {
     console.log('COUNT OF UNREADS', count);
-    console.log(formattedDate);
+    console.log('latest timestamp', latestTimestamp);
+    console.log('formattedDate', formattedDate);
   }
+  return count;
 };
 
 module.exports = {

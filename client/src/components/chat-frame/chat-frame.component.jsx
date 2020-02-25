@@ -73,7 +73,7 @@ const ChatFrame = ({ socket, userId }) => {
     return () => {
       socket.off('receiveMsg', updateMessages);
     };
-  }, [chatId]);
+  }, [chatId, socket]);
 
   const memoMessages = useMemo(() => messages, [messages]);
 

@@ -78,9 +78,11 @@ const Sidebar = ({ socket, test }) => {
       if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
       // updates location of chat in chatsList
       const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
+
       if (chatroomIndex < 0) {
         // retrieve chat info from db
       } else {
+        chatsList[chatroomIndex].unreadMessages += 1;
         const newChatList = [...chatsList];
         newChatList.unshift(...newChatList.splice(chatroomIndex, 1));
         setChatsList(newChatList);
@@ -100,9 +102,10 @@ const Sidebar = ({ socket, test }) => {
     }
     let userDMRoom = chatsList.find(chat => chat.chatId === chatId);
     if (!userDMRoom) {
-      userDMRoom = await Client.request(`/chat/${chatId}`);
+      userDMRoom = await Client.request(`/chat/data/${chatId}`);
       setChatsList([...chatsList, userDMRoom]);
     }
+    userDMRoom.unreadMessages = 0;
     directoryDispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,
