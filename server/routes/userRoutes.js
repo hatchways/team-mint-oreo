@@ -6,7 +6,7 @@ const { isAuthorized } = require('../middleware/isAuthorized');
 const { validateCredentials } = require('../services/validationService');
 const format = require('../services/formatDataService');
 
-const { uploadMintPic, uploadSaltedPic } = require('../aws/aws-utils');
+const { uploadMintPic, uploadSaltedPic, deletePic } = require('../aws/aws-utils');
 
 const Error = require('../utils/Error');
 
@@ -190,12 +190,24 @@ router.get('/avatar/:id', async (req, res) => {
 router.post('/avatar', async (req, res) => {
   try {
     const { userId } = res.locals;
+    // to prevent storage overflow, deleting old avatars
+    const oldPicURL = await db.user.getAvatar(userId);
+    // convert old pic full URL into just picture data after the front url
+    const oldPicInbucket = oldPicURL.replace('https://mint-oreo.s3.amazonaws.com/', '');
+    console.log('old Pic URL', oldPicInbucket);
+    try {
+      await deletePic(oldPicInbucket);
+    } catch (error) {
+      console.log('deletion error:', error);
+    }
+
+    // we got the pic location now, time to update avatar
     const pic = req.body;
     const awsResult = await uploadSaltedPic(pic);
     const { Location: location } = awsResult;
-    console.log('Pic URL', location);
-    // we got the pic location now, time to update avatar
+    console.log('New Pic URL', location);
     db.user.addAvatar(userId, location);
+
     res.status(201).json({
       success: true,
       userId: userId,
