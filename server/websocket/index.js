@@ -4,6 +4,7 @@ const db = require('../controllers');
 const onLogin = require('./login');
 const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
+const onProfilePic = require('./profilePic');
 const mailService = require('../services/mailService');
 
 /* SOCKET METHODS */
@@ -45,6 +46,10 @@ const handleSocket = server => {
       const { _id } = await db.message.createMessage(outgoingMsg);
       onSend.sendMessage(io, { ...outgoingMsg, _id });
       db.chatroom.updateLastMessage(outgoingMsg.chatId);
+    });
+
+    socket.on('updateProfilePic', async ({ userId, profilePic }) => {
+      onProfilePic.propogateToFriends(socket, userId, profilePic);
     });
 
     // current user is sending the friend an invitation request
