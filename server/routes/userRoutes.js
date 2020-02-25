@@ -218,7 +218,11 @@ router.post('/avatar', async (req, res) => {
 });
 
 router.get('/logout', async (req, res) => {
-  res.clearCookie('user').end();
+  res
+    .clearCookie('user')
+    // give some status so HTTPClient doesn't crash on front end
+    .status(200)
+    .json({ success: true });
 });
 
 router.get('/delete', isAuthorized, async (req, res) => {

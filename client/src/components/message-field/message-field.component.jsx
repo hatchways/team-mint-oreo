@@ -8,8 +8,20 @@ import Client from '../../utils/HTTPClient';
 const MessageField = ({ socket, chatId, userId }) => {
   const [msgContent, setMsgContent] = useState('');
 
+  const prefix = `SavedMessage`;
+  const setLocalStorage = value => localStorage.setItem(`${prefix}-${chatId}`, value);
+  const clearLocalStorage = () => setLocalStorage('');
+  const getLocalStorage = () => localStorage.getItem(`${prefix}-${chatId}`) || '';
+
+  // on change of ChatId, load in the saved message
+  useEffect(() => {
+    setMsgContent(getLocalStorage);
+  }, [chatId]);
+
   const handleChange = e => {
-    setMsgContent(e.target.value);
+    const msgContent = e.target.value;
+    setMsgContent(msgContent);
+    setLocalStorage(msgContent);
   };
 
   const onSubmit = e => {
@@ -19,6 +31,7 @@ const MessageField = ({ socket, chatId, userId }) => {
       console.log('Sending msg to ', chatId);
       socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
       setMsgContent('');
+      clearLocalStorage();
     }
   };
 

@@ -56,12 +56,12 @@ const Sidebar = ({ socket, test }) => {
 
     const generateImagedChatrooms = (chatrooms, userId) => {
       return chatrooms.map(room => {
-        if (room.isDM)
+        if (room.isDM) {
           return {
             ...room,
-            avatar: room.users[0].userId === userId ? room.users[1].avatar : room.users[0].avatar,
+            avatar: room.users[0]._id === userId ? room.users[1].avatar : room.users[0].avatar,
           };
-        else return room;
+        } else return room;
       });
     };
 

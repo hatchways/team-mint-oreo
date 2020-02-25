@@ -3,6 +3,7 @@ import Profile from '../profile/profile.component';
 import { Menu, MenuItem } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
+import Client from '../../utils/HTTPClient';
 
 const UserProfile = ({ user }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -21,6 +22,17 @@ const UserProfile = ({ user }) => {
     handleUnExpand();
   };
 
+  const handleLogout = () => {
+    handleUnExpand();
+    Client.request('/user/logout').then(res => {
+      console.log('logging out...', res);
+      // force reload is the only way that will work
+      // tried using history.push()
+      // something in the router is preventing it working
+      window.location.reload();
+    });
+  };
+
   return (
     <div>
       <Profile {...user} moreOptions={{ exists: true }} onClick4More={handleExpand} />
@@ -32,7 +44,7 @@ const UserProfile = ({ user }) => {
         onClose={handleUnExpand}
       >
         <MenuItem onClick={handleShowProfile}>Profile</MenuItem>
-        <MenuItem onClick={handleUnExpand}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
     </div>
   );
