@@ -8,13 +8,6 @@ const mailService = require('../services/mailService');
 
 /* SOCKET METHODS */
 
-// On Login---------------------------------------------
-
-const addChatroom = async (socket, userId, chatId) => {
-  await db.user.addChatById(userId, chatId);
-  await db.chatroom.addUser(userId, chatId);
-};
-
 const acceptInvitation = async (socket, userId, friendId) => {
   await db.user.addFriend(userId, friendId);
 };
@@ -39,12 +32,11 @@ const handleSocket = server => {
   io.on('connection', socket => {
     console.log(`${socket.id} has connected to the site.`);
 
-    socket.on('login', async ({ userId, chatId }) => {
+    socket.on('login', async ({ userId }) => {
       console.log('login ping');
       onLogin.registerSocketId(socket, userId);
       onLogin.joinChatrooms(socket, userId);
       onLogin.notifyFriends(socket, userId);
-      //  addChatroom(socket, userId, chatId);
     });
 
     socket.on('sendMsg', async msgObject => {
@@ -83,6 +75,8 @@ const handleSocket = server => {
                 that was returned from mongo */
 
         // This socket identifies from who, to who, and the identifier of invitation itself
+
+        // TODO: need to search for socketID of toUser<email>
         socket.to(toUser).emit('friendRequestReceived', {
           fromUser,
           toUser,
@@ -122,7 +116,7 @@ const handleSocket = server => {
     socket.on('test', () => {
       console.log('Connected sockets');
     });
-    socket.on('disconnect', reason => {
+    socket.on('disconnect', async reason => {
       console.log(`${socket.id} has left the site. ${reason}`);
       db.user.clearSocketId(socket.id);
     });

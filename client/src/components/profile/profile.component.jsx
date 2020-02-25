@@ -10,7 +10,7 @@ const Profile = (
     invitation, // THIS IS A TEMPORARY VALUE
     name,
     secondary = '',
-    notifications = 0,
+    unreadMessages = 0,
     moreOptions = null,
     avatar,
     handleApproval = null,
@@ -59,11 +59,11 @@ const Profile = (
               </div>
             )}
           </Grid>
-          {notifications > 0 && (
+          {unreadMessages > 0 && (
             <Grid item xs={1}>
               <Grid container justify="flex-end">
                 <Grid item>
-                  <Chip label={notifications} className={classes.chipStyle} />
+                  <Chip label={unreadMessages} className={classes.chipStyle} />
                 </Grid>
               </Grid>
             </Grid>

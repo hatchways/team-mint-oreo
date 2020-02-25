@@ -3,6 +3,7 @@ import { Box, InputBase, Divider, IconButton } from '@material-ui/core';
 import Send from '@material-ui/icons/Send';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 import { useStyles } from './message-field.styles';
+import Client from '../../utils/HTTPClient';
 
 const MessageField = ({ socket, chatId, userId }) => {
   const [msgContent, setMsgContent] = useState('');
@@ -13,6 +14,7 @@ const MessageField = ({ socket, chatId, userId }) => {
 
   const onSubmit = e => {
     e.preventDefault();
+    Client.updateChatActivity(userId, chatId);
     if (chatId) {
       console.log('Sending msg to ', chatId);
       socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
