@@ -204,6 +204,11 @@ const addAvatar = async (userId, avatarURL) => {
   console.log(' new User Avatar: ', user.avatar);
 };
 
+const getAvatar = async userId => {
+  const user = await User.findById(userId);
+  return user.avatar;
+};
+
 module.exports = {
   createUser,
   addChatById,
@@ -224,4 +229,5 @@ module.exports = {
   // addInvitationById,
   // removeInvitation,
   addAvatar,
+  getAvatar,
 };

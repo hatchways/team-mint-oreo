@@ -88,10 +88,46 @@ const Sidebar = ({ socket, test }) => {
       }
     };
 
+    const updateFriendsProfilePic = msgObject => {
+      console.log('updateFriendProfilePic', msgObject);
+      const { friendId, profilePic } = msgObject;
+
+      let oldAvatar = '@.-1';
+      const newFriendsList = friendsList.map(friend => {
+        let avatar = friend.avatar;
+        if (friend._id === friendId) {
+          oldAvatar = avatar;
+          avatar = profilePic;
+        }
+        return {
+          ...friend,
+          avatar,
+        };
+      });
+      setFriendsList(newFriendsList);
+      // need to update chatrooms where this specific profile avatar was used
+      const newChatroomsList = chatsList.map(room => ({
+        ...room,
+        avatar: room.avatar === oldAvatar ? profilePic : room.avatar,
+      }));
+      setChatsList(newChatroomsList);
+    };
+
+    const updateUserAvatar = msgObject => {
+      console.log('updateOwnProfilePic', msgObject);
+      const { profilePic } = msgObject;
+
+      setUser({ ...user, avatar: profilePic });
+    };
+
     socket.on('receiveMsg', updateChatLocation);
+    socket.on('updateOwnProfilePic', updateUserAvatar);
+    socket.on('updateFriendProfilePic', updateFriendsProfilePic);
 
     return () => {
       socket.off('receiveMsg', updateChatLocation);
+      socket.off('updateOwnProfilePic', updateUserAvatar);
+      socket.off('updateFriendProfilePic', updateFriendsProfilePic);
     };
   });
 

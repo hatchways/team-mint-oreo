@@ -8,7 +8,7 @@ import DirectoryActionTypes from '../../store/directory/directory.types';
 
 import { useStyles } from './profile-backdrop.styles';
 
-const ProfileBackdrop = () => {
+const ProfileBackdrop = ({ socket }) => {
   const classes = useStyles();
   const {
     state: { showProfile },
@@ -19,18 +19,22 @@ const ProfileBackdrop = () => {
     dispatch({ type: DirectoryActionTypes.CLOSE_PROFILE });
   };
 
+  const [outdated, setOutdated] = useState(0);
+  const onCompleteUpload = () => {
+    setOutdated(outdated + 1);
+  };
+
   const [avatar, setAvatar] = useState('');
   useEffect(() => {
     Client.request(`/user/avatar`)
       .then(res => {
         setAvatar(res.avatar);
-        console.log(res);
       })
       .catch(err => {
         console.log('Load Avatar Error: ', err);
       });
     // run this only once.
-  }, []);
+  }, [outdated]);
 
   return (
     <Backdrop className={classes.backdrop} open={showProfile}>
@@ -57,7 +61,7 @@ const ProfileBackdrop = () => {
                       />
                     </Grid>
                     <Grid xs>
-                      <ProfilePicUploader />
+                      <ProfilePicUploader socket={socket} onCompleted={onCompleteUpload} />
                     </Grid>
                   </Grid>
                 </Grid>
