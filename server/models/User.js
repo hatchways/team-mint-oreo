@@ -23,12 +23,17 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true,
     },
-    avatar: { type: String, required: true, default: '' },
+    // avatar: { type: String, required: true, default: '' },
+    avatar: { type: String, required: false, default: '' },
     chatrooms: [{ type: Schema.Types.ObjectId, ref: 'Chatroom' }],
     socketId: {
       type: String,
       default: null,
     },
+    inviteCode: {
+      type: String,
+      // required: true
+    }
   },
   { timestamps: true }
 );

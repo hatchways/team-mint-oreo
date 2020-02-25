@@ -19,7 +19,7 @@ import CopyField from '../copy-field/copy-field.component';
 import { useStyles } from './invite-friend-backdrop.styles';
 import Client from '../../utils/HTTPClient';
 
-const InviteFriendBackdrop = ({ socket }) => {
+const InviteFriendBackdrop = ({ socket, userId }) => {
   const placeholder = "Friend's email address";
   const [emailFields, setEmailFields] = useState([
     {
@@ -28,12 +28,35 @@ const InviteFriendBackdrop = ({ socket }) => {
       placeholder,
     },
   ]);
+  const [urlField, setUrlField] = useState("");
 
   const classes = useStyles();
   const {
     state: { showBackdrop },
     dispatch,
   } = useContext(directoryStore);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchAndSetUrl = async () => {
+      const request = await Client.request('/user/getUser');
+      console.log('the request is: ', request);
+
+      if(isMounted) {
+        setUrlField('http://localhost:3000/invitation/' + request.inviteCode);
+      }
+    }
+    fetchAndSetUrl();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+  // const setInvitationLink = async () => {
+  //     const request = await Client.request('/user/getUser');
+  //     console.log('http://localhost:3000/user/invitation/' + request.inviteCode)
+  //     return 'http://localhost:3000/user/invitation/' + request.inviteCode;
+  // }
 
   const handleClose = () => {
     dispatch({
@@ -111,7 +134,7 @@ const InviteFriendBackdrop = ({ socket }) => {
                   </Grid>
                   <Grid item>
                     <h3> Or share referral link:</h3>
-                    <CopyField placeholder={'http://localhost:3000/dashboard'} />
+                    <CopyField placeholder={urlField} />
                   </Grid>
                   <Grid item>
                     <h3> </h3>

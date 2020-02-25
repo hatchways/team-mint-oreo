@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Error = require('../utils/Error');
+const ValidationError = require('mongoose').Error.ValidationError;
 
 /**USER METHODS */
 
@@ -9,12 +10,15 @@ const getAllUsers = () => {
 
 const createUser = async userData => {
   console.log(`Creating User...${userData.email}`);
-  const newUser = new User(userData);
   try {
+    const newUser = new User(userData);
     const savedUser = await newUser.save();
     return savedUser;
   } catch (err) {
-    throw new Error(500, 'Create User', err);
+    if(err instanceof ValidationError) {
+      throw new Error(400, 'createUser: ' + err.message, err);
+    }
+    throw new Error(500, 'Internal Server Error occured in createUser()', err);
   }
 };
 
@@ -32,6 +36,9 @@ const getByEmail = async email => {
     const user = await User.findOne({ email });
     return user;
   } catch (err) {
+    if(err instanceof ValidationError) {
+      throw new Error(400, 'getByEmail: ' + err.message, err);
+    }
     throw new Error(500, 'Get User - Email', err);
   }
 };
@@ -45,6 +52,18 @@ const getFieldById = async (field, id) => {
     throw new Error(500, 'Get (Field) - ID', err);
   }
 };
+
+const getAssociatedUserByCode = async (code) => {
+  try {
+    const user = await User.findOne({ inviteCode: code });
+    return user;
+  } catch(err) {
+    if(err instanceof ValidationError) {
+      throw new Error(400, 'getAssociatedUserByCode: ' + err.message, err);
+    }
+    throw new Error(500, 'Internal Server Error at getAssociatedUserByCode()', err);
+  }
+}
 
 const checkFriendship = async (userEmail, friendEmail) => {
   try {
@@ -213,6 +232,7 @@ module.exports = {
   getById,
   getFriendsById,
   getFieldById,
+  getAssociatedUserByCode,
   setSocketIdById,
   clearSocketId,
   getFriendsSocketsById,

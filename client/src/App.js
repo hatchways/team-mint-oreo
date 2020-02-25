@@ -12,6 +12,7 @@ import Register from './pages/userform/Register';
 function App() {
   const [userId, setUserId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [invitationCode, setInvitationCode] = useState('');
 
   useEffect(() => {
     let isMounted = true;
@@ -28,6 +29,18 @@ function App() {
       isMounted = false;
     };
   }, [userId]);
+
+  const handleInvitation = (props) => {
+    if(props.match.params) {
+      setInvitationCode(props.match.params.code);
+    }
+
+    return <Redirect to={{
+             pathname: '/login',
+           }}
+          />
+  }
+
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
@@ -42,7 +55,7 @@ function App() {
             <Route
               exact
               path="/login"
-              render={() => (userId ? <Redirect to="/dashboard" /> : <Login setId={setUserId} />)}
+              render={(props) => (userId ? <Redirect to="/dashboard" /> : <Login invCode={invitationCode} setId={setUserId} />)}
             />
             <Route
               exact
@@ -52,7 +65,14 @@ function App() {
                 return userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />;
               }}
             />
-            <Route path="/register" component={Register} />
+            <Route
+              path="/register"
+              render={() => <Register invCode={invitationCode} />}
+            />
+            <Route
+              path="/invitation/:code"
+              render={props => handleInvitation(props)}
+            />
             <Route path="/testing" component={WebsocketTesting} />
           </Switch>
         </BrowserRouter>
