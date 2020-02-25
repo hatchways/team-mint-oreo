@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useReducer } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
@@ -11,67 +11,100 @@ import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-p
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 import UserProfile from '../user-profile/user-profile.component';
 
-const Sidebar = ({ socket, test }) => {
+const initialState = {
+  isLoading: true,
+  user: { name: '', id: '' },
+  avatar: { url: '', fallback: 'L' },
+  friendsList: [],
+  chatsList: [],
+  invitesList: [],
+  tab: TabNames.CHATS,
+};
+
+const reducer = (state, action) => {
+  const { payload, type } = action;
+
+  switch (type) {
+    case 'IS_LOADING':
+      return { ...state, isLoading: true };
+    case 'DONE_LOADING':
+      return { ...state, isLoading: false };
+    case 'SET_INITIAL_DATA': {
+      const { friends, chatrooms, invitations, displayName, userId } = payload;
+      return {
+        ...state,
+        friendsList: friends,
+        chatsList: chatrooms,
+        invitesList: invitations,
+        user: { name: displayName, id: userId },
+      };
+    }
+    case 'SET_FRIENDS':
+      return { ...state, friendsList: payload };
+    case 'SET_CHATS':
+      return { ...state, chatsList: payload };
+    case 'SET_INVITES':
+      return { ...state, invitesList: payload };
+    case 'SET_TAB':
+      return { ...state, tab: payload };
+    case 'ADD_CHAT_TO_END':
+      return { ...state, chatsList: [...state.chatsList, payload] };
+    case 'ADD_CHAT_TO_START':
+      return { ...state, chatsList: [payload, ...state.chatsList] };
+    default:
+      throw new Error();
+  }
+};
+
+const Sidebar = ({ socket }) => {
   const {
     state: { activeChatId },
     dispatch: directoryDispatch,
   } = useContext(directoryStore);
-  const [user, setUser] = useState({
-    name: 'Ultimate Legend',
-    id: 1,
-    avatar: '',
-  });
 
-  const [tab, setTab] = useState(TabNames.CHATS);
-  const [isLoading, setIsLoading] = useState(true);
-  const [friendsList, setFriendsList] = useState([]);
-  const [chatsList, setChatsList] = useState([]);
-  const [invitesList, setInvitesList] = useState([]);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { friendsList, chatsList, invitesList, user, tab } = state;
+
+  const generateImagedChatrooms = (chatrooms, userId) => {
+    return chatrooms.map(room => {
+      if (room.isDM) {
+        return {
+          ...room,
+          avatar: room.users[room.users[0]._id === userId ? 1 : 0].avatar,
+        };
+      }
+      return room;
+    });
+  };
 
   useEffect(() => {
     let isMounted = true;
     const fetchAndSetUserData = async () => {
       const data = await Client.request('/user/data');
       console.log(data);
-      const {
-        friends = [],
-        chatrooms = [],
-        invitations = [],
-        displayName = '',
-        avatar = '',
-        userId = '',
-        language,
-      } = data;
       if (isMounted) {
-        setFriendsList(friends);
-        setChatsList(generateImagedChatrooms(chatrooms, userId));
-        setInvitesList(invitations);
-        setIsLoading(false);
-        setUser({ name: displayName, id: userId, avatar });
-        directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: language });
+        dispatch({ type: 'SET_INITIAL_DATA', payload: data });
+        const roomsWithAvatar = generateImagedChatrooms(chatsList, user.id);
+        dispatch({ type: 'SET_CHATS', payload: roomsWithAvatar });
+        directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: data.language });
+        dispatch({ type: 'DONE_LOADING' });
       }
     };
-    console.log('Fetch user Data....');
-    fetchAndSetUserData();
 
-    const generateImagedChatrooms = (chatrooms, userId) => {
-      return chatrooms.map(room => {
-        if (room.isDM) {
-          return {
-            ...room,
-            avatar: room.users[0]._id === userId ? room.users[1].avatar : room.users[0].avatar,
-          };
-        } else return room;
-      });
-    };
-
+    try {
+      console.log('Fetching user Data....');
+      fetchAndSetUserData();
+    } catch (err) {
+      // TODO: handle error: 403, 500
+      dispatch({ type: 'DONE_LOADING' });
+    }
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [directoryDispatch]);
 
   useEffect(() => {
-    const updateChatLocation = msgObject => {
+    const updateChatLocation = async msgObject => {
       console.log('received msg in sidebar');
       const { chatId } = msgObject;
       if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
@@ -79,12 +112,14 @@ const Sidebar = ({ socket, test }) => {
       const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
 
       if (chatroomIndex < 0) {
+        const chatroom = await Client.request(`/chat/data/${chatId}`);
+        dispatch({ type: 'ADD_CHAT_TO_END', payload: chatroom });
         // retrieve chat info from db
       } else {
         chatsList[chatroomIndex].unreadMessages += 1;
         const newChatList = [...chatsList];
         newChatList.unshift(...newChatList.splice(chatroomIndex, 1));
-        setChatsList(newChatList);
+        dispatch({ type: 'SET_CHATS', payload: newChatList });
       }
     };
 
@@ -104,20 +139,19 @@ const Sidebar = ({ socket, test }) => {
           avatar,
         };
       });
-      setFriendsList(newFriendsList);
+      dispatch({ type: 'SET_FRIENDS', payload: newFriendsList });
       // need to update chatrooms where this specific profile avatar was used
       const newChatroomsList = chatsList.map(room => ({
         ...room,
         avatar: room.avatar === oldAvatar ? profilePic : room.avatar,
       }));
-      setChatsList(newChatroomsList);
+      dispatch({ type: 'SET_CHATS', payload: newChatroomsList });
     };
 
     const updateUserAvatar = msgObject => {
       console.log('updateOwnProfilePic', msgObject);
       const { profilePic } = msgObject;
-
-      setUser({ ...user, avatar: profilePic });
+      dispatch({ type: 'SET_USER', payload: { ...user, avatar: profilePic } });
     };
 
     socket.on('receiveMsg', updateChatLocation);
@@ -132,15 +166,14 @@ const Sidebar = ({ socket, test }) => {
   });
 
   const changeActiveChat = async chatId => {
-    if (activeChatId) {
-      Client.updateChatActivity(user.id, activeChatId);
+    Client.updateChatActivity(user.id, activeChatId);
+    let retrievedChat = chatsList.find(chat => chat.chatId === chatId);
+    if (!retrievedChat) {
+      retrievedChat = await Client.request(`/chat/data/${chatId}`);
+      dispatch({ type: 'ADD_CHAT_TO_END', payload: retrievedChat });
     }
-    let userDMRoom = chatsList.find(chat => chat.chatId === chatId);
-    if (!userDMRoom) {
-      userDMRoom = await Client.request(`/chat/data/${chatId}`);
-      setChatsList([...chatsList, userDMRoom]);
-    }
-    userDMRoom.unreadMessages = 0;
+
+    retrievedChat.unreadMessages = 0;
     directoryDispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,
@@ -151,14 +184,14 @@ const Sidebar = ({ socket, test }) => {
   };
 
   const onContactClick = async friendDmId => {
-    // search for existing chatroom in state
     changeActiveChat(friendDmId);
-    setTab(TabNames.CHATS);
+    dispatch({ type: 'SET_TAB', payload: TabNames.CHATS });
   };
 
   const changeTab = (event, newValue) => {
-    setTab(newValue);
+    dispatch({ type: 'SET_TAB', payload: newValue });
   };
+
   return (
     <Box p={2} display="flex" flexDirection="column" overflow="hidden" maxHeight="98vh">
       <Box paddingBottom={2} flex="1">
@@ -176,7 +209,7 @@ const Sidebar = ({ socket, test }) => {
           </Grid>
         </Grid>
       </Box>
-      <Box style={{ overflow: 'auto' }} flex="4">
+      <Box overflow="auto" flex="4">
         <SidebarTabPanel value={tab} index={TabNames.CHATS}>
           <SidebarTabPanelChats
             chatrooms={chatsList}
@@ -211,4 +244,4 @@ const Sidebar = ({ socket, test }) => {
   );
 };
 
-export default Sidebar;
+export default React.memo(Sidebar);

@@ -116,7 +116,7 @@ const handleSocket = server => {
       socket.to(chatId).emit('endTyping', { userId });
     });
 
-    socket.on('searching', () => {});
+    socket.on('searching', param => {});
 
     socket.on('test', () => {
       console.log('Connected sockets');

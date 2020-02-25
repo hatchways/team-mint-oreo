@@ -9,8 +9,12 @@ router.get('/messages/:chatId', async (req, res) => {
   res.status(200).json({ messages: sortedMessages });
 });
 
-router.get('/data/:chatId', (req, res) => {
+router.get('/data/:chatId', async (req, res) => {
   const { chatId } = req.params;
+  const chatroom = await db.chatroom.getChatroomById(chatId, {
+    selectFromUsers: ['displayName', 'id', 'socketId', 'avatar'],
+  });
+  res.status(200).json(chatroom);
 });
 
 router.post('/new', async (req, res) => {
