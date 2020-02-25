@@ -49,7 +49,7 @@ const handleSocket = server => {
     });
 
     socket.on('updateProfilePic', async ({ userId, profilePic }) => {
-      onProfilePic.propogateToFriends(socket, userId, profilePic);
+      onProfilePic.propogateToFriends(io, socket, userId, profilePic);
     });
 
     // current user is sending the friend an invitation request

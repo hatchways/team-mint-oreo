@@ -198,6 +198,7 @@ router.post('/avatar', async (req, res) => {
     db.user.addAvatar(userId, location);
     res.status(201).json({
       success: true,
+      userId: userId,
       pic: location,
     });
   } catch (err) {

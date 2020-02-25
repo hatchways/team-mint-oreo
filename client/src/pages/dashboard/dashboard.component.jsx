@@ -36,7 +36,7 @@ const Dashboard = ({ userId }) => {
     <Box>
       <SidebarDrawer socket={memoSocket} />
       <InviteFriendBackdrop socket={memoSocket} />
-      <ProfileBackdrop />
+      <ProfileBackdrop socket={memoSocket} />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
           <Hidden smDown>
