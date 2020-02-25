@@ -151,7 +151,7 @@ router.get('/data', isAuthorized, async (req, res) => {
   // console.log('FRIENDS DM IDS', friendsDmIds);
   // console.log('FROM USER INFO ', fromUserList);
 
-  const chatrooms = format.chatroomData(chatroomsWithUsers, userId);
+  const chatrooms = format.chatroomData(chatroomsWithUsers, unreadMessages);
   const friends = format.friendsData(friendsData, friendsDmIds);
   const invitations = format.invitationsData(invitationData, fromUserList);
 

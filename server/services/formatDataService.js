@@ -12,7 +12,7 @@ const replaceSocketIdWithStatus = userList => {
   });
 };
 
-const chatroomData = (chatroomData, userId) => {
+const chatroomData = (chatroomData, unreadMessages) => {
   /**
    * This function should take an array of chatroom objects, containing their
    * status as a DM chatroom, their ChatID, and the user objects.
@@ -29,20 +29,21 @@ const chatroomData = (chatroomData, userId) => {
    *
    */
 
-  chatroomData.sort((a, b) => {
-    const firstTimestamp = a.lastMessageTimestamp || Date.parse(a.createdAt);
-    const secondTimestamp = b.lastMessageTimestamp || Date.parse(b.createdAt);
-    return secondTimestamp - firstTimestamp;
-  });
-
-  const result = chatroomData.map(chatroom => {
+  const result = chatroomData.map((chatroom, i) => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
     const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
     return {
       ...chatroom,
       chatId: chatroom._id,
       users: usersWithOnlineStatus,
+      unreadMessages: unreadMessages[i],
     };
+  });
+
+  result.sort((a, b) => {
+    const firstTimestamp = a.lastMessageTimestamp || Date.parse(a.createdAt);
+    const secondTimestamp = b.lastMessageTimestamp || Date.parse(b.createdAt);
+    return secondTimestamp - firstTimestamp;
   });
   return result;
 };
