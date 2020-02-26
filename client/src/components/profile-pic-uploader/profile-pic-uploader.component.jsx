@@ -1,5 +1,6 @@
 import React from 'react';
 import Client from '../../utils/HTTPClient';
+import { Button } from '@material-ui/core';
 
 const ProfilePicUploader = ({ socket, onCompleted }) => {
   const handleChange = e => {
@@ -19,7 +20,17 @@ const ProfilePicUploader = ({ socket, onCompleted }) => {
     reader.readAsDataURL(input.files[0]);
   };
 
-  return <input type="file" accept="image/x-png," onChange={handleChange} />;
+  return (
+    <Button variant="contained" component="label">
+      Upload Profile Picture
+      <input
+        type="file"
+        accept="image/x-png,"
+        onChange={handleChange}
+        style={{ display: 'none' }}
+      />
+    </Button>
+  );
 };
 
 export default ProfilePicUploader;
