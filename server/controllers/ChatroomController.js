@@ -46,14 +46,20 @@ const getUsersByChatId = async chatId => {
   }
 };
 
-const searchForUserBy = async (param, filter, chatIds) => {
-  const result = await Chatroom.find({ _id: { $in: chatIds } }).populate({
+const searchForRoomWithUser = async (target, chatIds, userId) => {
+  const result = await Chatroom.find({
+    _id: { $in: chatIds },
+  }).populate({
     path: 'users',
     model: 'User',
     select: ['displayName', 'id', 'email', 'socketId', 'language'],
-    match: { [filter]: { $regex: `.*${param}.*` } },
+    // match: { [filter]: { $regex: `.*${param}.*` } },
   });
-  console.log('SEARCH FOR USER BY', result);
+
+  const matchingRooms = result.filter(room =>
+    room.users.some(user => user._id !== userId && user.displayName.includes(target))
+  );
+  return matchingRooms;
 };
 
 const getAllByUserId = async userId => {
@@ -83,11 +89,15 @@ const getChatroomById = async (chatId, { selectFromUsers }, userId) => {
 };
 
 const getAllByChatIds = async ids => {
-  const chatrooms = await Chatroom.find({ _id: { $in: ids } }).populate({
-    path: 'users',
-    model: 'User',
-    select: ['displayName', 'id', 'socketId', 'avatar'],
-  });
+  const chatrooms = await Chatroom.find({ _id: { $in: ids } })
+    .populate({
+      path: 'users',
+      model: 'User',
+      select: ['displayName', 'id', 'socketId', 'avatar'],
+    })
+    .sort('-lastMessageTimestamp')
+    .limit(50)
+    .skip(0);
   return chatrooms;
 };
 
@@ -148,5 +158,5 @@ module.exports = {
   removeChatroom,
   updateLastMessage,
   getAllByChatIds,
-  searchForUserBy,
+  searchForRoomWithUser,
 };

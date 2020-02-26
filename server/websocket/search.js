@@ -1,8 +1,35 @@
 const db = require('../controllers');
+const format = require('../services/formatDataService');
+
+const searchChats = async (searchParam, userId) => {
+  const chatIds = await db.user.getChatsIdsById(userId, 0);
+  const chatroomData = await db.chatroom.searchForRoomWithUser(searchParam, chatIds, userId);
+  const unreadMessages = await Promise.all(
+    chatroomData.map(chatroom => {
+      return db.message.getUnreadCount(chatroom, userId);
+    })
+  );
+  const foundRooms = format.chatroomData(chatroomData, unreadMessages);
+
+  return foundRooms;
+};
+
+const searchFriends = async (searchParam, userId) => {
+  const { friends = [] } = await db.user.searchByName(searchParam, userId);
+  console.log('*****', friends);
+  const friendsDmIds = await Promise.all(
+    friends.map(friend => {
+      return db.chatroom.getDmIdOfUsers(userId, friend.id);
+    })
+  );
+  const formattedFriends = format.friendsData(friends, friendsDmIds);
+  console.log(formattedFriends);
+  return formattedFriends;
+};
 
 const search = async body => {
   const { tab, searchParam, userId } = body;
-
+  let result;
   // CONTACTS
   // Search users controller by ID -> friendsList
   // populate friendsList -> search displayName by param;
@@ -16,19 +43,13 @@ const search = async body => {
   // in a single query: search all users by displayName where chatID is in chatrooms of UserID
   // get all userID's chatrooms, populate users, search by displayName
 
-  switch (tab) {
-    case 'Chats': {
-      const chatIds = await db.user.getChatsIdsById(userId, 0);
-      console.log(chatIds);
-      return db.chatroom.searchForUserBy(searchParam, 'displayName', chatIds);
-    }
-    case 'Contacts':
-      return db.user.searchByName(searchParam, userId);
-    case 'Invites':
-      break;
-    default:
-      throw new Error();
+  if (tab === 'Chats') {
+    result = await searchChats(searchParam, userId);
+  } else if (tab === 'Contacts') {
+    result = await searchFriends(searchParam, userId);
   }
+
+  return result;
 };
 
 module.exports = { search };

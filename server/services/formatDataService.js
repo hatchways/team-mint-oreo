@@ -4,12 +4,18 @@ const flattenArray = array => {
   }, []);
 };
 
-const replaceSocketIdWithStatus = userList => {
+const convertSocketIdToStatus = userList => {
   return userList.map(user => {
     const { socketId, _id, displayName, avatar } = user;
     const userObject = { _id, displayName, avatar, isOnline: !!socketId };
     return userObject;
   });
+};
+
+const convertActivityMapToUnread = (chatroom, userId) => {
+  const { activityMap, ...rest } = chatroom;
+  const lastActivity = activityMap.get(userId);
+  return { ...rest, lastActivity };
 };
 
 const chatroomData = (chatroomData, unreadMessages) => {
@@ -32,10 +38,9 @@ const chatroomData = (chatroomData, unreadMessages) => {
   const result = chatroomData.map((chatroom, i) => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
 
-    const { activityMap, ...rest } = chatroom.toObject();
-    const usersWithOnlineStatus = replaceSocketIdWithStatus(rest.users);
+    const usersWithOnlineStatus = convertSocketIdToStatus(chatroom.users);
     return {
-      ...rest,
+      ...chatroom.toObject(),
       chatId: chatroom._id,
       users: usersWithOnlineStatus,
       unreadMessages: unreadMessages[i],
@@ -51,7 +56,7 @@ const chatroomData = (chatroomData, unreadMessages) => {
 };
 
 const friendsData = (friendsData, DmIds) => {
-  const formattedFriends = replaceSocketIdWithStatus(friendsData);
+  const formattedFriends = convertSocketIdToStatus(friendsData);
   const friendsWithDmInfo = formattedFriends.map((friend, i) => ({
     ...friend,
     dmChatId: DmIds[i],
@@ -81,7 +86,8 @@ const messagesData = messages => {
 };
 
 module.exports = {
-  replaceSocketIdWithStatus,
+  convertSocketIdToStatus,
+  convertActivityMapToUnread,
   flattenArray,
   chatroomData,
   orderByLatestLast,

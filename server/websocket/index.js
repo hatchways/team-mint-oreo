@@ -119,6 +119,8 @@ const handleSocket = server => {
 
     socket.on('searching', async body => {
       const result = await onSearch.search(body);
+
+      socket.emit('searchResult', result);
     });
 
     socket.on('test', () => {

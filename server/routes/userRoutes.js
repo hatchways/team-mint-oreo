@@ -133,6 +133,12 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   const chatroomsWithUsers = await db.chatroom.getAllByChatIds(chatroomIds);
 
+  const unreadMessages = await Promise.all(
+    chatroomsWithUsers.map(chatroom => {
+      return db.message.getUnreadCount(chatroom, userId);
+    })
+  );
+
   const friendsDmIds = await Promise.all(
     friendsData.map(friend => {
       return db.chatroom.getDmIdOfUsers(userId, friend.id);
@@ -142,12 +148,6 @@ router.get('/data', isAuthorized, async (req, res) => {
   const fromUserList = await Promise.all(
     invitationData.map(invitation => {
       return db.user.getByEmail(invitation.fromUser);
-    })
-  );
-
-  const unreadMessages = await Promise.all(
-    chatroomsWithUsers.map(chatroom => {
-      return db.message.getUnreadCount(chatroom._id, chatroom.activityMap.get(userId));
     })
   );
 

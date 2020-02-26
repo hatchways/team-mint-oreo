@@ -157,6 +157,9 @@ const Sidebar = ({ socket }) => {
     socket.on('receiveMsg', updateChatLocation);
     socket.on('updateOwnProfilePic', updateUserAvatar);
     socket.on('updateFriendProfilePic', updateFriendsProfilePic);
+    socket.on('searchResult', result => {
+      console.log('searchResult', result);
+    });
 
     return () => {
       socket.off('receiveMsg', updateChatLocation);

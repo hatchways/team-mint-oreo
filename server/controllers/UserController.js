@@ -78,9 +78,19 @@ const checkFriendship = async (userEmail, friendEmail) => {
 };
 
 const searchByName = async (name, userId) => {
-  //
-  const users = await User.find({ $text: { $search: name }, friends: { $in: [userId] } });
-  return users;
+  try {
+    // find the user with by the id and get the friends field
+    // then populate the data with the friend's name
+    const data = await User.findById(userId, 'friends').populate({
+      path: 'friends',
+      select: ['displayName', 'socketId', 'id', 'avatar'],
+      match: { displayName: { $regex: `.*${name}.*` } },
+    });
+    console.log('SEARCH BY NAME', data);
+    return data;
+  } catch (err) {
+    throw new Error(500, 'Get Friends - ID', err);
+  }
 };
 
 const removeUser = async userId => {
