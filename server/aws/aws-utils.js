@@ -12,7 +12,7 @@ const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 
 const s3 = new AWS.S3();
 
-const S3Promise = bucketParams => {
+const S3Upload = bucketParams => {
   const s3UploadPromise = new Promise((resolve, reject) => {
     s3.upload(bucketParams, (err, data) => {
       if (err) {
@@ -34,7 +34,7 @@ const uploadMintPic = () => {
     Body: fileContent,
   };
 
-  return S3Promise(bucketParams);
+  return S3Upload(bucketParams);
 };
 
 const uploadSaltedPic = pic => {
@@ -59,7 +59,7 @@ const uploadSaltedPic = pic => {
     ContentType: 'image/x-png',
   };
 
-  return S3Promise(bucketParams);
+  return S3Upload(bucketParams);
 };
 
 /**
@@ -83,7 +83,31 @@ const hashCode = s => {
   return h;
 };
 
+const S3Delete = bucketParams => {
+  const s3DeletePromise = new Promise((resolve, reject) => {
+    console.log('Deleting:', bucketParams.Key);
+    s3.deleteObject(bucketParams, (err, data) => {
+      if (err) {
+        reject(err);
+      }
+      if (data) {
+        resolve(data);
+      }
+    });
+  });
+  return s3DeletePromise;
+};
+
+const deletePic = picName => {
+  const bucketParams = {
+    Bucket: BUCKET_NAME,
+    Key: picName,
+  };
+
+  return S3Delete(bucketParams);
+};
 module.exports = {
   uploadMintPic,
   uploadSaltedPic,
+  deletePic,
 };
