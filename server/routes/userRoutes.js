@@ -17,24 +17,24 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-      const { email, password, language, displayName } = req.body;
-      validateCredentials(email, password);
-      const hashedPassword = await bcrypt.encrypt(password);
-      // associate a random invitation uuid to the newly created user
-      const inviteCode = uuidv4();
-      const { id = null } = await db.user.createUser({
-        email,
-        password: hashedPassword,
-        language,
-        displayName,
-        avatar: '',
-        inviteCode
-      });
-      if (id) res.status(201).json({ status: 201 });
-  } catch(err) {
-      return res.status(err.status).json({
-          error: err.message
-      });
+    const { email, password, language, displayName } = req.body;
+    validateCredentials(email, password);
+    const hashedPassword = await bcrypt.encrypt(password);
+    // associate a random invitation uuid to the newly created user
+    const inviteCode = uuidv4();
+    const { id = null } = await db.user.createUser({
+      email,
+      password: hashedPassword,
+      language,
+      displayName,
+      avatar: '',
+      inviteCode,
+    });
+    if (id) res.status(201).json({ status: 201 });
+  } catch (err) {
+    return res.status(err.status).json({
+      error: err.message,
+    });
   }
 });
 
@@ -154,7 +154,7 @@ router.get('/data', isAuthorized, async (req, res) => {
   // console.log('FRIENDS DM IDS', friendsDmIds);
   // console.log('FROM USER INFO ', fromUserList);
 
-  const chatrooms = format.chatroomData(chatroomsWithUsers, unreadMessages);
+  const chatrooms = format.chatroomData(chatroomsWithUsers, unreadMessages, userId);
   const friends = format.friendsData(friendsData, friendsDmIds);
   const invitations = format.invitationsData(invitationData, fromUserList);
 

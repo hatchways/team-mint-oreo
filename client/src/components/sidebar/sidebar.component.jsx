@@ -30,15 +30,17 @@ const reducer = (state, action) => {
     case 'DONE_LOADING':
       return { ...state, isLoading: false };
     case 'SET_INITIAL_DATA': {
-      const { friends, chatrooms, invitations, displayName, userId } = payload;
+      const { friends, chatrooms, invitations, displayName, userId, avatar } = payload;
       return {
         ...state,
         friendsList: friends,
         chatsList: chatrooms,
         invitesList: invitations,
-        user: { name: displayName, id: userId },
+        user: { name: displayName, id: userId, avatar },
       };
     }
+    case 'SET_USER':
+      return { ...state, user: payload };
     case 'SET_FRIENDS':
       return { ...state, friendsList: payload };
     case 'SET_CHATS':
@@ -65,18 +67,6 @@ const Sidebar = ({ socket }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { friendsList, chatsList, invitesList, user, tab } = state;
 
-  const generateImagedChatrooms = (chatrooms, userId) => {
-    return chatrooms.map(room => {
-      if (room.isDM) {
-        return {
-          ...room,
-          avatar: room.users[room.users[0]._id === userId ? 1 : 0].avatar,
-        };
-      }
-      return room;
-    });
-  };
-
   useEffect(() => {
     let isMounted = true;
     const fetchAndSetUserData = async () => {
@@ -84,8 +74,6 @@ const Sidebar = ({ socket }) => {
       console.log(data);
       if (isMounted) {
         dispatch({ type: 'SET_INITIAL_DATA', payload: data });
-        const roomsWithAvatar = generateImagedChatrooms(chatsList, user.id);
-        dispatch({ type: 'SET_CHATS', payload: roomsWithAvatar });
         directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: data.language });
         dispatch({ type: 'DONE_LOADING' });
       }
@@ -114,7 +102,6 @@ const Sidebar = ({ socket }) => {
       if (chatroomIndex < 0) {
         const chatroom = await Client.request(`/chat/data/${chatId}`);
         dispatch({ type: 'ADD_CHAT_TO_END', payload: chatroom });
-        // retrieve chat info from db
       } else {
         chatsList[chatroomIndex].unreadMessages += 1;
         const newChatList = [...chatsList];

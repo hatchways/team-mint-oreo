@@ -18,7 +18,13 @@ const convertActivityMapToUnread = (chatroom, userId) => {
   return { ...rest, lastActivity };
 };
 
-const chatroomData = (chatroomData, unreadMessages) => {
+const addAvatarToDMChat = (chatroom, userId) => {
+  if (!chatroom.isDM) return chatroom;
+  const { avatar = '' } = chatroom.users.find(user => userId !== user._id.toString());
+  return { ...chatroom, avatar };
+};
+
+const chatroomData = (chatroomData, unreadMessages, userId) => {
   /**
    * This function should take an array of chatroom objects, containing their
    * status as a DM chatroom, their ChatID, and the user objects.
@@ -37,10 +43,11 @@ const chatroomData = (chatroomData, unreadMessages) => {
 
   const result = chatroomData.map((chatroom, i) => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
-
+    chatroom = chatroom.toObject();
     const usersWithOnlineStatus = convertSocketIdToStatus(chatroom.users);
+    const chatroomWithAvatar = addAvatarToDMChat(chatroom, userId);
     return {
-      ...chatroom.toObject(),
+      ...chatroomWithAvatar,
       chatId: chatroom._id,
       users: usersWithOnlineStatus,
       unreadMessages: unreadMessages[i],
