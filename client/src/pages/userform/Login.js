@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { useStyles } from './loginStyles';
 import Client from '../../utils/HTTPClient';
 
-export default function Login() {
+export default function Login({ invCode }) {
   const [values, setValues] = useState({ email: '', password: '' });
   const history = useHistory();
   const handleChange = event => {
@@ -33,6 +33,14 @@ export default function Login() {
       alert('Login unsuccessful');
       // TODO: Show error message
     } else {
+      if(invCode) {
+        const invitationQuery = {
+          code: invCode,
+          toUser: values.email
+        }
+        await Client.request('/invite', 'POST', invitationQuery)
+      }
+
       history.push('/dashboard', { id: response.id });
     }
   };

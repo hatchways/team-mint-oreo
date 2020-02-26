@@ -29,6 +29,10 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    inviteCode: {
+      type: String,
+      // required: true
+    }
   },
   { timestamps: true }
 );

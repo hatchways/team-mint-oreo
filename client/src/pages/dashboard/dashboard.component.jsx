@@ -35,7 +35,7 @@ const Dashboard = ({ userId }) => {
   return (
     <Box>
       <SidebarDrawer socket={memoSocket} />
-      <InviteFriendBackdrop socket={memoSocket} />
+      <InviteFriendBackdrop socket={memoSocket} userId={userId} />
       <ProfileBackdrop socket={memoSocket} />
       <Box>
         <Grid container spacing={0} alignItems="stretch">

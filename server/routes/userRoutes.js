@@ -1,4 +1,6 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const uuidv4 = require('uuid/v4');
 const bcrypt = require('../services/bcryptService');
 const db = require('../controllers');
 const jwt = require('../services/jwtService');
@@ -9,21 +11,31 @@ const format = require('../services/formatDataService');
 const { uploadMintPic, uploadSaltedPic, deletePic } = require('../aws/aws-utils');
 
 const Error = require('../utils/Error');
+const ValidationError = mongoose.Error.ValidationError;
 
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-  const { email, password, language, displayName } = req.body;
-  validateCredentials(email, password);
-  const hashedPassword = await bcrypt.encrypt(password);
-  const { id = null } = await db.user.createUser({
-    email,
-    password: hashedPassword,
-    language,
-    displayName,
-    avatar: '',
-  });
-  if (id) res.status(201).json({ status: 201 });
+  try {
+      const { email, password, language, displayName } = req.body;
+      validateCredentials(email, password);
+      const hashedPassword = await bcrypt.encrypt(password);
+      // associate a random invitation uuid to the newly created user
+      const inviteCode = uuidv4();
+      const { id = null } = await db.user.createUser({
+        email,
+        password: hashedPassword,
+        language,
+        displayName,
+        avatar: '',
+        inviteCode
+      });
+      if (id) res.status(201).json({ status: 201 });
+  } catch(err) {
+      return res.status(err.status).json({
+          error: err.message
+      });
+  }
 });
 
 router.post('/login', async (req, res) => {
@@ -48,8 +60,8 @@ router.post('/login', async (req, res) => {
         id,
       });
   } catch (err) {
-    console.log(err);
-    res.status(err.status).json({ error: err });
+    console.error(err);
+    return res.status(err.status).json({ error: err.message });
   }
 });
 

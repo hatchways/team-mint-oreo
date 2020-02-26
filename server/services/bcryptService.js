@@ -16,7 +16,10 @@ const checkPassword = async (plaintextPassword, hashedPassword) => {
     const match = await bcrypt.compare(plaintextPassword, hashedPassword);
     if (!match) throw new Error(401, 'Password incorrect');
   } catch (err) {
-    throw new Error(500, 'Password compare failed', err);
+    if(err.status === 401) {
+      throw err;
+    }
+    throw new Error(500, 'Password comparison failed', err);
   }
 };
 

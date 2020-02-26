@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -15,7 +15,7 @@ import { useStyles } from './loginStyles';
 // import { register } from './userFunctions';
 import Client from '../../utils/HTTPClient';
 
-export default function Register() {
+export default function Register({ invCode }) {
   const [values, setValues] = useState({
     email: '',
     displayName: '',
@@ -48,6 +48,10 @@ export default function Register() {
   };
 
   const classes = useStyles();
+
+  useEffect(() => {
+     console.log("invitation code is: ", invCode);
+  });
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -121,7 +125,6 @@ export default function Register() {
                 id="displayName"
                 label="Display Name"
                 name="displayName"
-                autoFocus
                 value={values.displayName}
                 onChange={handleChange}
                 InputLabelProps={{
