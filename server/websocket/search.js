@@ -10,20 +10,17 @@ const searchChats = async (searchParam, userId) => {
     })
   );
   const foundRooms = format.chatroomData(chatroomData, unreadMessages);
-
   return foundRooms;
 };
 
 const searchFriends = async (searchParam, userId) => {
   const { friends = [] } = await db.user.searchByName(searchParam, userId);
-  console.log('*****', friends);
   const friendsDmIds = await Promise.all(
     friends.map(friend => {
       return db.chatroom.getDmIdOfUsers(userId, friend.id);
     })
   );
   const formattedFriends = format.friendsData(friends, friendsDmIds);
-  console.log(formattedFriends);
   return formattedFriends;
 };
 

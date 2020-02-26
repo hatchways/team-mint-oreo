@@ -157,16 +157,13 @@ const Sidebar = ({ socket }) => {
     socket.on('receiveMsg', updateChatLocation);
     socket.on('updateOwnProfilePic', updateUserAvatar);
     socket.on('updateFriendProfilePic', updateFriendsProfilePic);
-    socket.on('searchResult', result => {
-      console.log('searchResult', result);
-    });
 
     return () => {
       socket.off('receiveMsg', updateChatLocation);
       socket.off('updateOwnProfilePic', updateUserAvatar);
       socket.off('updateFriendProfilePic', updateFriendsProfilePic);
     };
-  });
+  }, []);
 
   const changeActiveChat = async chatId => {
     Client.updateChatActivity(user.id, activeChatId);
@@ -207,7 +204,7 @@ const Sidebar = ({ socket }) => {
           </Grid>
           <Grid item>
             <Box marginTop={1}>
-              <SearchField activeTab={tab} socket={socket} userId={user.id} />
+              <SearchField activeTab={tab} socket={socket} userId={user.id} dispatch={dispatch} />
             </Box>
           </Grid>
         </Grid>

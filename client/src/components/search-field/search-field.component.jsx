@@ -4,7 +4,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import { useStyles } from './search-field.styles';
 
-const SearchField = ({ socket, activeTab, userId }) => {
+const SearchField = ({ socket, activeTab, userId, dispatch }) => {
   const classes = useStyles();
   const [searchParam, setSearchParam] = useState('');
 
@@ -16,6 +16,23 @@ const SearchField = ({ socket, activeTab, userId }) => {
     e.preventDefault();
     socket.emit('searching', { tab: activeTab, searchParam, userId });
   };
+
+  useEffect(() => {
+    const updateState = result => {
+      const { tab, data } = result;
+      console.log('UPDATE STATE', result);
+      if (tab === 'Chats') {
+        dispatch({ type: 'SET_CHATS', payload: data });
+      } else if (tab === 'Contacts') {
+        dispatch({ type: 'SET_FRIENDS', payload: data });
+      }
+    };
+    socket.on('searchResult', updateState);
+
+    return () => {
+      socket.off('searchResult', updateState);
+    };
+  }, [socket, activeTab, dispatch]);
 
   return (
     <Box component="form" className={classes.root} onSubmit={handleSubmit}>

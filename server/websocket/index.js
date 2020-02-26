@@ -118,9 +118,9 @@ const handleSocket = server => {
     });
 
     socket.on('searching', async body => {
-      const result = await onSearch.search(body);
+      const data = await onSearch.search(body);
 
-      socket.emit('searchResult', result);
+      socket.emit('searchResult', { data, tab: body.tab });
     });
 
     socket.on('test', () => {
