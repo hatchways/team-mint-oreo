@@ -97,13 +97,23 @@ const handleSocket = server => {
 
     socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
       try {
-        await acceptInvitation(socket, userId, friendId);
-        db.invitation.deleteInvitation(invitationId);
+        await Promise.all([
+          acceptInvitation(socket, userId, friendId),
+          db.invitation.deleteInvitation(invitationId),
+        ]);
 
         // Automatically creates a chatroom, and assign users in there
         const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
         console.log(newChatRoomId);
         await updateUserChatroom([userId, friendId], newChatRoomId);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    socket.on('friendRequestRejected', async ({ invitationId }) => {
+      try {
+        await db.invitation.deleteInvitation(invitationId);
       } catch (err) {
         console.error(err);
       }
