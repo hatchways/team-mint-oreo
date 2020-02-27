@@ -27,15 +27,16 @@ app.use(json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(join(__dirname, 'client/build')));
-  app.get('*', (req, res) => {
-    // serve the react app
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-} else {
-  app.use(express.static(join(__dirname, 'public')));
-}
+
+//if (process.env.NODE_ENV === 'production') {
+console.log('___production', __dirname);
+app.use(express.static(join(__dirname, '../client/build')));
+app.get('*', (req, res) => {
+  // serve the react app
+  res.sendFile(join(__dirname, '../client/build', 'index.html'));
+});
+//}
+
 // app.use(passport.initialize());
 // passport.use('jwt', strategy);
 app.use(tokenAuth);
