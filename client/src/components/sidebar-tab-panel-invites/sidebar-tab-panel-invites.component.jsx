@@ -11,7 +11,7 @@ const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
 
   const handleToggle = () => {
     dispatch({
-      type: DirectoryActionTypes.TOGGLE_BACKDROP,
+      type: DirectoryActionTypes.TOGGLE_BACKDROP_INVITE,
     });
   };
 
