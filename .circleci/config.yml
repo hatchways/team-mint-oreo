@@ -1,4 +1,18 @@
-version: 2 # use CircleCI 2.0
+version: 2.1
+
+orbs:
+  heroku: circleci/heroku@1.0.1
+
+workflows:
+  heroku_deploy:
+    jobs:
+      - build
+      - heroku/deploy-via-git:
+          requires:
+            - build # only run deploy-via-git job if the build job has completed
+          filters:
+            branches:
+              only: master # only run deploy-via-git job on master branch
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
     docker: # run the steps with Docker

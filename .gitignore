@@ -8,6 +8,8 @@ node_modules/
 /build/
 
 # misc
+**.env
+server/.env
 .DS_Store
 .env.local
 .env.development.local
@@ -18,6 +20,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# keys
+server/arctic-diode-268719-5228e82ed201.json
 
 #TODO add .env to your gitignore
-
