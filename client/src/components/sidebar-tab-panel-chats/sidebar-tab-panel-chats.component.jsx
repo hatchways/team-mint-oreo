@@ -31,10 +31,10 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
       {/*
         profileFormat: {
-          id: string/integer, 
-          name: string, 
-          secondary: string, 
-          avatar: Object, 
+          id: string/integer,
+          name: string,
+          secondary: string,
+          avatar: Object,
           ...others
         }
         */

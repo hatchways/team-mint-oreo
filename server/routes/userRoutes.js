@@ -17,24 +17,24 @@ const router = express.Router();
 
 router.post('/register', async (req, res) => {
   try {
-      const { email, password, language, displayName } = req.body;
-      validateCredentials(email, password);
-      const hashedPassword = await bcrypt.encrypt(password);
-      // associate a random invitation uuid to the newly created user
-      const inviteCode = uuidv4();
-      const { id = null } = await db.user.createUser({
-        email,
-        password: hashedPassword,
-        language,
-        displayName,
-        avatar: '',
-        inviteCode
-      });
-      if (id) res.status(201).json({ status: 201 });
-  } catch(err) {
-      return res.status(err.status).json({
-          error: err.message
-      });
+    const { email, password, language, displayName } = req.body;
+    validateCredentials(email, password);
+    const hashedPassword = await bcrypt.encrypt(password);
+    // associate a random invitation uuid to the newly created user
+    const inviteCode = uuidv4();
+    const { id = null } = await db.user.createUser({
+      email,
+      password: hashedPassword,
+      language,
+      displayName,
+      avatar: '',
+      inviteCode,
+    });
+    if (id) res.status(201).json({ status: 201 });
+  } catch (err) {
+    return res.status(err.status).json({
+      error: err.message,
+    });
   }
 });
 
@@ -47,6 +47,7 @@ router.post('/login', async (req, res) => {
     await bcrypt.checkPassword(password, userData.password);
     const { id } = userData;
     const encodedToken = await jwt.sign({ id });
+
     res
       .cookie('user', encodedToken, {
         httpOnly: true,
@@ -57,7 +58,7 @@ router.post('/login', async (req, res) => {
       .json({
         success: true,
         status: 200,
-        id,
+        userData,
       });
   } catch (err) {
     console.error(err);
