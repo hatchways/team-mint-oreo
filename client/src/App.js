@@ -36,13 +36,21 @@ function App() {
       setInvitationCode(props.match.params.code);
     }
 
-    return (
-      <Redirect
-        to={{
-          pathname: '/login',
-        }}
-      />
-    );
+    // const createInvitation = async () => {
+    //   if(userId && invitationCode) {
+    //     const invitationQuery = {
+    //       code: invitationCode,
+    //       toUserId: userId
+    //     }
+    //     const invResp = await Client.request('/invite', 'POST', invitationQuery);
+    //
+    //     return <Redirect to="/dashboard" />;
+    //   } else {
+    //     return <Redirect to="/login" />;
+    //   }
+    // }
+    // return createInvitation();
+    return <Redirect to="/login" />;
   };
 
   return (

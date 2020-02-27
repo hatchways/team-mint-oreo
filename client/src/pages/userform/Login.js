@@ -33,15 +33,15 @@ export default function Login({ invCode }) {
       alert('Login unsuccessful');
       // TODO: Show error message
     } else {
-      if(invCode) {
+      if (invCode) {
         const invitationQuery = {
           code: invCode,
-          toUser: values.email
-        }
-        await Client.request('/invite', 'POST', invitationQuery)
+          toUserId: response.userData._id,
+        };
+        const invResp = await Client.request('/invite', 'POST', invitationQuery);
       }
 
-      history.push('/dashboard', { id: response.id });
+      history.push('/dashboard', { id: response.userData.id });
     }
   };
 

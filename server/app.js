@@ -30,6 +30,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //if (process.env.NODE_ENV === 'production') {
 
+// take out last 7 characters server/
 const newRoute = __dirname.substring(0, __dirname.length - 7);
 app.use(express.static(join(newRoute, 'client/build')));
 const sendFrontEnd = (req, res) => {

@@ -65,9 +65,12 @@ router.get('/deleteFriendsAndChatrooms', async (req, res) => {
     db.user.removeUser(friend);
   });
   const chatIds = await db.user.getChatsIdsById(userId);
+  console.log('Chats listed in user document: ', chatIds);
+
   chatIds.forEach(chatId => {
     db.chatroom.removeChatroom(chatId);
   });
   db.user.clearChatrooms(userId);
+  db.user.deleteFriends(userId);
 });
 module.exports = router;

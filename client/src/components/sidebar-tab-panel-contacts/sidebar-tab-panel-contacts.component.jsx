@@ -6,7 +6,7 @@ import { Grid, Button } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const SidebarTabPanelContacts = ({ contactList, user, clickHandler }) => {
+const SidebarTabPanelContacts = ({ contactList, clickHandler }) => {
   const { dispatch } = useContext(directoryStore);
 
   const handleToggle = () => {
@@ -14,8 +14,6 @@ const SidebarTabPanelContacts = ({ contactList, user, clickHandler }) => {
       type: DirectoryActionTypes.TOGGLE_BACKDROP,
     });
   };
-
-  const handleClick = e => {};
 
   return (
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>

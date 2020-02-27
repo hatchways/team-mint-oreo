@@ -6,6 +6,7 @@ const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
 const onProfilePic = require('./profilePic');
 const mailService = require('../services/mailService');
+const onSearch = require('./search');
 
 /* SOCKET METHODS */
 
@@ -97,13 +98,23 @@ const handleSocket = server => {
 
     socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
       try {
-        await acceptInvitation(socket, userId, friendId);
-        db.invitation.deleteInvitation(invitationId);
+        await Promise.all([
+          acceptInvitation(socket, userId, friendId),
+          db.invitation.deleteInvitation(invitationId),
+        ]);
 
         // Automatically creates a chatroom, and assign users in there
         const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
         console.log(newChatRoomId);
         await updateUserChatroom([userId, friendId], newChatRoomId);
+      } catch (err) {
+        console.error(err);
+      }
+    });
+
+    socket.on('friendRequestRejected', async ({ invitationId }) => {
+      try {
+        await db.invitation.deleteInvitation(invitationId);
       } catch (err) {
         console.error(err);
       }
@@ -116,12 +127,16 @@ const handleSocket = server => {
       socket.to(chatId).emit('endTyping', { userId });
     });
 
-    socket.on('searching', () => {});
+    socket.on('searching', async body => {
+      const data = await onSearch.search(body);
+
+      socket.emit('searchResult', { data, tab: body.tab });
+    });
 
     socket.on('test', () => {
       console.log('Connected sockets');
     });
-    socket.on('disconnect', async reason => {
+    socket.on('disconnect', reason => {
       console.log(`${socket.id} has left the site. ${reason}`);
       db.user.clearSocketId(socket.id);
     });

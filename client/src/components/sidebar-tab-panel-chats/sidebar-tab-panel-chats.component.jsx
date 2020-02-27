@@ -4,8 +4,6 @@ import ProfileAsButton from '../profile/profile-as-button.container';
 import { Grid } from '@material-ui/core';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
-import DirectoryActionTypes from '../../store/directory/directory.types';
-import Client from '../../utils/HTTPClient';
 
 const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const {
@@ -31,10 +29,10 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
       {/*
         profileFormat: {
-          id: string/integer, 
-          name: string, 
-          secondary: string, 
-          avatar: Object, 
+          id: string/integer,
+          name: string,
+          secondary: string,
+          avatar: Object,
           ...others
         }
         */
