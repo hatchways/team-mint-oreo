@@ -18,6 +18,12 @@ const messageSchema = new Schema(
       type: String,
       required: true,
     },
+
+    isPicture: {
+      type: Boolean,
+      default: false,
+    },
+
     translations: {
       type: Map,
       of: String,
