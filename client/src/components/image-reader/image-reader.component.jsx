@@ -7,7 +7,7 @@ import React from 'react';
  * @param {Object}    style           Css Style of the input field.
  * @param {Function}  onRead(pic)     callbackFunction where pic is the picture object
  *
- * @return {type} Return value description.
+ * @return {JSX} returns jsx input
  */
 const ImageReader = ({ onRead, style }) => {
   const handleChange = e => {
