@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, InputBase, Divider, IconButton } from '@material-ui/core';
 import Send from '@material-ui/icons/Send';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import { useStyles } from './message-field.styles';
 import Client from '../../utils/HTTPClient';
 
@@ -46,6 +47,9 @@ const MessageField = ({ socket, chatId, userId }) => {
         value={msgContent}
         disabled={!chatId}
       />
+      <IconButton color="primary" className={classes.iconButton} aria-label="uploadPicture">
+        <PhotoLibraryIcon />
+      </IconButton>
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />
       </IconButton>
