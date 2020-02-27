@@ -49,10 +49,6 @@ export default function Register({ invCode }) {
 
   const classes = useStyles();
 
-  useEffect(() => {
-     console.log("invitation code is: ", invCode);
-  });
-
   return (
     <Grid container component="main" className={classes.root}>
       <CssBaseline />

@@ -32,7 +32,7 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
 
   const classes = useStyles();
   const {
-    state: { showBackdrop },
+    state: { showBackdropInv },
     dispatch,
   } = useContext(directoryStore);
 
@@ -40,7 +40,6 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
     let isMounted = true;
     const fetchAndSetUrl = async () => {
       const request = await Client.request('/user/getUser');
-      console.log('the request is: ', request);
 
       if(isMounted) {
         setUrlField('http://localhost:3000/invitation/' + request.inviteCode);
@@ -60,7 +59,7 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
 
   const handleClose = () => {
     dispatch({
-      type: DirectoryActionTypes.CLOSE_BACKDROP,
+      type: DirectoryActionTypes.CLOSE_BACKDROP_INVITE,
     });
   };
 
@@ -104,8 +103,8 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
   }, [emailFields]);
 
   return (
-    <Backdrop className={classes.backdrop} open={showBackdrop}>
-      {showBackdrop && (
+    <Backdrop className={classes.backdrop} open={showBackdropInv}>
+      {showBackdropInv && (
         <ClickAwayListener onClickAway={handleClose}>
           <Card>
             <Box marginRight={3} marginLeft={10} marginBottom={10} marginTop={3}>
