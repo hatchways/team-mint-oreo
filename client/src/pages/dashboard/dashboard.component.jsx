@@ -10,7 +10,7 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import DirectoryActionTypes from '../../store/directory/directory.types';
 import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
 
-const socket = io('http://localhost:3001');
+const socket = io();
 
 const Dashboard = ({ userId }) => {
   const { dispatch } = useContext(directoryStore);

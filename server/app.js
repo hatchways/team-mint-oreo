@@ -29,12 +29,20 @@ app.use(urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 //if (process.env.NODE_ENV === 'production') {
-console.log('___production', __dirname);
-app.use(express.static(join(__dirname, '../client/build')));
-app.get('*', (req, res) => {
+
+const newRoute = __dirname.substring(0, __dirname.length - 7);
+app.use(express.static(join(newRoute, 'client/build')));
+const sendFrontEnd = (req, res) => {
   // serve the react app
-  res.sendFile(join(__dirname, '../client/build', 'index.html'));
-});
+  console.log('serveFile', join(newRoute, 'client/build', 'index.html'));
+  res.sendFile(join(newRoute, 'client/build', 'index.html'));
+};
+app.get('/', sendFrontEnd);
+app.get('/login', sendFrontEnd);
+app.get('/register', sendFrontEnd);
+app.get('/dashboard', sendFrontEnd);
+app.get('/invitation/:code', sendFrontEnd);
+app.get('/testing', sendFrontEnd);
 //}
 
 // app.use(passport.initialize());
