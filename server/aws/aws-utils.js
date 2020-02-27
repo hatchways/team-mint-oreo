@@ -37,9 +37,17 @@ const uploadMintPic = () => {
   return S3Upload(bucketParams);
 };
 
+/**
+ * Uploads a picture S3.
+ *
+ * Salts the name of the picture to make it unique, then upload.
+ * @param {Object} pic      Object containing picture data.
+ * @param {String} pic.name the picture's name
+ * @param {String} pic.data the picture's name
+ *
+ * @return {Promise} Returns a Promise that returns the location of the file on success.
+ */
 const uploadSaltedPic = pic => {
-  // name: string // the picture's name
-  // data: base64 string for picture data.
   const { data, name } = pic;
   const randomName = Math.floor(Math.random() * Math.floor(1000)) + Date.now() + name;
   const saltedName = hashCode(randomName);

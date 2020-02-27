@@ -55,7 +55,10 @@ const handleSocket = server => {
      * @return undefined
      */
     socket.on('sendMsg', async msgObject => {
-      const translations = await onSend.translateMessage(msgObject);
+      const { isPicture = false } = msgObject;
+      // if it is a picture the originalText will be a url
+      // no point translating that
+      const translations = !isPicture ? await onSend.translateMessage(msgObject) : {};
       const outgoingMsg = {
         ...msgObject,
         translations,
