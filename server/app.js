@@ -17,7 +17,7 @@ const connectDB = require('./db/connection');
 const { json, urlencoded } = express;
 
 const app = express();
-app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.json({limit:'5mb'}))
 
 // Start the DB
 connectDB();
@@ -27,15 +27,7 @@ app.use(json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(join(__dirname, 'public')));
-  app.get('*', (req, res) => {
-    // serve the react app
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-  });
-} else {
-  app.use(express.static(join(__dirname, 'public')));
-}
+app.use(express.static(join(__dirname, 'public')));
 // app.use(passport.initialize());
 // passport.use('jwt', strategy);
 app.use(tokenAuth);
