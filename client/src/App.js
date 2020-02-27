@@ -22,6 +22,7 @@ function App() {
         setIsLoading(false);
         setUserId(userId);
       }
+      console.log();
     };
     checkToken();
 
@@ -30,16 +31,19 @@ function App() {
     };
   }, [userId]);
 
-  const handleInvitation = (props) => {
-    if(props.match.params) {
+  const handleInvitation = props => {
+    if (props.match.params) {
       setInvitationCode(props.match.params.code);
     }
 
-    return <Redirect to={{
-             pathname: '/login',
-           }}
-          />
-  }
+    return (
+      <Redirect
+        to={{
+          pathname: '/login',
+        }}
+      />
+    );
+  };
 
   return (
     <MuiThemeProvider theme={theme}>
@@ -55,7 +59,13 @@ function App() {
             <Route
               exact
               path="/login"
-              render={(props) => (userId ? <Redirect to="/dashboard" /> : <Login invCode={invitationCode} setId={setUserId} />)}
+              render={props =>
+                userId ? (
+                  <Redirect to="/dashboard" />
+                ) : (
+                  <Login invCode={invitationCode} setId={setUserId} />
+                )
+              }
             />
             <Route
               exact
@@ -65,14 +75,8 @@ function App() {
                 return userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />;
               }}
             />
-            <Route
-              path="/register"
-              render={() => <Register invCode={invitationCode} />}
-            />
-            <Route
-              path="/invitation/:code"
-              render={props => handleInvitation(props)}
-            />
+            <Route path="/register" render={() => <Register invCode={invitationCode} />} />
+            <Route path="/invitation/:code" render={props => handleInvitation(props)} />
             <Route path="/testing" component={WebsocketTesting} />
           </Switch>
         </BrowserRouter>
