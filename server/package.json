@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nodemon -V ./bin/www",
     "debug": "nodemon  --inspect ./bin/www",
-    "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000"
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha --exit --timeout 30000",
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "@google-cloud/translate": "^5.1.6",
