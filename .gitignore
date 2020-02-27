@@ -7,7 +7,6 @@ node_modules/
 # production
 /build/
 build/
-.eslintrc.json
 
 # misc
 **.env
