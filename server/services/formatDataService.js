@@ -4,7 +4,7 @@ const flattenArray = array => {
   }, []);
 };
 
-const replaceSocketIdWithStatus = userList => {
+const convertSocketIdToStatus = userList => {
   return userList.map(user => {
     const { socketId, _id, displayName, avatar } = user;
     const userObject = { _id, displayName, avatar, isOnline: !!socketId };
@@ -12,7 +12,19 @@ const replaceSocketIdWithStatus = userList => {
   });
 };
 
-const chatroomData = (chatroomData, unreadMessages) => {
+const convertActivityMapToUnread = (chatroom, userId) => {
+  const { activityMap, ...rest } = chatroom;
+  const lastActivity = activityMap.get(userId);
+  return { ...rest, lastActivity };
+};
+
+const addAvatarToDMChat = (chatroom, userId) => {
+  if (!chatroom.isDM) return chatroom;
+  const { avatar = '' } = chatroom.users.find(user => userId !== user._id.toString());
+  return { ...chatroom, avatar };
+};
+
+const chatroomData = (chatroomData, unreadMessages, userId) => {
   /**
    * This function should take an array of chatroom objects, containing their
    * status as a DM chatroom, their ChatID, and the user objects.
@@ -31,9 +43,11 @@ const chatroomData = (chatroomData, unreadMessages) => {
 
   const result = chatroomData.map((chatroom, i) => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
-    const usersWithOnlineStatus = replaceSocketIdWithStatus(chatroom.users);
+    chatroom = chatroom.toObject();
+    const usersWithOnlineStatus = convertSocketIdToStatus(chatroom.users);
+    const chatroomWithAvatar = addAvatarToDMChat(chatroom, userId);
     return {
-      ...chatroom,
+      ...chatroomWithAvatar,
       chatId: chatroom._id,
       users: usersWithOnlineStatus,
       unreadMessages: unreadMessages[i],
@@ -49,7 +63,7 @@ const chatroomData = (chatroomData, unreadMessages) => {
 };
 
 const friendsData = (friendsData, DmIds) => {
-  const formattedFriends = replaceSocketIdWithStatus(friendsData);
+  const formattedFriends = convertSocketIdToStatus(friendsData);
   const friendsWithDmInfo = formattedFriends.map((friend, i) => ({
     ...friend,
     dmChatId: DmIds[i],
@@ -79,7 +93,8 @@ const messagesData = messages => {
 };
 
 module.exports = {
-  replaceSocketIdWithStatus,
+  convertSocketIdToStatus,
+  convertActivityMapToUnread,
   flattenArray,
   chatroomData,
   orderByLatestLast,

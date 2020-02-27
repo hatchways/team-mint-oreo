@@ -15,14 +15,6 @@ const socket = io('http://localhost:3001');
 const Dashboard = ({ userId }) => {
   const { dispatch } = useContext(directoryStore);
 
-  const handleClick = () => {
-    dispatch({
-      type: DirectoryActionTypes.CHANGE_ACTIVE_WINDOW,
-      // currently hardcoded with my chatId
-      payload: '5e471d9929ffd2366a37ea9b',
-    });
-  };
-
   useEffect(() => {
     socket.emit('login', { userId });
     return () => {

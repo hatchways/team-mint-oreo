@@ -6,6 +6,7 @@ const onSend = require('./sendMsg');
 const onFriendReq = require('./friendRequest');
 const onProfilePic = require('./profilePic');
 const mailService = require('../services/mailService');
+const onSearch = require('./search');
 
 /* SOCKET METHODS */
 
@@ -126,12 +127,16 @@ const handleSocket = server => {
       socket.to(chatId).emit('endTyping', { userId });
     });
 
-    socket.on('searching', () => {});
+    socket.on('searching', async body => {
+      const data = await onSearch.search(body);
+
+      socket.emit('searchResult', { data, tab: body.tab });
+    });
 
     socket.on('test', () => {
       console.log('Connected sockets');
     });
-    socket.on('disconnect', async reason => {
+    socket.on('disconnect', reason => {
       console.log(`${socket.id} has left the site. ${reason}`);
       db.user.clearSocketId(socket.id);
     });

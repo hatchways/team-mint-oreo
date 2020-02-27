@@ -132,17 +132,14 @@ router.get('/data', isAuthorized, async (req, res) => {
 
   const [chatroomIds, friendsData, invitationData] = data;
 
-  const chatroomsWithUsers = await Promise.all(
-    chatroomIds.map(id => {
-      return db.chatroom.getChatroomById(
-        id,
-        {
-          selectFromUsers: ['displayName', 'id', 'socketId', 'avatar'],
-        },
-        userId
-      );
+  const chatroomsWithUsers = await db.chatroom.getAllByChatIds(chatroomIds);
+
+  const unreadMessages = await Promise.all(
+    chatroomsWithUsers.map(chatroom => {
+      return db.message.getUnreadCount(chatroom, userId);
     })
   );
+
   const friendsDmIds = await Promise.all(
     friendsData.map(friend => {
       return db.chatroom.getDmIdOfUsers(userId, friend.id);
@@ -155,16 +152,10 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
-  const unreadMessages = await Promise.all(
-    chatroomsWithUsers.map(chatroom => {
-      return db.message.getUnreadCount(chatroom._id, chatroom.lastActivity);
-    })
-  );
-
   // console.log('FRIENDS DM IDS', friendsDmIds);
   // console.log('FROM USER INFO ', fromUserList);
 
-  const chatrooms = format.chatroomData(chatroomsWithUsers, unreadMessages);
+  const chatrooms = format.chatroomData(chatroomsWithUsers, unreadMessages, userId);
   const friends = format.friendsData(friendsData, friendsDmIds);
   const invitations = format.invitationsData(invitationData, fromUserList);
 
