@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import Client from '../../utils/HTTPClient';
 import { store as directoryStore } from '../../store/directory/directory.provider';
@@ -98,7 +98,6 @@ const Sidebar = ({ socket }) => {
       if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
       // updates location of chat in chatsList
       const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
-
       if (chatroomIndex < 0) {
         const chatroom = await Client.request(`/chat/data/${chatId}`);
         dispatch({ type: 'ADD_CHAT_TO_END', payload: chatroom });
@@ -158,9 +157,9 @@ const Sidebar = ({ socket }) => {
     if (!retrievedChat) {
       retrievedChat = await Client.request(`/chat/data/${chatId}`);
       dispatch({ type: 'ADD_CHAT_TO_END', payload: retrievedChat });
+    } else {
+      retrievedChat.unreadMessages = 0;
     }
-
-    retrievedChat.unreadMessages = 0;
     directoryDispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,

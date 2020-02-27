@@ -108,9 +108,14 @@ const setSocketIdById = async (userId, socketId) => {
   }
 };
 
-const clearSocketId = socketId => {
+const clearSocketId = async socketId => {
   try {
-    User.findOneAndUpdate({ socketId }, { socketId: undefined });
+    const result = await User.findOneAndUpdate(
+      { socketId },
+      { socketId: undefined },
+      { new: true }
+    );
+    console.log(result);
   } catch (err) {
     throw new Error(500, 'Clear SocketID', err);
   }

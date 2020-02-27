@@ -126,7 +126,7 @@ const handleSocket = server => {
     socket.on('test', () => {
       console.log('Connected sockets');
     });
-    socket.on('disconnect', async reason => {
+    socket.on('disconnect', reason => {
       console.log(`${socket.id} has left the site. ${reason}`);
       db.user.clearSocketId(socket.id);
     });
