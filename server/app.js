@@ -28,10 +28,10 @@ app.use(cors());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(join(__dirname, 'public')));
+  app.use(express.static(join(__dirname, 'client/build')));
   app.get('*', (req, res) => {
     // serve the react app
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
   });
 } else {
   app.use(express.static(join(__dirname, 'public')));
