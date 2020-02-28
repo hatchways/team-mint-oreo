@@ -46,6 +46,22 @@ const getUsersByChatId = async chatId => {
   }
 };
 
+const searchForRoomWithUser = async (target, chatIds, userId) => {
+  const result = await Chatroom.find({
+    _id: { $in: chatIds },
+  }).populate({
+    path: 'users',
+    model: 'User',
+    select: ['displayName', 'id', 'email', 'socketId', 'language'],
+    // match: { [filter]: { $regex: `.*${param}.*` } },
+  });
+
+  const matchingRooms = result.filter(room =>
+    room.users.some(user => user._id !== userId && user.displayName.includes(target))
+  );
+  return matchingRooms;
+};
+
 const getAllByUserId = async userId => {
   const data = await Chatroom.find({ users: userId });
   console.log('getallusersbyid', data);
@@ -72,6 +88,19 @@ const getChatroomById = async (chatId, { selectFromUsers }, userId) => {
   }
 };
 
+const getAllByChatIds = async ids => {
+  const chatrooms = await Chatroom.find({ _id: { $in: ids } })
+    .populate({
+      path: 'users',
+      model: 'User',
+      select: ['displayName', 'id', 'socketId', 'avatar'],
+    })
+    .sort('-lastMessageTimestamp')
+    .limit(50)
+    .skip(0);
+  return chatrooms;
+};
+
 const getLanguages = async chatId => {
   try {
     const usersInChatroom = await getUsersByChatId(chatId);
@@ -94,8 +123,8 @@ const removeUser = async (userId, chatId) => {
 };
 
 const removeChatroom = async chatId => {
-  const resp = await Chatroom.findOneAndDelete({ id: chatId });
-  console.log(`Chatroom deleted`, resp);
+  const resp = await Chatroom.findByIdAndDelete(chatId);
+  console.log(`Chatroom ${chatId} deleted`, resp);
 };
 
 const updateLastMessage = async chatId => {
@@ -128,4 +157,6 @@ module.exports = {
   updateLastTimeVisited,
   removeChatroom,
   updateLastMessage,
+  getAllByChatIds,
+  searchForRoomWithUser,
 };

@@ -16,15 +16,23 @@ const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
   };
 
   const handleApproval = (event, profile) => {
-      socket.emit('friendRequestAccepted', {
-          userId: currentUser.id,
-          friendId: profile.id,
-          invitationId: profile.invitation._id
-      });
-      // console.log('profile: ', profile);
-      // console.log('currentUser: ', currentUser)
-      alert('Friend Request Accepted!');
-  }
+    socket.emit('friendRequestAccepted', {
+      userId: currentUser.id,
+      friendId: profile.id,
+      invitationId: profile.invitation._id,
+    });
+    // console.log('profile: ', profile);
+    // console.log('currentUser: ', currentUser)
+    alert('Friend Request Accepted!');
+  };
+
+  const handleRejection = (event, profile) => {
+    socket.emit('friendRequestRejected', {
+      invitationId: profile.invitation._id,
+    });
+
+    alert('Friend Request Rejected');
+  };
 
   return (
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
@@ -39,8 +47,8 @@ const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
             <ProfileWithBorder
               id={profile.id}
               {...profile}
-              handleApproval={(event) => handleApproval(event, profile)}
-              handleDisapproval={() => {}}
+              handleApproval={event => handleApproval(event, profile)}
+              handleRejection={event => handleRejection(event, profile)}
             />
           </Grid>
         </Grid>

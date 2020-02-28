@@ -10,18 +10,10 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import DirectoryActionTypes from '../../store/directory/directory.types';
 import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
 
-const socket = io('http://localhost:3001');
+const socket = io();
 
 const Dashboard = ({ userId }) => {
   const { dispatch } = useContext(directoryStore);
-
-  const handleClick = () => {
-    dispatch({
-      type: DirectoryActionTypes.CHANGE_ACTIVE_WINDOW,
-      // currently hardcoded with my chatId
-      payload: '5e471d9929ffd2366a37ea9b',
-    });
-  };
 
   useEffect(() => {
     socket.emit('login', { userId });

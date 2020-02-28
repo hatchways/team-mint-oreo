@@ -14,7 +14,7 @@ const Profile = (
     moreOptions = null,
     avatar,
     handleApproval = null,
-    handleDisapproval = null,
+    handleRejection = null,
     hideStatus = true,
     isOnline = false,
     onClick4More = () => {},
@@ -48,7 +48,7 @@ const Profile = (
             {secondary === '' ? (
               <Typography>{name}</Typography>
             ) : (
-              /*<Typography>{fromUser}</Typography>*/
+              /* <Typography>{fromUser}</Typography> */
               <div>
                 <Grid container direction="column">
                   <Grid item>
@@ -79,7 +79,7 @@ const Profile = (
               </Grid>
             </Grid>
           )}
-          {handleApproval !== null && handleDisapproval !== null && (
+          {handleApproval !== null && handleRejection !== null && (
             <Grid item xs>
               <Grid container direction="row" justify="flex-end" alignItems="center">
                 <Grid item>
@@ -88,7 +88,7 @@ const Profile = (
                   </IconButton>
                 </Grid>
                 <Grid item>
-                  <IconButton>
+                  <IconButton onClick={event => handleRejection(event)}>
                     <Clear />
                   </IconButton>
                 </Grid>
