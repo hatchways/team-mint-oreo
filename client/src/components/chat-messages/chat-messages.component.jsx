@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid } from '@material-ui/core';
-import Client from '../../utils/HTTPClient';
 
 import ChatMessage from '../chat-message/chat-message.component';
 
-const ChatMessages = ({ className, messages, userId, showOriginalText, language }) => {
+const ChatMessages = ({ className, messages, userId, showOriginalText, language, users = [] }) => {
   const [avatars, setAvatars] = useState({});
+
   useEffect(() => {
-    // on messages change get avatars
-    messages.map(message => {
-      if (avatars[message.userId] === undefined) {
-        avatars[message.userId] = ''; // this line is important, prevents making a ton of requests.
-        Client.request(`/user/avatar/${message.userId}`).then(({ avatar }) => {
-          const newAvatars = { ...avatars, [message.userId]: avatar };
-          setAvatars(newAvatars);
-        });
-      }
-    });
-  }, [messages]);
+    const avatarMap = users.reduce((a, user) => {
+      return { ...a, [user._id]: user.avatar };
+    }, {});
+    setAvatars(avatarMap);
+  }, [users]);
 
   return (
     <Box className={className}>

@@ -75,7 +75,7 @@ const Sidebar = ({ socket }) => {
       if (isMounted) {
         dispatch({ type: 'SET_INITIAL_DATA', payload: data });
         directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: data.language });
-        directoryDispatch({ type: DirectoryActionTypes.SET_CHATS_LIST, payload: chatsList });
+        directoryDispatch({ type: DirectoryActionTypes.SET_CHATS_LIST, payload: data.chatrooms });
         dispatch({ type: 'DONE_LOADING' });
       }
     };

@@ -32,8 +32,9 @@ export const directoryReducer = (state, action) => {
       return { ...state, showProfile: false };
     case DirectoryActionTypes.SET_LANGUAGE:
       return { ...state, language: action.payload };
-    case DirectoryActionTypes.SET_CHATS_LIST:
+    case DirectoryActionTypes.SET_CHATS_LIST: {
       return { ...state, chatsList: action.payload };
+    }
     default: {
       return state;
     }
