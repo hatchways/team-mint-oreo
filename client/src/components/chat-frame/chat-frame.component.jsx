@@ -16,12 +16,8 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'CLEAR_MESSAGES':
-      return { ...state, messages: [] };
     case 'SET_MESSAGES':
       return { ...state, messages: action.payload };
-    case 'ADD_MESSAGE':
-      return { ...state, messages: [...state.messages, action.payload] };
     case 'TOGGLE_TRANSLATION':
       return { ...state, showOriginalText: !state.showOriginalText };
     case 'IS_LOADING':
@@ -69,7 +65,8 @@ const ChatFrame = ({ socket, userId }) => {
   useEffect(() => {
     const updateMessages = msg => {
       if (msg.chatId === chatId) {
-        dispatch({ type: 'ADD_MESSAGE', payload: msg });
+        const newMessageList = [...messages, msg];
+        dispatch({ type: 'SET_MESSAGES', payload: newMessageList });
       }
     };
 

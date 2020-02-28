@@ -94,18 +94,20 @@ const Sidebar = ({ socket }) => {
 
   useEffect(() => {
     const updateChatLocation = async msgObject => {
-      console.log('received msg in sidebar');
       const { chatId } = msgObject;
+      console.log(`received msg in sidebar for chat ${chatId}`);
       if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
       // updates location of chat in chatsList
       const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
       if (chatroomIndex < 0) {
-        const chatroom = await Client.request(`/chat/data/${chatId}`);
+        console.log('chat not found, retrieving from database');
+        const chatroom = await Client.request(`/chat/data/${chatId}`); // TODO fix data returned from this route
         dispatch({ type: 'ADD_CHAT_TO_END', payload: chatroom });
       } else {
-        chatsList[chatroomIndex].unreadMessages += 1;
         const newChatList = [...chatsList];
-        newChatList.unshift(...newChatList.splice(chatroomIndex, 1));
+        const updatedChat = newChatList.splice(chatroomIndex, 1);
+        updatedChat.unreadMessages += 1;
+        newChatList.unshift(...updatedChat);
         dispatch({ type: 'SET_CHATS', payload: newChatList });
       }
     };
@@ -116,7 +118,7 @@ const Sidebar = ({ socket }) => {
 
       let oldAvatar = '@.-1';
       const newFriendsList = friendsList.map(friend => {
-        let avatar = friend.avatar;
+        let { avatar } = friend;
         if (friend._id === friendId) {
           oldAvatar = avatar;
           avatar = profilePic;
@@ -150,7 +152,7 @@ const Sidebar = ({ socket }) => {
       socket.off('updateOwnProfilePic', updateUserAvatar);
       socket.off('updateFriendProfilePic', updateFriendsProfilePic);
     };
-  }, []);
+  }, [chatsList, friendsList, user, socket]);
 
   const changeActiveChat = async chatId => {
     Client.updateChatActivity(user.id, activeChatId);

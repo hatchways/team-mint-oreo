@@ -57,6 +57,7 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
 
       chatrooms.map(chatroom => {
         const { chatId } = chatroom;
+        if (!chatId) console.log(chatroom);
         return (
           <Grid item key={chatId}>
             <ProfileAsButton

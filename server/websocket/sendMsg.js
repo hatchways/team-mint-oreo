@@ -21,7 +21,8 @@ const translateMessage = async ({ userId, language, chatId, originalText }) => {
     const languageList = await getLanguageList(chatId);
 
     const translatedText = await Promise.all(
-      languageList.map(language => translateService.translateLang(originalText, language))
+      // languageList.map(language => translateService.translateLang(originalText, language))
+      languageList.map(language => translateService.FAKETranslateLang(originalText, language))
     );
 
     // returns an object with the shape {language: translatedText}

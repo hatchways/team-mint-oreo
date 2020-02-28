@@ -8,7 +8,11 @@ import Client from '../../utils/HTTPClient';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const ChatHeader = ({ chatId, toggleText }) => {
-  const { dispatch } = useContext(directoryStore);
+  const {
+    dispatch,
+    state: { chatsList },
+  } = useContext(directoryStore);
+  const [usersList, setUsersList] = useState([]);
 
   const [title, setTitle] = useState('Select a chatroom');
 
