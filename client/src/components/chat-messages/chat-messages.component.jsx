@@ -20,32 +20,30 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language 
   }, [messages]);
 
   return (
-    <Box className={className} style={{ overflow: 'auto' }}>
-      <Box maxWidth="98%">
-        <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
-          {messages.map(message => {
-            const isSender = message.userId === userId;
-            const { originalText, translations } = message;
-            const timestamp = message?.timestamp || Date.parse(message.createdAt);
-            const isPicture = message.isPicture;
-            return (
-              <Grid key={message._id} item>
-                <Box paddingLeft={2} paddingRight={2}>
-                  <ChatMessage
-                    message={translations[language]}
-                    isSender={isSender}
-                    isOriginal={showOriginalText}
-                    originalText={originalText}
-                    timestamp={timestamp}
-                    isPicture={isPicture}
-                    avatar={avatars[message.userId]}
-                  />
-                </Box>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
+    <Box className={className}>
+      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
+        {messages.map(message => {
+          const isSender = message.userId === userId;
+          const { originalText, translations } = message;
+          const timestamp = message?.timestamp || Date.parse(message.createdAt);
+          const isPicture = message.isPicture;
+          return (
+            <Grid key={message._id} item>
+              <Box paddingLeft={2} paddingRight={2}>
+                <ChatMessage
+                  message={translations[language]}
+                  isSender={isSender}
+                  isOriginal={showOriginalText}
+                  originalText={originalText}
+                  timestamp={timestamp}
+                  isPicture={isPicture}
+                  avatar={avatars[message.userId]}
+                />
+              </Box>
+            </Grid>
+          );
+        })}
+      </Grid>
     </Box>
   );
 };

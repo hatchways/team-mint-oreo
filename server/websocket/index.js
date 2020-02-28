@@ -142,22 +142,24 @@ const handleSocket = server => {
     });
 
     socket.on('createGroupChat', async ({ hostUser, members }) => {
-        try {
-            const membersId = members.map(member => member._id);
-            membersId.push(hostUser);
+      try {
+        const membersId = members.map(member => member._id);
+        membersId.push(hostUser);
 
-            const newChatRoomId = await db.chatroom.createChatroom(membersId);
-            await updateUserChatroom(membersId, newChatRoomId);
-        } catch(err) {
-            console.error(err);
-        }
+        const newChatRoomId = await db.chatroom.createChatroom(membersId);
+        await updateUserChatroom(membersId, newChatRoomId);
+      } catch (err) {
+        console.error(err);
+      }
     });
 
     socket.on('isTyping', (userId, chatId) => {
-      socket.to(chatId).emit('isTyping', { userId });
+      console.log(`${userId} is typing`);
+      io.to(chatId).emit('isTyping', { userId });
     });
     socket.on('endTyping', (userId, chatId) => {
-      socket.to(chatId).emit('endTyping', { userId });
+      console.log(`${userId} has stopped typing`);
+      io.to(chatId).emit('endTyping', { userId });
     });
 
     socket.on('searching', async body => {

@@ -11,6 +11,7 @@ const initialState = {
   messages: [],
   showOriginalText: false,
   isLoading: true,
+  users: [],
 };
 
 const reducer = (state, action) => {
@@ -27,6 +28,8 @@ const reducer = (state, action) => {
       return { ...state, isLoading: true };
     case 'DONE_LOADING':
       return { ...state, isLoading: false };
+    case 'SET_USERS':
+      return { ...state, users: action.payload };
     default:
       throw new Error();
   }
@@ -63,7 +66,6 @@ const ChatFrame = ({ socket, userId }) => {
 
   useEffect(() => {
     const updateMessages = msg => {
-      console.log('Chatframe ID: ', chatId, 'msg ID: ', msg.chatId);
       if (msg.chatId === chatId) {
         dispatch({ type: 'ADD_MESSAGE', payload: msg });
       }
@@ -76,30 +78,23 @@ const ChatFrame = ({ socket, userId }) => {
   }, [chatId, socket]);
 
   const memoMessages = useMemo(() => messages, [messages]);
-
   return (
     <Box
       maxHeight="100vh"
       overflow="hidden"
+      display="flex"
+      flexDirection="column"
       onClick={() => Client.updateChatActivity(userId, chatId)}
     >
-      <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-        <Grid item>
-          <ChatHeader toggleText={dispatch} chatId={chatId} />
-        </Grid>
-        <Grid item>
-          <Grid container direction="column" justify="flex-end" alignItems="stretch" spacing={2}>
-            <ChatMessages
-              messages={memoMessages}
-              showOriginalText={showOriginalText}
-              userId={userId}
-              className={classes.messageBoxHeight}
-              language={language}
-            />
-            <MessageField socket={socket} chatId={chatId} userId={userId} />
-          </Grid>
-        </Grid>
-      </Grid>
+      <ChatHeader toggleText={dispatch} chatId={chatId} />
+      <ChatMessages
+        messages={memoMessages}
+        showOriginalText={showOriginalText}
+        userId={userId}
+        className={classes.messageBoxHeight}
+        language={language}
+      />
+      <MessageField socket={socket} chatId={chatId} userId={userId} />
     </Box>
   );
 };

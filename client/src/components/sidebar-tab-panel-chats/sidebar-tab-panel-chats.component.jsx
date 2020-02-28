@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
-
 import ProfileAsButton from '../profile/profile-as-button.container';
 import { Grid, Button } from '@material-ui/core';
-
-import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
+import { store as directoryStore } from '../../store/directory/directory.provider';
 
 const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const {
@@ -26,10 +24,10 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
     //   console.log('a is ', a, ' and b is ', b);
     //   return `${a.displayName} `;
     // }, '');
-    var names = '';
-    for(var i = 0; i < filteredRoom.length; i++) {
+    let names = '';
+    for (let i = 0; i < filteredRoom.length; i++) {
       names += filteredRoom[i].displayName;
-      if(i < filteredRoom.length - 1) names += ', ';
+      if (i < filteredRoom.length - 1) names += ', ';
     }
     return names.slice(0, 15);
   };

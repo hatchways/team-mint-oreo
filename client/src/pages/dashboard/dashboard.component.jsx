@@ -7,15 +7,11 @@ import ChatFrame from '../../components/chat-frame/chat-frame.component';
 import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite-friend-backdrop.component';
 import GroupChatBackdrop from '../../components/group-chat-backdrop/group-chat-backdrop.component';
 import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
-import { store as directoryStore } from '../../store/directory/directory.provider';
-import DirectoryActionTypes from '../../store/directory/directory.types';
 import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
 
 const socket = io();
 
 const Dashboard = ({ userId }) => {
-  const { dispatch } = useContext(directoryStore);
-
   useEffect(() => {
     socket.emit('login', { userId });
     return () => {
