@@ -14,9 +14,9 @@ const relativeDateFormat = timestamp => {
   if (differenceInDays(Date.now(), timestamp) < 1) {
     displayString = format(timestamp, 'h:mm a');
   } else if (differenceInDays(Date.now(), timestamp) < 365) {
-    displayString = format(timestamp, 'MM DD h:mm a');
+    displayString = format(timestamp, 'MM dd h:mm a');
   } else {
-    displayString = format(timestamp, 'MM DD YY h:mm a');
+    displayString = format(timestamp, 'MM dd yy h:mm a');
   }
   return displayString;
 };
