@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 
 import ProfileAsButton from '../profile/profile-as-button.container';
-import { Grid } from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
+import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const {
     state: { activeChatId },
+    dispatch,
   } = useContext(directoryStore);
 
   const filterSelf = chatroom => chatroom.users.filter(user => user._id !== userId);
@@ -19,14 +21,32 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const generateNames = chatroom => {
     const filteredRoom = filterSelf(chatroom);
     if (filteredRoom.length === 1) return filteredRoom[0].displayName;
-    const names = filteredRoom.reduce((a, b) => {
-      return `${a}, ${b}`;
-    }, '');
+    // console.log(filteredRoom);
+    // const names = filteredRoom.reduce((a, b) => {
+    //   console.log('a is ', a, ' and b is ', b);
+    //   return `${a.displayName} `;
+    // }, '');
+    var names = '';
+    for(var i = 0; i < filteredRoom.length; i++) {
+      names += filteredRoom[i].displayName;
+      if(i < filteredRoom.length - 1) names += ', ';
+    }
     return names.slice(0, 15);
+  };
+
+  const handleToggle = () => {
+    dispatch({
+      type: DirectoryActionTypes.TOGGLE_BACKDROP_GPCHAT,
+    });
   };
 
   return (
     <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={1}>
+      <Grid item>
+        <Button color="primary" onClick={handleToggle}>
+          + Create a new Group Chat
+        </Button>
+      </Grid>
       {/*
         profileFormat: {
           id: string/integer,

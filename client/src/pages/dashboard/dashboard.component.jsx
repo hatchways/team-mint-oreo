@@ -5,6 +5,7 @@ import WithChatStates from '../../components/with-chat-states/with-chat-states.c
 import Sidebar from '../../components/sidebar/sidebar.component';
 import ChatFrame from '../../components/chat-frame/chat-frame.component';
 import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite-friend-backdrop.component';
+import GroupChatBackdrop from '../../components/group-chat-backdrop/group-chat-backdrop.component';
 import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
@@ -28,6 +29,7 @@ const Dashboard = ({ userId }) => {
     <Box>
       <SidebarDrawer socket={memoSocket} />
       <InviteFriendBackdrop socket={memoSocket} userId={userId} />
+      <GroupChatBackdrop socket={memoSocket} userId={userId} />
       <ProfileBackdrop socket={memoSocket} />
       <Box>
         <Grid container spacing={0} alignItems="stretch">
