@@ -17,7 +17,7 @@ const connectDB = require('./db/connection');
 const { json, urlencoded } = express;
 
 const app = express();
-app.use(bodyParser.json({limit:'5mb'}))
+app.use(bodyParser.json({ limit: '5mb' }));
 
 // Start the DB
 connectDB();
@@ -27,7 +27,25 @@ app.use(json());
 app.use(cors());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(express.static(join(__dirname, 'public')));
+
+//if (process.env.NODE_ENV === 'production') {
+
+// take out last 7 characters server/
+const newRoute = __dirname.substring(0, __dirname.length - 7);
+app.use(express.static(join(newRoute, 'client/build')));
+const sendFrontEnd = (req, res) => {
+  // serve the react app
+  console.log('serveFile', join(newRoute, 'client/build', 'index.html'));
+  res.sendFile(join(newRoute, 'client/build', 'index.html'));
+};
+app.get('/', sendFrontEnd);
+app.get('/login', sendFrontEnd);
+app.get('/register', sendFrontEnd);
+app.get('/dashboard', sendFrontEnd);
+app.get('/invitation/:code', sendFrontEnd);
+app.get('/testing', sendFrontEnd);
+//}
+
 // app.use(passport.initialize());
 // passport.use('jwt', strategy);
 app.use(tokenAuth);

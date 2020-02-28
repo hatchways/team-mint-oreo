@@ -4,7 +4,11 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "cd client && npm run dev"
+    "dev": "cd client && npm run dev",
+    "start": "cd server && npm run start",
+    "install-client": "cd client && npm install && npm run build",
+    "install-server": " cd server && npm install && npm run preinstall",
+    "heroku-postbuild": "npm run install-client && npm run install-server"
   },
   "repository": {
     "type": "git",

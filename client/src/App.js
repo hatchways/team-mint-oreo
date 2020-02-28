@@ -22,6 +22,7 @@ function App() {
         setIsLoading(false);
         setUserId(userId);
       }
+      console.log();
     };
     checkToken();
 

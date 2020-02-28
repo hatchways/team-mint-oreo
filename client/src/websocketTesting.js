@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import Client from './utils/HTTPClient';
 
-const socket = io('http://localhost:3001');
+const socket = io();
 
 function WebsocketTesting() {
   const [userData, setUserData] = useState(false);
