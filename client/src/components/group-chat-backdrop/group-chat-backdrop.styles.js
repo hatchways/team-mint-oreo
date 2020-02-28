@@ -8,5 +8,14 @@ export const useStyles = makeStyles(theme => ({
   },
   autocomplete: {
     width: 500
+  },
+  checkbox: {
+    marginRight: 8
+  },
+  root: {
+    padding: '2px 4px',
+    display: 'flex',
+    alignItems: 'center',
+    width: 'auto',
   }
 }));

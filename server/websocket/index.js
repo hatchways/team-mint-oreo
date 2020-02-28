@@ -120,6 +120,18 @@ const handleSocket = server => {
       }
     });
 
+    socket.on('createGroupChat', async ({ hostUser, members }) => {
+        try {
+            const membersId = members.map(member => member._id);
+            membersId.push(hostUser);
+
+            const newChatRoomId = await db.chatroom.createChatroom(membersId);
+            await updateUserChatroom(membersId, newChatRoomId);
+        } catch(err) {
+            console.error(err);
+        }
+    });
+
     socket.on('isTyping', (userId, chatId) => {
       socket.to(chatId).emit('isTyping', { userId });
     });

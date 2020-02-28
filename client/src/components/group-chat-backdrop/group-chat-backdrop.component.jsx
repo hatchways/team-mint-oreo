@@ -8,7 +8,7 @@ import {
   ClickAwayListener,
   IconButton,
   Checkbox,
-  TextField
+  TextField,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
@@ -29,6 +29,7 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const GroupChatBackdrop = ({ socket, userId }) => {
   const [friendsList, setFriendsList] = useState([]);
+  const [groupChatUsers, setGroupChatUsers] = useState([]);
 
   const classes = useStyles();
   const {
@@ -57,6 +58,19 @@ const GroupChatBackdrop = ({ socket, userId }) => {
     }
   }, []);
 
+  const handleSubmit = event => {
+    event.preventDefault();
+    socket.emit('createGroupChat', {
+        hostUser: userId,
+        members: groupChatUsers,
+    });
+
+    // This will be replaced into Snackbar
+    alert('Group Chat Created!');
+    dispatch({
+      type: DirectoryActionTypes.CLOSE_BACKDROP_GPCHAT,
+    });
+  }
 
   return (
     <Backdrop className={classes.backdrop} open={showBackdropGp}>
@@ -74,10 +88,10 @@ const GroupChatBackdrop = ({ socket, userId }) => {
               <Box marginRight={7}>
                 <Grid container direction="column" justify="center" alignItems="center">
                   <Grid item>
-                    <h1>If it opens, this is working</h1>
+                    <h1>Create a new Group Chatroom</h1>
                   </Grid>
                   <Grid item>
-                    <h3> Search for a friend</h3>
+                    <h3> Search for friends</h3>
                     <Autocomplete
                       multiple
                       id="checkboxes-tags-demo"
@@ -89,7 +103,7 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                           <Checkbox
                             icon={icon}
                             checkedIcon={checkedIcon}
-                            style={{ marginRight: 8 }}
+                            className={classes.checkbox}
                             checked={selected}
                           />
                           {option.displayName}
@@ -97,13 +111,14 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                       )}
                       className={classes.autocomplete}
                       renderInput={params => (
-                        <TextField {...params} variant="outlined" label="Checkboxes" placeholder="Favorites" />
+                        <TextField {...params} variant="outlined" label="Friends List" placeholder="Favorites" />
                       )}
+                      onChange={(event, value) => setGroupChatUsers(value)}
                     />
                   </Grid>
                   <Grid item>
                     <h3> </h3>
-                    <Button variant="contained" color="primary">
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>
                       Create GroupChat
                     </Button>
                   </Grid>

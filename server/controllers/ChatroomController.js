@@ -4,8 +4,6 @@ const db = require('./index');
 
 const createChatroom = async userIds => {
   try {
-    console.log('creating chatroom');
-    console.log(db);
     if (userIds.length < 2) throw new Error(400, 'Needs at least 2 users');
     const isDM = userIds.length === 2;
     const activityMap = userIds.reduce((a, userId) => ({ ...a, [userId]: Date.now() }), {});

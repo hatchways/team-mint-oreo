@@ -4,6 +4,7 @@ import ProfileAsButton from '../profile/profile-as-button.container';
 import { Grid, Button } from '@material-ui/core';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
+import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const {
@@ -20,9 +21,16 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
   const generateNames = chatroom => {
     const filteredRoom = filterSelf(chatroom);
     if (filteredRoom.length === 1) return filteredRoom[0].displayName;
-    const names = filteredRoom.reduce((a, b) => {
-      return `${a}, ${b}`;
-    }, '');
+    // console.log(filteredRoom);
+    // const names = filteredRoom.reduce((a, b) => {
+    //   console.log('a is ', a, ' and b is ', b);
+    //   return `${a.displayName} `;
+    // }, '');
+    var names = '';
+    for(var i = 0; i < filteredRoom.length; i++) {
+      names += filteredRoom[i].displayName;
+      if(i < filteredRoom.length - 1) names += ', ';
+    }
     return names.slice(0, 15);
   };
 
