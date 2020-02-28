@@ -41,6 +41,11 @@ const MessageField = ({ socket, chatId, userId }) => {
     Client.request('/chat/uploadpic', 'POST', pic).then(res => {
       const { pic, success } = res;
       console.log('picture Uploaded', pic);
+      Client.updateChatActivity(userId, chatId);
+      if (chatId) {
+        console.log('Sending msg to ', chatId);
+        socket.emit('sendMsg', { userId, chatId, originalText: pic, isPicture: true });
+      }
     });
   };
 

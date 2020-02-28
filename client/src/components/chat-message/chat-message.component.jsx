@@ -1,9 +1,17 @@
 import React from 'react';
-import { Box, Grid, Typography, Avatar, Paper } from '@material-ui/core';
+import { Box, Grid, Typography, Avatar, Paper, Card, CardMedia } from '@material-ui/core';
 import format from '../../utils/relativeDateFormat';
 import { useStyles } from './chat-message.styles';
 
-const ChatMessage = ({ message, originalText, timestamp, isSender, isOriginal, avatar = '' }) => {
+const ChatMessage = ({
+  message,
+  originalText,
+  timestamp,
+  isSender,
+  isPicture,
+  isOriginal,
+  avatar = '',
+}) => {
   const classes = useStyles();
   return (
     <Grid
@@ -32,7 +40,13 @@ const ChatMessage = ({ message, originalText, timestamp, isSender, isOriginal, a
           <Grid item>
             <Paper className={isSender ? classes.senderPaper : classes.chatPaper}>
               <Box p={2}>
-                <Typography>{isOriginal ? originalText : message}</Typography>
+                {!isPicture ? (
+                  <Typography>{isOriginal ? originalText : message}</Typography>
+                ) : (
+                  <Card>
+                    <CardMedia component="img" alt="PICTURE \o/" image={originalText} />
+                  </Card>
+                )}
               </Box>
             </Paper>
           </Grid>

@@ -27,6 +27,7 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language 
             const isSender = message.userId === userId;
             const { originalText, translations } = message;
             const timestamp = message?.timestamp || Date.parse(message.createdAt);
+            const isPicture = message.isPicture;
             return (
               <Grid key={message._id} item>
                 <Box paddingLeft={2} paddingRight={2}>
@@ -36,6 +37,7 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language 
                     isOriginal={showOriginalText}
                     originalText={originalText}
                     timestamp={timestamp}
+                    isPicture={isPicture}
                     avatar={avatars[message.userId]}
                   />
                 </Box>
