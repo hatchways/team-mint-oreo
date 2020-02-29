@@ -32,12 +32,14 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // take out last 7 characters server/
 const newRoute = __dirname.substring(0, __dirname.length - 7);
+
 app.use(express.static(join(newRoute, 'client/build')));
 const sendFrontEnd = (req, res) => {
   // serve the react app
   console.log('serveFile', join(newRoute, 'client/build', 'index.html'));
   res.sendFile(join(newRoute, 'client/build', 'index.html'));
 };
+
 app.get('/', sendFrontEnd);
 app.get('/login', sendFrontEnd);
 app.get('/register', sendFrontEnd);

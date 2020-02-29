@@ -1,11 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const uuidv4 = require('uuid/v4');
-const bcrypt = require('../services/bcryptService');
+
 const db = require('../controllers');
-const jwt = require('../services/jwtService');
 const { isAuthorized } = require('../middleware/isAuthorized');
-const { validateCredentials } = require('../services/validationService');
+
 const format = require('../services/formatDataService');
 
 const { uploadMintPic, uploadSaltedPic, deletePic } = require('../aws/aws-utils');

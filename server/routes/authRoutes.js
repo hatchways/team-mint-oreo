@@ -1,4 +1,9 @@
 const router = require('express').Router();
+const bcrypt = require('../services/bcryptService');
+const uuidv4 = require('uuid/v4');
+const { validateCredentials } = require('../services/validationService');
+const db = require('../controllers');
+const jwt = require('../services/jwtService');
 
 router.post('/register', async (req, res) => {
   try {

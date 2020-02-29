@@ -21,7 +21,7 @@ function App() {
   useEffect(() => {
     let isMounted = true;
     const checkToken = async () => {
-      const { userId = null } = await Client.request('/user/verify');
+      const { userId = null } = await Client.request('/auth/jwtLogin');
       if (isMounted) {
         setIsLoading(false);
         setUserId(userId);
