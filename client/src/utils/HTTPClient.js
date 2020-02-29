@@ -18,19 +18,15 @@ const request = async (endpoint, method = 'GET', body) => {
 const updateWithClosure = () => {
   let lastUpdated = 0;
   let lastChatId = '';
-  const MIN_SECONDS_BETWEEN_UPDATE = 10;
+  const MIN_SECONDS_BETWEEN_UPDATE = 2;
 
   const makeRequest = async (userId, activeChatId) => {
     if (!userId || !activeChatId) return;
     const secondsSinceLastUpdate = (Date.now() - lastUpdated) / 1000;
     const isSameChat = lastChatId === activeChatId;
 
-    if (secondsSinceLastUpdate < MIN_SECONDS_BETWEEN_UPDATE && isSameChat) {
-      console.log(
-        `wait ${MIN_SECONDS_BETWEEN_UPDATE - secondsSinceLastUpdate} seconds before trying again`
-      );
-      return;
-    }
+    if (secondsSinceLastUpdate < MIN_SECONDS_BETWEEN_UPDATE && isSameChat) return;
+    console.log('updating activity');
     await request('/chat/update/activity', 'PUT', {
       userId,
       activeChatId,

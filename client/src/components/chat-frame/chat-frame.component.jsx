@@ -94,9 +94,9 @@ const ChatFrame = ({ socket, userId }) => {
   useEffect(() => {
     const handleTyping = obj => {
       const { userId: typerId, status } = obj;
+      if (obj.chatId !== chatId || typerId === userId) return;
       if (status) console.log(typerId, 'is typing');
       else console.log(typerId, 'has stopped typing');
-      if (obj.chatId !== chatId || typerId === userId) return;
       dispatch({ type: 'SET_TYPING_STATUS', payload: { typerId, status } });
     };
     socket.on('typingStatus', handleTyping);
