@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Box, InputBase, Divider, IconButton } from '@material-ui/core';
+import { Box, Button, InputBase, Divider, IconButton } from '@material-ui/core';
 import Send from '@material-ui/icons/Send';
 import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import { useStyles } from './message-field.styles';
 import Client from '../../utils/HTTPClient';
+import ImageReader from '../image-reader/image-reader.component';
 
 const MessageField = ({ socket, chatId, userId }) => {
   const [msgContent, setMsgContent] = useState('');
@@ -35,6 +37,18 @@ const MessageField = ({ socket, chatId, userId }) => {
     }
   };
 
+  const onRead = pic => {
+    Client.request('/chat/uploadpic', 'POST', pic).then(res => {
+      const { pic, success } = res;
+      console.log('picture Uploaded', pic);
+      Client.updateChatActivity(userId, chatId);
+      if (chatId) {
+        console.log('Sending msg to ', chatId);
+        socket.emit('sendMsg', { userId, chatId, originalText: pic, isPicture: true });
+      }
+    });
+  };
+
   const classes = useStyles();
   return (
     <Box component="form" className={classes.root} onSubmit={onSubmit}>
@@ -46,6 +60,15 @@ const MessageField = ({ socket, chatId, userId }) => {
         value={msgContent}
         disabled={!chatId}
       />
+      <IconButton
+        color="primary"
+        className={classes.iconButton}
+        aria-label="uploadPicture"
+        component="label"
+      >
+        <ImageReader style={{ display: 'none' }} onRead={onRead} />
+        <PhotoLibraryIcon />
+      </IconButton>
       <IconButton color="primary" className={classes.iconButton} aria-label="emoji">
         <InsertEmoticon />
       </IconButton>

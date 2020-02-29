@@ -23,5 +23,6 @@ yarn-error.log*
 
 # keys
 server/arctic-diode-268719-5228e82ed201.json
+server/google-credentials-heroku.json
 
 #TODO add .env to your gitignore

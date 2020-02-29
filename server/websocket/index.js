@@ -41,9 +41,30 @@ const handleSocket = server => {
       onLogin.notifyFriends(socket, userId);
     });
 
+    /**
+     * Generate Message Translations, write message to DB,
+     * propogate messages to other online users.
+     *
+     * listener triggered when user sends a message in a chat,
+     * the function would need the following parameters. (use period)
+     * @param {Object} msgObject              An object containing the message contents.
+     * @param {String} msgObject.userId       String containing the user's Id.
+     * @param {String} msgObject.chatId       String containing the id of the chat in which the message was sent
+     * @param {String} msgObject.originalText String containing the original message that was sent
+     * @param {Boolean} [msgObject.isPicture] Optional to specify whether or not a message is a picture to skip translations
+     *
+     * @return undefined
+     */
     socket.on('sendMsg', async msgObject => {
-      const translations = await onSend.translateMessage(msgObject);
-      const outgoingMsg = { ...msgObject, translations, timestamp: Date.now() };
+      const { isPicture = false } = msgObject;
+      // if it is a picture the originalText will be a url
+      // no point translating that
+      const translations = !isPicture ? await onSend.translateMessage(msgObject) : {};
+      const outgoingMsg = {
+        ...msgObject,
+        translations,
+        timestamp: Date.now(),
+      };
       const { _id } = await db.message.createMessage(outgoingMsg);
       onSend.sendMessage(io, { ...outgoingMsg, _id });
       db.chatroom.updateLastMessage(outgoingMsg.chatId);
