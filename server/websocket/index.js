@@ -153,13 +153,9 @@ const handleSocket = server => {
       }
     });
 
-    socket.on('isTyping', (userId, chatId) => {
-      console.log(`${userId} is typing`);
-      io.to(chatId).emit('isTyping', { userId });
-    });
-    socket.on('endTyping', (userId, chatId) => {
-      console.log(`${userId} has stopped typing`);
-      io.to(chatId).emit('endTyping', { userId });
+    socket.on('typingStatus', (userId, chatId, status) => {
+      console.log(`${userId} is ${status ? '' : 'no longer '}typing`);
+      io.to(chatId).emit('typingStatus', { userId, chatId, status });
     });
 
     socket.on('searching', async body => {

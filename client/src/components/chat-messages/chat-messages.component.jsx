@@ -1,20 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Box, Grid } from '@material-ui/core';
 
 import ChatMessage from '../chat-message/chat-message.component';
 
 const ChatMessages = ({ className, messages, userId, showOriginalText, language, users = [] }) => {
-  const [avatars, setAvatars] = useState({});
+  const [isScrolledToBottom, setIsScrolled] = useState(true);
+  const [distanceFromBottom, setDistance] = useState();
+  const scrollRef = useRef(null);
 
   useEffect(() => {
-    const avatarMap = users.reduce((a, user) => {
-      return { ...a, [user._id]: user.avatar };
-    }, {});
-    setAvatars(avatarMap);
-  }, [users]);
+    scrollRef.current.scrollIntoView();
+    const bottomDivLocation = scrollRef.current.getBoundingClientRect().y;
+    setDistance(bottomDivLocation);
+  }, [scrollRef, messages]);
+
+  const handleScroll = () => {
+    const bottomDiv = scrollRef.current.getBoundingClientRect();
+    // console.log(bottomDiv.y);
+    if (bottomDiv.y === distanceFromBottom) {
+      if (!isScrolledToBottom) setIsScrolled(true);
+    }
+    if (isScrolledToBottom) setIsScrolled(false);
+  };
 
   return (
-    <Box className={className}>
+    <Box className={className} onScroll={handleScroll}>
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
         {messages.map(message => {
           const isSender = message.userId === userId;
@@ -31,15 +41,16 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
                   originalText={originalText}
                   timestamp={timestamp}
                   isPicture={isPicture}
-                  avatar={avatars[message.userId]}
+                  avatar={users[message.userId]?.avatar || ''}
                 />
               </Box>
             </Grid>
           );
         })}
       </Grid>
+      <div ref={scrollRef} />
     </Box>
   );
 };
 
-export default ChatMessages;
+export default React.memo(ChatMessages);

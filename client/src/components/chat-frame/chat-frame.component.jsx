@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext, useReducer, useMemo } from 'react';
+import React, { useEffect, useContext, useReducer, useMemo, useRef } from 'react';
 import { Box, Grid } from '@material-ui/core';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import ChatHeader from '../chat-header/chat-header.component';
 import MessageField from '../message-field/message-field.component';
+import TypingStatus from '../chat-typing-status/typing-status.component';
 import ChatMessages from '../chat-messages/chat-messages.component';
 import Client from '../../utils/HTTPClient';
 import { useStyles } from './chat-frame.styles';
@@ -11,13 +12,16 @@ const initialState = {
   messages: [],
   showOriginalText: false,
   isLoading: true,
-  usersList: [],
+  usersMap: {},
+  isTypingMap: {},
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'SET_MESSAGES':
       return { ...state, messages: action.payload };
+    case 'ADD_MESSAGE':
+      return { ...state, messages: [...state.messages, action.payload] };
     case 'TOGGLE_TRANSLATION':
       return { ...state, showOriginalText: !state.showOriginalText };
     case 'IS_LOADING':
@@ -25,7 +29,19 @@ const reducer = (state, action) => {
     case 'DONE_LOADING':
       return { ...state, isLoading: false };
     case 'SET_USERS':
-      return { ...state, usersList: action.payload };
+      return { ...state, usersMap: action.payload };
+    case 'SET_TYPING_STATUS': {
+      const { typerId, status } = action.payload;
+      const { usersMap } = state;
+      const typer = usersMap[typerId];
+      const toggledUser = { ...typer, isTyping: status };
+
+      return {
+        ...state,
+        usersMap: { ...usersMap, [typerId]: toggledUser },
+        isTypingMap: { ...state.isTypingMap, [typerId]: typer.displayName },
+      };
+    }
     default:
       throw new Error();
   }
@@ -33,14 +49,13 @@ const reducer = (state, action) => {
 
 const ChatFrame = ({ socket, userId }) => {
   const classes = useStyles();
-
   const {
     state: { activeChatId: chatId, language, chatsList },
   } = useContext(directoryStore);
 
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  const { messages, showOriginalText, isLoading, usersList } = state;
+  const { messages, showOriginalText, isLoading, usersMap } = state;
+  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (!chatId) return;
@@ -50,7 +65,8 @@ const ChatFrame = ({ socket, userId }) => {
       console.log('Chatframe data fetch: ', data);
       dispatch({ type: 'SET_MESSAGES', payload: data }, { type: 'DONE_LOADING' });
       const chatUsers = chatsList.find(chat => chat.chatId === chatId).users;
-      dispatch({ type: 'SET_USERS', payload: chatUsers });
+      const usersMap = chatUsers.reduce((a, user) => ({ ...a, [user._id]: user }), {});
+      dispatch({ type: 'SET_USERS', payload: usersMap });
     };
 
     try {
@@ -60,13 +76,12 @@ const ChatFrame = ({ socket, userId }) => {
       // TODO: handle error
       dispatch({ type: 'DONE_LOADING' });
     }
-  }, [chatId]);
+  }, [chatId, chatsList]);
 
   useEffect(() => {
     const updateMessages = msg => {
       if (msg.chatId === chatId) {
-        const newMessageList = [...messages, msg];
-        dispatch({ type: 'SET_MESSAGES', payload: newMessageList });
+        dispatch({ type: 'ADD_MESSAGE', payload: msg });
       }
     };
 
@@ -74,10 +89,25 @@ const ChatFrame = ({ socket, userId }) => {
     return () => {
       socket.off('receiveMsg', updateMessages);
     };
+  }, [chatId, socket, messages]);
+
+  useEffect(() => {
+    const handleTyping = obj => {
+      const { userId: typerId, status } = obj;
+      if (status) console.log(typerId, 'is typing');
+      else console.log(typerId, 'has stopped typing');
+      if (obj.chatId !== chatId || typerId === userId) return;
+      dispatch({ type: 'SET_TYPING_STATUS', payload: { typerId, status } });
+    };
+    socket.on('typingStatus', handleTyping);
+
+    return () => {
+      socket.off('typingStatus', handleTyping);
+    };
   }, [chatId, socket]);
 
   const memoMessages = useMemo(() => messages, [messages]);
-  const memoUsers = useMemo(() => usersList, [usersList]);
+  const memoUsers = useMemo(() => usersMap, [usersMap]);
   return (
     <Box
       maxHeight="100vh"
@@ -86,7 +116,7 @@ const ChatFrame = ({ socket, userId }) => {
       flexDirection="column"
       onClick={() => Client.updateChatActivity(userId, chatId)}
     >
-      <ChatHeader toggleText={dispatch} chatId={chatId} />
+      <ChatHeader toggleText={dispatch} chatId={chatId} users={memoUsers} />
       <ChatMessages
         messages={memoMessages}
         showOriginalText={showOriginalText}
@@ -96,6 +126,7 @@ const ChatFrame = ({ socket, userId }) => {
         users={memoUsers}
       />
       <MessageField socket={socket} chatId={chatId} userId={userId} />
+      <TypingStatus className={classes.typingStatus} users={memoUsers} />
     </Box>
   );
 };

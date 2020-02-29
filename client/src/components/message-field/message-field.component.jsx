@@ -22,8 +22,8 @@ const MessageField = ({ socket, chatId, userId }) => {
   }, [chatId]);
 
   useEffect(() => {
-    socket.emit(isTyping ? 'isTyping' : 'endTyping', userId, chatId);
-  }, [isTyping, chatId, userId]);
+    socket.emit('typingStatus', userId, chatId, isTyping);
+  }, [isTyping, chatId, userId, socket]);
 
   const handleChange = e => {
     const { value: msg } = e.target;
