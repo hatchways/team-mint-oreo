@@ -4,9 +4,9 @@ import { Box } from '@material-ui/core';
 function TypingStatus({ className, users }) {
   const formatText = users => {
     const names = [];
-    for (const id in users) {
-      if (users[id].isTyping) names.push(users[id].displayName.split(' ')[0]);
-    }
+    Object.keys(users).forEach(userId => {
+      if (users[userId].isTyping) names.push(users[userId].displayName.split(' ')[0]);
+    });
 
     console.log(users, names);
 
@@ -20,4 +20,4 @@ function TypingStatus({ className, users }) {
   return <Box class={className}>{formatText(users)}</Box>;
 }
 
-export default TypingStatus;
+export default React.memo(TypingStatus);

@@ -99,7 +99,7 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                       // disableCloseOnSelect
                       getOptionLabel={option => option.displayName}
                       renderOption={(option, { selected }) => (
-                        <React.Fragment>
+                        <>
                           <Checkbox
                             icon={icon}
                             checkedIcon={checkedIcon}
@@ -107,7 +107,7 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                             checked={selected}
                           />
                           {option.displayName}
-                        </React.Fragment>
+                        </>
                       )}
                       className={classes.autocomplete}
                       renderInput={params => (

@@ -18,7 +18,6 @@ function WebsocketTesting() {
     const checkToken = async () => {
       const data = await (await fetch('/user/getUser')).json();
       setUserData(data);
-      console.log(data);
     };
     checkToken();
   }, []);
@@ -27,7 +26,7 @@ function WebsocketTesting() {
     // const data = { email: 'briantest@example.com', password: '123', displayName: 'brian' };
     // const data = { email: 'sangtest@example.com', password: '123', displayName: 'sang' };
     const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
-    const result = await fetch('/user/register', {
+    const result = await fetch('/auth/register', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: {
@@ -41,7 +40,7 @@ function WebsocketTesting() {
     //const data = { email: 'briantest@example.com', password: '123' };
     // const data = { email: 'sang.m.lee@mail.mcgill.ca', password: 'dltkdals' }
     const data = { email: 'jimmytest@example.com', password: '123', displayName: 'jimmy' };
-    const result = await Client.request('/user/login', 'POST', data);
+    const result = await Client.request('/auth/login', 'POST', data);
     console.log(result);
   };
 

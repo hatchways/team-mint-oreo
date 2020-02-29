@@ -15,72 +15,6 @@ const ValidationError = mongoose.Error.ValidationError;
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
-  try {
-    const { email, password, language, displayName } = req.body;
-    validateCredentials(email, password);
-    const hashedPassword = await bcrypt.encrypt(password);
-    // associate a random invitation uuid to the newly created user
-    const inviteCode = uuidv4();
-    const { id = null } = await db.user.createUser({
-      email,
-      password: hashedPassword,
-      language,
-      displayName,
-      avatar: '',
-      inviteCode,
-    });
-    if (id) res.status(201).json({ status: 201 });
-  } catch (err) {
-    return res.status(err.status).json({
-      error: err.message,
-    });
-  }
-});
-
-router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    validateCredentials(email, password);
-    const userData = await db.user.getByEmail(email);
-    if (!userData) throw new Error(401, 'User not found');
-    await bcrypt.checkPassword(password, userData.password);
-    const { id } = userData;
-    const encodedToken = await jwt.sign({ id });
-
-    res
-      .cookie('user', encodedToken, {
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 180, // 6months
-        // secure: true
-        signed: true,
-      })
-      .json({
-        success: true,
-        status: 200,
-        userData,
-      });
-  } catch (err) {
-    console.error(err);
-    return res.status(err.status).json({ error: err.message });
-  }
-});
-
-router.get('/verify', async (req, res) => {
-  const { userId } = res.locals;
-  const dbUser = await db.user.getById(userId);
-  if (!dbUser) res.clearCookie('user');
-  res.status(200).json({ userId });
-});
-
-router.get('/getUser', async (req, res) => {
-  const { userId } = res.locals;
-  const dbUser = await db.user.getById(userId);
-  console.log('/find/userid', dbUser);
-
-  res.json(dbUser);
-});
-
 // WORK AFTER COMING BACK
 router.get('/invitation/:id', async (req, res) => {
   try {
@@ -152,9 +86,6 @@ router.get('/data', isAuthorized, async (req, res) => {
     })
   );
 
-  // console.log('FRIENDS DM IDS', friendsDmIds);
-  // console.log('FROM USER INFO ', fromUserList);
-
   const chatrooms = format.chatroomData(chatroomsWithUsers, unreadMessages, userId);
   const friends = format.friendsData(friendsData, friendsDmIds);
   const invitations = format.invitationsData(invitationData, fromUserList);
@@ -222,17 +153,17 @@ router.post('/avatar', async (req, res) => {
   }
 });
 
-router.get('/logout', async (req, res) => {
-  res
-    .clearCookie('user')
-    // give some status so HTTPClient doesn't crash on front end
-    .status(200)
-    .json({ success: true });
-});
-
 router.get('/delete', isAuthorized, async (req, res) => {
   console.log('deleting...');
   db.user.removeUser(res.locals.userId);
+});
+
+router.get('/getUser', async (req, res) => {
+  const { userId } = res.locals;
+  const dbUser = await db.user.getById(userId);
+  console.log('/find/userid', dbUser);
+
+  res.json(dbUser);
 });
 
 module.exports = router;
