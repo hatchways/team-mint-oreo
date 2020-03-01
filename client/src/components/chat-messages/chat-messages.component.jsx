@@ -16,7 +16,6 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
 
   const handleScroll = () => {
     const bottomDiv = scrollRef.current.getBoundingClientRect();
-    // console.log(bottomDiv.y);
     if (bottomDiv.y === distanceFromBottom) {
       if (!isScrolledToBottom) setIsScrolled(true);
     }

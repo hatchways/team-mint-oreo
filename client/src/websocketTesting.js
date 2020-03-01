@@ -49,7 +49,7 @@ function WebsocketTesting() {
   };
 
   const logout = () => {
-    fetch('/user/logout');
+    fetch('/auth/logout');
   };
 
   // const sendMessage = event => {

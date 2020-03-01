@@ -4,6 +4,8 @@ import { Box } from '@material-ui/core';
 function TypingStatus({ className, users }) {
   const formatText = users => {
     const names = [];
+
+    // aggregates all the display names for users that are typing
     Object.keys(users).forEach(userId => {
       if (users[userId].isTyping) names.push(users[userId].displayName.split(' ')[0]);
     });

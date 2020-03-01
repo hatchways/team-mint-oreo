@@ -13,7 +13,7 @@ router.get('/friends', async (req, res) => {
   const { userId } = res.locals;
   const friends = db.user.getFriendsFieldsById(['displayName', 'socketId', 'id', 'avatar'], userId);
   const dmIds = await Promise.all(
-    friendsData.map(friend => {
+    friends.map(friend => {
       return db.chatroom.getDmIdOfUsers(userId, friend.id);
     })
   );

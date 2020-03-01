@@ -95,8 +95,6 @@ const ChatFrame = ({ socket, userId }) => {
     const handleTyping = obj => {
       const { userId: typerId, status } = obj;
       if (obj.chatId !== chatId || typerId === userId) return;
-      if (status) console.log(typerId, 'is typing');
-      else console.log(typerId, 'has stopped typing');
       dispatch({ type: 'SET_TYPING_STATUS', payload: { typerId, status } });
     };
     socket.on('typingStatus', handleTyping);
@@ -116,7 +114,7 @@ const ChatFrame = ({ socket, userId }) => {
       flexDirection="column"
       onClick={() => Client.updateChatActivity(userId, chatId)}
     >
-      <ChatHeader toggleText={dispatch} chatId={chatId} users={memoUsers} />
+      <ChatHeader toggleText={dispatch} chatId={chatId} users={memoUsers} userId={userId} />
       <ChatMessages
         messages={memoMessages}
         showOriginalText={showOriginalText}

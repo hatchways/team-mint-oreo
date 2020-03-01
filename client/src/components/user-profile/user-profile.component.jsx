@@ -24,7 +24,7 @@ const UserProfile = ({ user }) => {
 
   const handleLogout = () => {
     handleUnExpand();
-    Client.request('/user/logout').then(res => {
+    Client.request('/auth/logout').then(res => {
       console.log('logging out...', res);
       // force reload is the only way that will work
       // tried using history.push()

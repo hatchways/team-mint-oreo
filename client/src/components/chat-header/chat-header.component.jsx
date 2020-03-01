@@ -7,28 +7,25 @@ import { useStyles, IOSSwitch } from './chat-header.styles';
 import Client from '../../utils/HTTPClient';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const ChatHeader = ({ chatId, toggleText }) => {
+const ChatHeader = ({ chatId, toggleText, users, userId }) => {
   const {
     dispatch,
     state: { chatsList },
   } = useContext(directoryStore);
-  const [usersList, setUsersList] = useState([]);
 
   const [title, setTitle] = useState('Select a chatroom');
 
   useEffect(() => {
-    let isMounted = true;
-    const getHeaderInfo = async () => {
-      const data = await Client.request('/');
-      if (isMounted) setTitle(data.title);
-    };
-
-    // getHeaderInfo();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [chatId]);
+    console.log('CHAT HEADER', users);
+    const userIds = Object.keys(users).filter(id => id !== userId);
+    if (userIds.length === 1) {
+      const otherUser = userIds[0];
+      const { displayName } = users[otherUser];
+      setTitle(displayName);
+    } else if (userIds.length > 1) {
+      setTitle('Group Chat');
+    }
+  }, [chatId, users, userId]);
 
   const triggerSidebar = () => {
     dispatch({

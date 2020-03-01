@@ -5,13 +5,14 @@ import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import Client from './utils/HTTPClient';
 
 import theme from './themes/theme';
-import Dashboard from './pages/dashboard/dashboard.component';
+// import Dashboard from './pages/dashboard/dashboard.component';
 // import Login from './pages/userform/Login';
 // import Register from './pages/userform/Register';
 
 const WebsocketTesting = React.lazy(() => import('./websocketTesting'));
 const Login = React.lazy(() => import('./pages/userform/Login'));
 const Register = React.lazy(() => import('./pages/userform/Register'));
+const Dashboard = React.lazy(() => import('./pages/dashboard/dashboard.component'));
 
 function App() {
   const [userId, setUserId] = useState(false);
