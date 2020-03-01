@@ -1,34 +1,26 @@
-const express = require('express');
+const router = require('express').Router();
 const mongoose = require('mongoose');
 
 const db = require('../controllers');
 const { isAuthorized } = require('../middleware/isAuthorized');
-
 const format = require('../services/formatDataService');
-
 const { uploadMintPic, uploadSaltedPic, deletePic } = require('../aws/aws-utils');
 
 const Error = require('../utils/Error');
 const ValidationError = mongoose.Error.ValidationError;
 
-const router = express.Router();
+router.get('/friends', async (req, res) => {
+  const { userId } = res.locals;
+  const friends = db.user.getFriendsFieldsById(['displayName', 'socketId', 'id', 'avatar'], userId);
+  const dmIds = await Promise.all(
+    friendsData.map(friend => {
+      return db.chatroom.getDmIdOfUsers(userId, friend.id);
+    })
+  );
 
-// WORK AFTER COMING BACK
-router.get('/invitation/:id', async (req, res) => {
-  try {
-    const { userId } = res.locals;
-    console.log(userId);
-    const dbUser = await db.user.getById(userId);
-    const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
-    return res.status(200).json({
-      success: true,
-      data: updatedInvitation,
-    });
-  } catch (err) {
-    return res.status(err.status).json({
-      error: err.message,
-    });
-  }
+  const formattedFriends = format.friendsData(friends, dmIds);
+
+  res.json({ friends: formattedFriends });
 });
 
 router.get('/data', isAuthorized, async (req, res) => {
@@ -163,5 +155,23 @@ router.get('/getUser', async (req, res) => {
 
   res.json(dbUser);
 });
+
+// WORK AFTER COMING BACK
+// router.get('/invitation/:id', async (req, res) => {
+//   try {
+//     const { userId } = res.locals;
+//     console.log(userId);
+//     const dbUser = await db.user.getById(userId);
+//     const updatedInvitation = await db.invitation.updateToUser(req.params.id, dbUser.email);
+//     return res.status(200).json({
+//       success: true,
+//       data: updatedInvitation,
+//     });
+//   } catch (err) {
+//     return res.status(err.status).json({
+//       error: err.message,
+//     });
+//   }
+// });
 
 module.exports = router;
