@@ -50,7 +50,7 @@ const searchForRoomWithUser = async (target, chatIds, userId) => {
   }).populate({
     path: 'users',
     model: 'User',
-    select: ['displayName', 'id', 'email', 'socketId', 'language'],
+    select: ['displayName', 'id', 'email', 'socketId', 'language', 'avatar'],
     // match: { [filter]: { $regex: `.*${param}.*` } },
   });
 

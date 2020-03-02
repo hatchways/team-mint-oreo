@@ -9,7 +9,8 @@ const searchChats = async (searchParam, userId) => {
       return db.message.getUnreadCount(chatroom, userId);
     })
   );
-  const foundRooms = format.chatroomData(chatroomData, unreadMessages);
+  const foundRooms = format.chatroomData(chatroomData, unreadMessages, userId);
+  console.log('FOUND ROOMS', foundRooms);
   return foundRooms;
 };
 

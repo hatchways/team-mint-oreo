@@ -49,9 +49,9 @@ const reducer = (state, action) => {
       return { ...state, invitesList: payload };
     case 'SET_TAB':
       return { ...state, tab: payload };
-    case 'ADD_CHAT_TO_END':
+    case 'APPEND_TO_CHATLIST':
       return { ...state, chatsList: [...state.chatsList, payload] };
-    case 'ADD_CHAT_TO_START':
+    case 'PREPEND_TO_CHATLIST':
       return { ...state, chatsList: [payload, ...state.chatsList] };
     default:
       throw new Error();
@@ -102,7 +102,7 @@ const Sidebar = ({ socket }) => {
       if (chatroomIndex < 0) {
         console.log('chat not found, retrieving from database');
         const chatroom = await Client.request(`/chat/data/${chatId}`); // TODO fix data returned from this route
-        dispatch({ type: 'ADD_CHAT_TO_END', payload: chatroom });
+        dispatch({ type: 'APPEND_TO_CHATLIST', payload: chatroom });
       } else {
         const newChatList = [...chatsList];
         const updatedChat = newChatList.splice(chatroomIndex, 1);
@@ -138,7 +138,6 @@ const Sidebar = ({ socket }) => {
     };
 
     const updateUserAvatar = msgObject => {
-      console.log('updateOwnProfilePic', msgObject);
       const { profilePic } = msgObject;
       dispatch({ type: 'SET_USER', payload: { ...user, avatar: profilePic } });
     };
@@ -181,7 +180,7 @@ const Sidebar = ({ socket }) => {
     let retrievedChat = chatsList.find(chat => chat.chatId === chatId);
     if (!retrievedChat) {
       retrievedChat = await Client.request(`/chat/data/${chatId}`);
-      dispatch({ type: 'ADD_CHAT_TO_END', payload: retrievedChat });
+      dispatch({ type: 'APPEND_TO_CHATLIST', payload: retrievedChat });
     } else {
       retrievedChat.unreadMessages = 0;
     }
