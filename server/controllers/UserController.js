@@ -84,7 +84,7 @@ const searchByName = async (name, userId) => {
     const data = await User.findById(userId, 'friends').populate({
       path: 'friends',
       select: ['displayName', 'socketId', 'id', 'avatar'],
-      match: { displayName: { $regex: `.*${name}.*` } },
+      match: { displayName: { $regex: `.*${name}.*`, $options: 'i' } },
     });
     console.log('SEARCH BY NAME', data);
     return data;
