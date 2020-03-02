@@ -25,12 +25,13 @@ Babl automatically translates text messages sent from your friends to your nativ
 
 MERN (Mongo, Express, React, Node)
 
-| Other Technology Highlights |
+|      Other Highlights       |
 | :-------------------------: |
 |         material-ui         |
 |          socket.io          |
 | googleapis/nodejs-translate |
 |         aws-sdk-js          |
+|          Send Grid          |
 
 # Authors
 
