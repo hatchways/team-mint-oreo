@@ -47,6 +47,10 @@ const reducer = (state, action) => {
   }
 };
 
+// ON SCROLL => solve logic for isScrolledToBottom
+// READ NOTIFICATIONS =>  what's the best way to update user activity and mark messages accordingly?
+// IS TYPING MAP => pass only a map down to typing status?
+
 const ChatFrame = ({ socket, userId }) => {
   const classes = useStyles();
   const {
@@ -102,7 +106,7 @@ const ChatFrame = ({ socket, userId }) => {
     return () => {
       socket.off('typingStatus', handleTyping);
     };
-  }, [chatId, socket]);
+  }, [chatId, socket, userId]);
 
   const memoMessages = useMemo(() => messages, [messages]);
   const memoUsers = useMemo(() => usersMap, [usersMap]);
