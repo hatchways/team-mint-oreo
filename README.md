@@ -14,7 +14,9 @@ Table of Contents:
 
 # About
 
-- [ ] Add Description of Project
+Babl: The messaging app with built in translation. Have you ever had trouble communicating with someone in a foreign language? Fear not, Babl is here.
+
+Babl automatically translates text messages sent from your friends to your native language. No matter what language they speak, you will have a translation to your primary language.
 
 **Tech Stack**
 
