@@ -272,8 +272,6 @@ module.exports = {
   getChatsIdsById,
   removeUser,
   clearChatrooms,
-  // addInvitationById,
-  // removeInvitation,
   addAvatar,
   getAvatar,
   searchByName,

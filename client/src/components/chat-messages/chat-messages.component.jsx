@@ -27,9 +27,8 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
         {messages.map(message => {
           const isSender = message.userId === userId;
-          const { originalText, translations } = message;
+          const { originalText, translations, isPicture } = message;
           const timestamp = message?.timestamp || Date.parse(message.createdAt);
-          const isPicture = message.isPicture;
           return (
             <Grid key={message._id} item>
               <Box paddingLeft={2} paddingRight={2}>
