@@ -10,7 +10,7 @@ Table of Contents:
 
 # Preview
 
-- [ ] Add Pictures Preview
+![Login Preview](./pics/login.PNG)
 
 # About
 
