@@ -44,31 +44,31 @@ In order to run this project locally you **must** have [node.js](https://nodejs.
 
 This project was built on the following node version.
 
-```shell
+```bash
 $ node --version
 v10.15.3
 ```
 
 You must also create a `.env` file with the following variables:
 
-```
-// randomly generated
+```bash
+# randomly generated
 JWT_SECRET=" "
 COOKIE_SECRET=" "
 
-// obtained from sendgrid
+# obtained from sendgrid
 SENDGRID_API_KEY=" "
 
-// obtained from mongoDB
+# obtained from mongoDB
 MONGO_URI=" "
 MONGO_URI_TEST=" "
 
-// obtained from AWS
+#obtained from AWS
 AWS_ID=" "
 AWS_SECRET=" "
 AWS_BUCKET_NAME=" "
 
-// obtained from google apis
+# obtained from google apis
 GOOGLE_APPLICATION_CREDENTIALS="google_api_crednetials.json"
 ```
 
@@ -78,11 +78,11 @@ If you are just here for a demo this project is live at: https://babl-babl.herok
 
 ## Getting Started
 
-```shell
+```bash
 git clone https://github.com/hatchways/team-mint-oreo.git
 ```
 
-```shell
+```bash
 cd team-mint-oreo\server
 ```
 
@@ -90,14 +90,14 @@ Paste your `.env` file and `google_api_crednetials.json` file here.
 
 Now go back to your root directory of the project (one folder above).
 
-```shell
+```bash
 cd ..
 ```
 
-```shell
+```bash
 npm run installation
 ```
 
-```shell
+```bash
 npm run dev
 ```
