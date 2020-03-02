@@ -9,10 +9,11 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    scrollRef.current.scrollIntoView();
     const bottomDivLocation = scrollRef.current.getBoundingClientRect().y;
     setDistance(bottomDivLocation);
-  }, [scrollRef, messages]);
+    if (!isScrolledToBottom) return;
+    scrollRef.current.scrollIntoView();
+  }, [scrollRef, messages, isScrolledToBottom]);
 
   const handleScroll = () => {
     const bottomDiv = scrollRef.current.getBoundingClientRect();
