@@ -42,7 +42,11 @@ const ChatMessage = ({
             <Box>{name}</Box>
             <Box className={classes.timestamp}>{format(timestamp)}</Box>
           </Box>
-          <Box display="flex" alignItems="flex-end">
+          <Box
+            display="flex"
+            alignItems="flex-end"
+            flexDirection={isSender ? 'row-reverse' : 'row'}
+          >
             <Paper className={isSender ? classes.senderPaper : classes.chatPaper}>
               <Box p={2}>
                 {isPicture ? (
@@ -54,7 +58,18 @@ const ChatMessage = ({
                 )}
               </Box>
             </Paper>
-            {/* <Box>{!!lastReadBy && lastReadBy.join(', ')}</Box> */}
+            <Box>
+              {!!lastReadBy &&
+                lastReadBy.map(avatarURL => {
+                  return (
+                    <Avatar
+                      className={classes.readAvatar}
+                      src={avatarURL}
+                      fallback={name[0].toUpperCase()}
+                    />
+                  );
+                })}
+            </Box>
           </Box>
         </Grid>
       </Grid>
