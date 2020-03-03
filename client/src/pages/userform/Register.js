@@ -217,8 +217,13 @@ export default function Register({ invCode }) {
                 <InputLabel className={classes.label}>Select primary language</InputLabel>
                 <NativeSelect value={values.language} onChange={handleChange} name="language">
                   <option value="en">English</option>
+                  <option value="zh">Chinese</option>
+                  <option value="es">Spanish</option>
                   <option value="fr">French</option>
                   <option value="ko">Korean</option>
+                  <option value="hi">Hindi</option>
+                  <option value="de">German</option>
+                  <option value="ja">Japanese</option>
                 </NativeSelect>
               </FormControl>
               <Grid container className={classes.alignCenter}>
