@@ -30,6 +30,15 @@ const reducer = (state, action) => {
       return { ...state, isLoading: false };
     case 'SET_USERS':
       return { ...state, usersMap: action.payload };
+    case 'UPDATE_USER_ACTIVITY': {
+      const { usersMap } = state;
+      const userId = action.payload;
+      const userToUpdate = usersMap[userId];
+      return {
+        ...state,
+        usersMap: { ...usersMap, [userId]: { ...userToUpdate, lastActivity: Date.now() } },
+      };
+    }
     case 'SET_TYPING_STATUS': {
       const { typerId, status } = action.payload;
       const { usersMap } = state;
@@ -100,22 +109,31 @@ const ChatFrame = ({ socket, userId }) => {
       if (obj.chatId !== chatId || typerId === userId) return;
       dispatch({ type: 'SET_TYPING_STATUS', payload: { typerId, status } });
     };
-    socket.on('typingStatus', handleTyping);
+    const updateUserActivity = userId => {
+      const id = userId;
+      console.log('updating user Activity for user: ', id);
+      dispatch({ type: 'UPDATE_USER_ACTIVITY', payload: id });
+    };
 
+    socket.on('typingStatus', handleTyping);
+    socket.on('updateActivity', updateUserActivity);
     return () => {
       socket.off('typingStatus', handleTyping);
+      socket.off('updateActivity', updateUserActivity);
     };
   }, [chatId, socket, userId]);
 
   const memoMessages = useMemo(() => messages, [messages]);
   const memoUsers = useMemo(() => usersMap, [usersMap]);
+
+  console.log('MEMO USERS', memoUsers);
   return (
     <Box
       maxHeight="100vh"
       overflow="hidden"
       display="flex"
       flexDirection="column"
-      onClick={() => Client.updateChatActivity(userId, chatId)}
+      onClick={() => Client.updateChatActivity({ userId, chatId, socket })}
     >
       <ChatHeader toggleText={dispatch} chatId={chatId} users={memoUsers} userId={userId} />
       <ChatMessages
@@ -125,6 +143,7 @@ const ChatFrame = ({ socket, userId }) => {
         className={classes.messageBoxHeight}
         language={language}
         users={memoUsers}
+        socket={socket}
       />
       <MessageField socket={socket} chatId={chatId} userId={userId} />
       <TypingStatus className={classes.typingStatus} users={memoUsers} />

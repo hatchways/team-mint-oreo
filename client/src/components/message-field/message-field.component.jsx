@@ -38,7 +38,7 @@ const MessageField = ({ socket, chatId, userId }) => {
 
   const onSubmit = e => {
     e.preventDefault();
-    Client.updateChatActivity(userId, chatId);
+    Client.updateChatActivity({ userId, chatId, bypassLimit: true, socket });
     if (chatId) {
       console.log('Sending msg to ', chatId);
       socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
@@ -52,7 +52,7 @@ const MessageField = ({ socket, chatId, userId }) => {
     Client.request('/chat/uploadpic', 'POST', pic).then(res => {
       const { pic, success } = res;
       console.log('picture Uploaded', pic);
-      Client.updateChatActivity(userId, chatId);
+      Client.updateChatActivity({ userId, chatId, bypassLimit: true, socket });
       if (chatId) {
         console.log('Sending msg to ', chatId);
         socket.emit('sendMsg', { userId, chatId, originalText: pic, isPicture: true });

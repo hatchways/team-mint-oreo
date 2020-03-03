@@ -185,9 +185,11 @@ const handleSocket = server => {
       socket.emit('searchResult', { data, tab: body.tab });
     });
 
-    socket.on('test', () => {
-      console.log('Connected sockets');
+    socket.on('updateActivity', async (userId, activeChatId) => {
+      console.log('ws: updateActivity received', activeChatId);
+      io.to(activeChatId).emit('updateActivity', userId);
     });
+
     socket.on('disconnect', reason => {
       console.log(`${socket.id} has left the site. ${reason}`);
       db.user.clearSocketId(socket.id);

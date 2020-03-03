@@ -20,19 +20,21 @@ const updateWithClosure = () => {
   let lastChatId = '';
   const MIN_SECONDS_BETWEEN_UPDATE = 2;
 
-  const makeRequest = async (userId, activeChatId) => {
-    if (!userId || !activeChatId) return;
+  const makeRequest = async ({ userId, chatId, bypassLimit = false, socket }) => {
+    if (!userId || !chatId) return;
     const secondsSinceLastUpdate = (Date.now() - lastUpdated) / 1000;
-    const isSameChat = lastChatId === activeChatId;
+    const isSameChat = lastChatId === chatId;
 
-    if (secondsSinceLastUpdate < MIN_SECONDS_BETWEEN_UPDATE && isSameChat) return;
+    if (!bypassLimit && secondsSinceLastUpdate < MIN_SECONDS_BETWEEN_UPDATE && isSameChat) return;
+
+    socket.emit('updateActivity', userId, chatId);
     console.log('updating activity');
     await request('/chat/update/activity', 'PUT', {
       userId,
-      activeChatId,
+      chatId,
     });
     lastUpdated = Date.now();
-    lastChatId = activeChatId;
+    lastChatId = chatId;
   };
 
   return makeRequest;

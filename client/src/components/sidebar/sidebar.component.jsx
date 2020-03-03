@@ -176,7 +176,7 @@ const Sidebar = ({ socket }) => {
   }, [chatsList, friendsList, user, socket, activeChatId]);
 
   const changeActiveChat = async chatId => {
-    Client.updateChatActivity(user.id, activeChatId);
+    Client.updateChatActivity({ userId: user.id, chatId: activeChatId, socket });
     let retrievedChat = chatsList.find(chat => chat.chatId === chatId);
     if (!retrievedChat) {
       retrievedChat = await Client.request(`/chat/data/${chatId}`);

@@ -20,7 +20,7 @@ router.get('/data/:chatId', async (req, res) => {
 });
 
 router.put('/update/activity', async (req, res) => {
-  const { activeChatId: chatId, userId } = req.body;
+  const { chatId, userId } = req.body;
   console.log('update activity', chatId, userId);
   await db.chatroom.updateLastTimeVisited(userId, chatId);
   res.status(200).json({});

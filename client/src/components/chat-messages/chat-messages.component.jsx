@@ -10,7 +10,8 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    // create a map of <indexOfLastRead> : [<userId>, <userId>]
+    // create a map of <indexOfLastRead> : [<userAvatarURL>, <userAvatarURL>]
+
     const userActivity = Object.keys(users).reduce((a, friendId) => {
       const { lastActivity } = users[friendId];
       // if user has no activity or is current user move to next user
