@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -12,8 +12,8 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import { useStyles } from './loginStyles';
-// import { register } from './userFunctions';
 import Client from '../../utils/HTTPClient';
+import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
 
 export default function Register({ invCode }) {
   const [values, setValues] = useState({
@@ -24,6 +24,9 @@ export default function Register({ invCode }) {
     language: 'en',
   });
   const history = useHistory();
+  const [open, setOpen] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
+  const queueRef = useRef([]);
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -35,17 +38,46 @@ export default function Register({ invCode }) {
 
     const response = await Client.request('/user/register', 'POST', values);
     if (response.status === 201) {
-      history.push('/login');
+      history.push('/login', {
+          snackbar: {
+            status: 'success',
+            message: 'Successfully Created an Account!',
+            key: new Date().getTime()
+          }
+      });
     } else {
-      // Temporary error handling
-      alert('Failed to create account');
       // TODO: handle error (500 vs 400)
-      window.location.reload();
+      queueRef.current.push({
+        status: 'error',
+        message: response.error,
+        key: new Date().getTime(),
+      });
     }
-    // register(values).then(res => {
-    //     history.push('/login');
-    // });
+
+    if(open) {
+      setOpen(false);
+    } else {
+      processQueue();
+    }
   };
+
+  const processQueue = () => {
+    if(queueRef.current.length > 0) {
+      setMessageInfo(queueRef.current.shift());
+      setOpen(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if(reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  }
+
+  const handleExited = () => {
+    processQueue();
+  }
 
   const classes = useStyles();
 
@@ -203,6 +235,12 @@ export default function Register({ invCode }) {
           </Grid>
         </div>
       </Grid>
+      <SnackbarMessage
+        messageInfo={messageInfo}
+        open={open}
+        handleExited={handleExited}
+        handleClose={handleClose}
+      />
     </Grid>
   );
 }

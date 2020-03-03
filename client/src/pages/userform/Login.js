@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Paper from '@material-ui/core/Paper';
@@ -11,11 +11,34 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import { useStyles } from './loginStyles';
+import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
 import Client from '../../utils/HTTPClient';
 
-export default function Login({ invCode }) {
+export default function Login({ invCode, snackbar }) {
   const [values, setValues] = useState({ email: '', password: '' });
   const history = useHistory();
+  const [open, setOpen] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
+  const queueRef = useRef([]);
+
+  // useEffect(() => {
+  //   if(snackbar.message) queueRef.current.push(snackbar);
+  //   if(open) {
+  //     setOpen(false);
+  //   } else {
+  //     processQueue();
+  //   }
+  // });
+  useEffect(() => {
+    if(snackbar.message) queueRef.current.push(snackbar);
+    if(open) {
+        setOpen(false);
+    } else {
+        processQueue();
+    }
+    console.log('open status: ', open);
+  }, [])
+
   const handleChange = event => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
@@ -24,14 +47,24 @@ export default function Login({ invCode }) {
   // use login form as default form
   const classes = useStyles();
 
+  const processQueue = () => {
+    if(queueRef.current.length > 0) {
+      setMessageInfo(queueRef.current.shift());
+      setOpen(true);
+    }
+  };
+
   const onSubmitLogin = async event => {
     event.preventDefault();
 
     const response = await Client.request('/user/login', 'POST', values);
 
     if (response.status !== 200) {
-      alert('Login unsuccessful');
-      // TODO: Show error message
+      queueRef.current.push({
+        status: 'error',
+        message: 'Invalid credentials',
+        key: new Date().getTime(),
+      });
     } else {
       if (invCode) {
         const invitationQuery = {
@@ -41,9 +74,33 @@ export default function Login({ invCode }) {
         const invResp = await Client.request('/invite', 'POST', invitationQuery);
       }
 
-      history.push('/dashboard', { id: response.userData.id });
+      history.push('/dashboard', {
+          id: response.userData.id,
+          snackbar: {
+            status: 'success',
+            message: 'Successfully Logged In!',
+            key: new Date().getTime()
+          }
+      });
+    }
+
+    if(open) {
+      setOpen(false);
+    } else {
+      processQueue();
     }
   };
+
+  const handleClose = (event, reason) => {
+    if(reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  }
+
+  const handleExited = () => {
+    processQueue();
+  }
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -156,6 +213,12 @@ export default function Login({ invCode }) {
           </Grid>
         </div>
       </Grid>
+      <SnackbarMessage
+        messageInfo={messageInfo}
+        open={open}
+        handleExited={handleExited}
+        handleClose={handleClose}
+      />
     </Grid>
   );
 }

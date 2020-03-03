@@ -87,6 +87,9 @@ const useStyles = makeStyles(theme => ({
       borderBottom: '2px solid ' + defaultColor,
     },
   },
+  close: {
+    padding: theme.spacing(0.5),
+  }
 }));
 
 export { useStyles };

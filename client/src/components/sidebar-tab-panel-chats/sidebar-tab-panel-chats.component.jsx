@@ -31,7 +31,7 @@ const SidebarTabPanelChats = ({ chatrooms, userId, clickHandler }) => {
       names += filteredRoom[i].displayName;
       if(i < filteredRoom.length - 1) names += ', ';
     }
-    return names.slice(0, 15);
+    return names.length > 23 ? names.slice(0, 23) + '...' : names;
   };
 
   const handleToggle = () => {
