@@ -156,7 +156,6 @@ const handleSocket = server => {
       try {
         const membersId = members.map(member => member._id);
         membersId.push(hostUser);
-
         const newChatRoomId = await db.chatroom.createChatroom(membersId);
         await updateUserChatroom(membersId, newChatRoomId);
 

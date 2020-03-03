@@ -105,9 +105,9 @@ const Sidebar = ({ socket }) => {
         dispatch({ type: 'APPEND_TO_CHATLIST', payload: chatroom });
       } else {
         const newChatList = [...chatsList];
-        const updatedChat = newChatList.splice(chatroomIndex, 1);
+        const updatedChat = newChatList.splice(chatroomIndex, 1)[0];
         updatedChat.unreadMessages += 1;
-        newChatList.unshift(...updatedChat);
+        newChatList.unshift(updatedChat);
         dispatch({ type: 'SET_CHATS', payload: newChatList });
       }
     };
@@ -173,7 +173,7 @@ const Sidebar = ({ socket }) => {
       socket.off('requestDone', updateRequest);
       socket.off('groupChatCreated', updateChat);
     };
-  }, [chatsList, friendsList, user, socket]);
+  }, [chatsList, friendsList, user, socket, activeChatId]);
 
   const changeActiveChat = async chatId => {
     Client.updateChatActivity(user.id, activeChatId);

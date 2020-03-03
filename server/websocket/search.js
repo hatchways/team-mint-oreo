@@ -28,19 +28,6 @@ const searchFriends = async (searchParam, userId) => {
 const search = async body => {
   const { tab, searchParam, userId } = body;
   let result;
-  // CONTACTS
-  // Search users controller by ID -> friendsList
-  // populate friendsList -> search displayName by param;
-
-  // in single query: search all users by name where userId is in friends
-
-  // CHATS
-  // - find all chats belonging to userId, -> chatIDList;
-  // - search chats, populate users => search displayName of users in that chat
-
-  // in a single query: search all users by displayName where chatID is in chatrooms of UserID
-  // get all userID's chatrooms, populate users, search by displayName
-
   if (tab === 'Chats') {
     result = await searchChats(searchParam, userId);
   } else if (tab === 'Contacts') {
