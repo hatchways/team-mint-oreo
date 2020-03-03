@@ -1,53 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Box, Grid } from '@material-ui/core';
-import Client from '../../utils/HTTPClient';
 
 import ChatMessage from '../chat-message/chat-message.component';
 
-const ChatMessages = ({ className, messages, userId, showOriginalText, language }) => {
-  const [avatars, setAvatars] = useState({});
+const ChatMessages = ({ className, messages, userId, showOriginalText, language, users = [] }) => {
+  const [isScrolledToBottom, setIsScrolled] = useState(true);
+  const [distanceFromBottom, setDistance] = useState();
+  const scrollRef = useRef(null);
+
   useEffect(() => {
-    // on messages change get avatars
-    messages.map(message => {
-      if (avatars[message.userId] === undefined) {
-        avatars[message.userId] = ''; // this line is important, prevents making a ton of requests.
-        Client.request(`/user/avatar/${message.userId}`).then(({ avatar }) => {
-          const newAvatars = { ...avatars, [message.userId]: avatar };
-          setAvatars(newAvatars);
-        });
-      }
-    });
-  }, [messages]);
+    scrollRef.current.scrollIntoView();
+    const bottomDivLocation = scrollRef.current.getBoundingClientRect().y;
+    setDistance(bottomDivLocation);
+  }, [scrollRef, messages]);
+
+  const handleScroll = () => {
+    const bottomDiv = scrollRef.current.getBoundingClientRect();
+    if (bottomDiv.y === distanceFromBottom) {
+      if (!isScrolledToBottom) setIsScrolled(true);
+    }
+    if (isScrolledToBottom) setIsScrolled(false);
+  };
 
   return (
-    <Box className={className} style={{ overflow: 'auto' }}>
-      <Box maxWidth="98%">
-        <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
-          {messages.map(message => {
-            const isSender = message.userId === userId;
-            const { originalText, translations } = message;
-            const timestamp = message?.timestamp || Date.parse(message.createdAt);
-            const isPicture = message.isPicture;
-            return (
-              <Grid key={message._id} item>
-                <Box paddingLeft={2} paddingRight={2}>
-                  <ChatMessage
-                    message={translations[language]}
-                    isSender={isSender}
-                    isOriginal={showOriginalText}
-                    originalText={originalText}
-                    timestamp={timestamp}
-                    isPicture={isPicture}
-                    avatar={avatars[message.userId]}
-                  />
-                </Box>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
+    <Box className={className} onScroll={handleScroll}>
+      <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
+        {messages.map(message => {
+          const isSender = message.userId === userId;
+          const { originalText, translations } = message;
+          const timestamp = message?.timestamp || Date.parse(message.createdAt);
+          const isPicture = message.isPicture;
+          return (
+            <Grid key={message._id} item>
+              <Box paddingLeft={2} paddingRight={2}>
+                <ChatMessage
+                  message={translations[language]}
+                  isSender={isSender}
+                  isOriginal={showOriginalText}
+                  originalText={originalText}
+                  timestamp={timestamp}
+                  isPicture={isPicture}
+                  avatar={users[message.userId]?.avatar || ''}
+                />
+              </Box>
+            </Grid>
+          );
+        })}
+      </Grid>
+      <div ref={scrollRef} />
     </Box>
   );
 };
 
-export default ChatMessages;
+export default React.memo(ChatMessages);

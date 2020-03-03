@@ -12,10 +12,11 @@ router.get('/messages/:chatId', async (req, res) => {
 
 router.get('/data/:chatId', async (req, res) => {
   const { chatId } = req.params;
-  const chatroom = await db.chatroom.getChatroomById(chatId, {
-    selectFromUsers: ['displayName', 'id', 'socketId', 'avatar'],
-  });
-  res.status(200).json(chatroom);
+  const { userId } = req.locals;
+  const chatroom = await db.chatroom.getChatroomById(chatId, res.locals);
+  const unreadMessages = db.message.getUnreadCount(chatroom, userId);
+  const formattedRoom = format.chatroomData(chatroom, unreadMessages, userId);
+  res.status(200).json(formattedRoom);
 });
 
 router.post('/new', async (req, res) => {

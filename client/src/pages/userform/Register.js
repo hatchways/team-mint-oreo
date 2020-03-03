@@ -33,7 +33,7 @@ export default function Register({ invCode }) {
   const onSubmitRegister = async event => {
     event.preventDefault();
 
-    const response = await Client.request('/user/register', 'POST', values);
+    const response = await Client.request('/auth/register', 'POST', values);
     if (response.status === 201) {
       history.push('/login');
     } else {

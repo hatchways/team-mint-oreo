@@ -70,17 +70,14 @@ const getDmIdOfUsers = async (userId, friendId) => {
   return id;
 };
 
-const getChatroomById = async (chatId, { selectFromUsers }, userId) => {
+const getChatroomById = async (chatId, userId) => {
   try {
     const chatroom = await Chatroom.findById(chatId).populate({
       path: 'users',
       model: 'User',
-      select: selectFromUsers,
+      select: ['displayName', 'id', 'socketId', 'avatar'],
     });
-
-    const { activityMap, ...rest } = chatroom.toObject();
-    const withLastActivity = { ...rest, lastActivity: activityMap.get(userId) };
-    return withLastActivity;
+    return chatroom;
   } catch (err) {
     throw new Error(500, 'Get Chatroom', err);
   }
