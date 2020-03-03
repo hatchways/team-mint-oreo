@@ -71,7 +71,7 @@ const Sidebar = ({ socket }) => {
     let isMounted = true;
     const fetchAndSetUserData = async () => {
       const data = await Client.request('/user/data');
-      console.log(data);
+      console.log('data fetch from sidebar', data);
       if (isMounted) {
         dispatch({ type: 'SET_INITIAL_DATA', payload: data });
         directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: data.language });

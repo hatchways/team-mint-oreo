@@ -59,7 +59,6 @@ const ChatFrame = ({ socket, userId }) => {
 
   const [state, dispatch] = useReducer(reducer, initialState);
   const { messages, showOriginalText, isLoading, usersMap } = state;
-  const scrollRef = useRef(null);
 
   useEffect(() => {
     if (!chatId) return;

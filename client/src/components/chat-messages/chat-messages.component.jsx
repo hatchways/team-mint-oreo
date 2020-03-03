@@ -10,13 +10,32 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
   const scrollRef = useRef(null);
 
   useEffect(() => {
+    // create a map of <indexOfLastRead> : [<userId>, <userId>]
     const userActivity = Object.keys(users).reduce((a, friendId) => {
-      return { ...a, [friendId]: users[friendId].lastActivity };
+      const { lastActivity } = users[friendId];
+      // if user has no activity or is current user move to next user
+      if (!lastActivity || userId === friendId) return { ...a };
+      // find index of the first message after user's last activity
+      let indexOfLastRead = messages.findIndex(
+        message => Date.parse(message.createdAt) > lastActivity
+      );
+      // if user's last read is before the current batch of messages, continue to next user
+      if (indexOfLastRead === 0) return { ...a };
+      // if user's there are no messages timestamped after user's last activity( ie all messages are read)
+      // then the last message is the user's last read
+      if (indexOfLastRead === -1) {
+        indexOfLastRead = messages.length - 1;
+        // otherwise the last read message is the one right before user's last activity
+      } else {
+        indexOfLastRead -= 1;
+      }
+      const userAvatar = users[friendId].avatar;
+      const avatarArray = a[indexOfLastRead] ? [...a[indexOfLastRead], userAvatar] : [userAvatar];
+      return { ...a, [indexOfLastRead]: avatarArray };
     }, {});
 
     setActivityMap(userActivity);
-    // naive solution -- Array.find() message with timestamp right before user's last activity
-  }, [users]);
+  }, [users, messages, userId]);
 
   useEffect(() => {
     const bottomDivLocation = scrollRef.current.getBoundingClientRect().y;
@@ -33,24 +52,25 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
       setIsScrolled(false);
     }
   };
-
   return (
     <Box className={className} onScroll={handleScroll}>
       <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
-        {messages.map(message => {
+        {messages.map((message, i) => {
           const isSender = message.userId === userId;
           const { originalText, translations, isPicture } = message;
           const timestamp = Date.parse(message.createdAt);
-
+          const lastReadBy = activityMap[i];
           return (
             <Grid key={message._id} item>
               <Box paddingLeft={2} paddingRight={2}>
                 <ChatMessage
+                  name={users[message.userId]?.displayName}
                   message={translations[language]}
                   isSender={isSender}
                   isOriginal={showOriginalText}
                   originalText={originalText}
                   timestamp={timestamp}
+                  lastReadBy={lastReadBy}
                   isPicture={isPicture}
                   avatar={users[message.userId]?.avatar || ''}
                 />

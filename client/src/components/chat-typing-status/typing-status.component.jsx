@@ -19,7 +19,7 @@ function TypingStatus({ className, users }) {
     return `Multiple people are typing...`;
   };
 
-  return <Box class={className}>{formatText(users)}</Box>;
+  return <Box className={className}>{formatText(users)}</Box>;
 }
 
 export default React.memo(TypingStatus);

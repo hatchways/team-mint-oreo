@@ -137,12 +137,10 @@ const updateLastMessage = async chatId => {
 
 const updateLastTimeVisited = async (userId, chatId) => {
   // might have to use Map.set(userId, Date.now()) syntax
-  const result = await Chatroom.findByIdAndUpdate(
-    chatId,
-    { activityMap: { [userId]: Date.now() } },
-    { new: true }
-  );
-  console.log(result);
+  const chatroom = await Chatroom.findById(chatId);
+  chatroom.activityMap.set(userId, Date.now());
+  chatroom.save();
+  console.log(chatroom);
 };
 
 module.exports = {
