@@ -38,18 +38,13 @@ const sendFrontEnd = (req, res) => {
   console.log('serveFile', join(newRoute, 'client/build', 'index.html'));
   res.sendFile(join(newRoute, 'client/build', 'index.html'));
 };
-app.get('/', sendFrontEnd);
-app.get('/login', sendFrontEnd);
-app.get('/register', sendFrontEnd);
-app.get('/dashboard', sendFrontEnd);
-app.get('/invitation/:code', sendFrontEnd);
-app.get('/testing', sendFrontEnd);
 //}
 
 // app.use(passport.initialize());
 // passport.use('jwt', strategy);
 app.use(tokenAuth);
 app.use(routes);
+app.get('/*', sendFrontEnd);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
