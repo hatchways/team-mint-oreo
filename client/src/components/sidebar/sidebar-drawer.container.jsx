@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Hidden, Box, SwipeableDrawer } from '@material-ui/core';
 
-import Sidebar from './sidebar.component';
+// import Sidebar from './sidebar.component';
 
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
+const Sidebar = React.lazy(() => import('./sidebar.component'));
 const SidebarDrawer = props => {
   const {
     state: { showSidebar },
@@ -26,20 +27,22 @@ const SidebarDrawer = props => {
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   return (
-    <Hidden mdUp>
-      <SwipeableDrawer
-        open={showSidebar}
-        onOpen={toggleSidebar}
-        onClose={hideSidebar}
-        transitionDuration={0}
-        disableBackdropTransition={!iOS}
-        disableDiscovery={iOS}
-      >
-        <Box bgcolor="grey.200">
-          <Sidebar {...props} />
-        </Box>
-      </SwipeableDrawer>
-    </Hidden>
+    <React.Suspense fallback={<div />}>
+      <Hidden mdUp>
+        <SwipeableDrawer
+          open={showSidebar}
+          onOpen={toggleSidebar}
+          onClose={hideSidebar}
+          transitionDuration={0}
+          disableBackdropTransition={!iOS}
+          disableDiscovery={iOS}
+        >
+          <Box bgcolor="grey.200">
+            <Sidebar {...props} />
+          </Box>
+        </SwipeableDrawer>
+      </Hidden>
+    </React.Suspense>
   );
 };
 

@@ -14,7 +14,7 @@ export const useStyles = makeStyles(theme => ({
     fontSize: '14px',
     color: 'rgba(0, 0, 0, 0.6)',
     margin: '0 40px',
-    padding: '0 1rem',
+    padding: '0 0 .75rem 1rem',
   },
 }));
 

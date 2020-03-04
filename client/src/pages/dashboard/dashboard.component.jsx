@@ -10,7 +10,7 @@ import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
 import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
 
-const socket = io();
+const socket = io.connect();
 
 const Dashboard = ({ userId, snackbar }) => {
   const [open, setOpen] = useState(false);

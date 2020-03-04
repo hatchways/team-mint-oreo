@@ -36,7 +36,7 @@ const getUnreadCount = async (chatroom, userId) => {
   const lastActivity = chatroom.activityMap.get(userId);
   const { _id } = chatroom;
   if (!lastActivity) return 0;
-  const formattedDate = new Date(lastActivity);
+  const formattedDate = Date(lastActivity);
   const count = await Message.countDocuments({
     chatId: _id,
     createdAt: { $gte: formattedDate },

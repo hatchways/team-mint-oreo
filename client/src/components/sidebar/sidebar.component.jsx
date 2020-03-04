@@ -49,9 +49,9 @@ const reducer = (state, action) => {
       return { ...state, invitesList: payload };
     case 'SET_TAB':
       return { ...state, tab: payload };
-    case 'ADD_CHAT_TO_END':
+    case 'APPEND_TO_CHATLIST':
       return { ...state, chatsList: [...state.chatsList, payload] };
-    case 'ADD_CHAT_TO_START':
+    case 'PREPEND_TO_CHATLIST':
       return { ...state, chatsList: [payload, ...state.chatsList] };
     default:
       throw new Error();
@@ -71,7 +71,7 @@ const Sidebar = ({ socket }) => {
     let isMounted = true;
     const fetchAndSetUserData = async () => {
       const data = await Client.request('/user/data');
-      console.log(data);
+      console.log('data fetch from sidebar', data);
       if (isMounted) {
         dispatch({ type: 'SET_INITIAL_DATA', payload: data });
         directoryDispatch({ type: DirectoryActionTypes.SET_LANGUAGE, payload: data.language });
@@ -102,12 +102,12 @@ const Sidebar = ({ socket }) => {
       if (chatroomIndex < 0) {
         console.log('chat not found, retrieving from database');
         const chatroom = await Client.request(`/chat/data/${chatId}`); // TODO fix data returned from this route
-        dispatch({ type: 'ADD_CHAT_TO_END', payload: chatroom });
+        dispatch({ type: 'APPEND_TO_CHATLIST', payload: chatroom });
       } else {
         const newChatList = [...chatsList];
-        const updatedChat = newChatList.splice(chatroomIndex, 1);
+        const updatedChat = newChatList.splice(chatroomIndex, 1)[0];
         updatedChat.unreadMessages += 1;
-        newChatList.unshift(...updatedChat);
+        newChatList.unshift(updatedChat);
         dispatch({ type: 'SET_CHATS', payload: newChatList });
       }
     };
@@ -138,28 +138,52 @@ const Sidebar = ({ socket }) => {
     };
 
     const updateUserAvatar = msgObject => {
-      console.log('updateOwnProfilePic', msgObject);
       const { profilePic } = msgObject;
       dispatch({ type: 'SET_USER', payload: { ...user, avatar: profilePic } });
     };
 
+    const updateInvitationList = invitation => {
+      invitesList.push(invitation); // add the most recent invitation
+      dispatch({ type: 'SET_INVITES', payload: invitesList });
+    };
+
+    const updateRequest = invitationId => {
+      const newInvites = [...invitesList];
+      const deletedInviteIndex = newInvites.findIndex(
+        inv => inv.invitation._id === invitationId.id
+      );
+      newInvites.splice(deletedInviteIndex, 1);
+
+      dispatch({ type: 'SET_INVITES', payload: newInvites });
+    };
+
+    const updateChat = newChat => {
+      dispatch({ type: 'PREPEND_TO_CHATLIST', payload: newChat });
+    };
+
+    socket.on('groupChatCreated', updateChat);
+    socket.on('friendRequestReceived', updateInvitationList);
     socket.on('receiveMsg', updateChatLocation);
     socket.on('updateOwnProfilePic', updateUserAvatar);
     socket.on('updateFriendProfilePic', updateFriendsProfilePic);
+    socket.on('requestDone', updateRequest);
 
     return () => {
       socket.off('receiveMsg', updateChatLocation);
       socket.off('updateOwnProfilePic', updateUserAvatar);
       socket.off('updateFriendProfilePic', updateFriendsProfilePic);
+      socket.off('friendRequestReceived', updateInvitationList);
+      socket.off('requestDone', updateRequest);
+      socket.off('groupChatCreated', updateChat);
     };
-  }, [chatsList, friendsList, user, socket]);
+  }, [chatsList, friendsList, user, socket, activeChatId]);
 
   const changeActiveChat = async chatId => {
-    Client.updateChatActivity(user.id, activeChatId);
+    Client.updateChatActivity({ userId: user.id, chatId: activeChatId, socket });
     let retrievedChat = chatsList.find(chat => chat.chatId === chatId);
     if (!retrievedChat) {
       retrievedChat = await Client.request(`/chat/data/${chatId}`);
-      dispatch({ type: 'ADD_CHAT_TO_END', payload: retrievedChat });
+      dispatch({ type: 'APPEND_TO_CHATLIST', payload: retrievedChat });
     } else {
       retrievedChat.unreadMessages = 0;
     }

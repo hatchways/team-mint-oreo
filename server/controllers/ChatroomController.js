@@ -45,18 +45,23 @@ const getUsersByChatId = async chatId => {
 };
 
 const searchForRoomWithUser = async (target, chatIds, userId) => {
+  console.log(target);
   const result = await Chatroom.find({
     _id: { $in: chatIds },
   }).populate({
     path: 'users',
     model: 'User',
-    select: ['displayName', 'id', 'email', 'socketId', 'language'],
+    select: ['displayName', 'id', 'email', 'socketId', 'language', 'avatar'],
+    match: { _id: { $ne: userId } },
     // match: { [filter]: { $regex: `.*${param}.*` } },
   });
 
+  const regex = RegExp(`.*${target}.*`, 'i');
+
   const matchingRooms = result.filter(room =>
-    room.users.some(user => user._id !== userId && user.displayName.includes(target))
+    room.users.some(user => user._id !== userId && regex.test(user.displayName))
   );
+
   return matchingRooms;
 };
 
@@ -132,12 +137,10 @@ const updateLastMessage = async chatId => {
 
 const updateLastTimeVisited = async (userId, chatId) => {
   // might have to use Map.set(userId, Date.now()) syntax
-  const result = await Chatroom.findByIdAndUpdate(
-    chatId,
-    { activityMap: { [userId]: Date.now() } },
-    { new: true }
-  );
-  console.log(result);
+  const chatroom = await Chatroom.findById(chatId);
+  chatroom.activityMap.set(userId, Date.now());
+  chatroom.save();
+  console.log(chatroom);
 };
 
 module.exports = {

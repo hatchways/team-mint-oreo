@@ -12,6 +12,15 @@ const convertSocketIdToStatus = userList => {
   });
 };
 
+const formatChatroomUsers = (userList, activityMap) => {
+  return userList.map(user => {
+    const lastActivity = activityMap.get(user._id.toString());
+    const newUser = { ...user, isOnline: !!user.socketId, lastActivity };
+    delete newUser.socketId;
+    return newUser;
+  });
+};
+
 const convertActivityMapToUnread = (chatroom, userId) => {
   const { activityMap, ...rest } = chatroom;
   const lastActivity = activityMap.get(userId);
@@ -43,8 +52,9 @@ const chatroomData = (chatroomData, unreadMessages, userId) => {
 
   const result = chatroomData.map((chatroom, i) => {
     // Replaces the socketId with the key 'isOnline : <boolean>'
+
     chatroom = chatroom.toObject();
-    const usersWithOnlineStatus = convertSocketIdToStatus(chatroom.users);
+    const usersWithOnlineStatus = formatChatroomUsers(chatroom.users, chatroom.activityMap);
     const chatroomWithAvatar = addAvatarToDMChat(chatroom, userId);
     return {
       ...chatroomWithAvatar,
@@ -93,6 +103,8 @@ const messagesData = messages => {
 };
 
 module.exports = {
+  convertSocketIdToStatus,
+  addAvatarToDMChat,
   convertSocketIdToStatus,
   convertActivityMapToUnread,
   flattenArray,

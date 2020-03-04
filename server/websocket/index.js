@@ -7,6 +7,7 @@ const onFriendReq = require('./friendRequest');
 const onProfilePic = require('./profilePic');
 const mailService = require('../services/mailService');
 const onSearch = require('./search');
+const formatData = require('../services/formatDataService');
 
 /* SOCKET METHODS */
 
@@ -63,10 +64,9 @@ const handleSocket = server => {
       const outgoingMsg = {
         ...msgObject,
         translations,
-        timestamp: Date.now(),
       };
-      const { _id } = await db.message.createMessage(outgoingMsg);
-      onSend.sendMessage(io, { ...outgoingMsg, _id });
+      const { _id, createdAt } = await db.message.createMessage(outgoingMsg);
+      onSend.sendMessage(io, { ...outgoingMsg, _id, createdAt });
       db.chatroom.updateLastMessage(outgoingMsg.chatId);
     });
 
@@ -104,10 +104,15 @@ const handleSocket = server => {
         // This socket identifies from who, to who, and the identifier of invitation itself
 
         // TODO: need to search for socketID of toUser<email>
-        socket.to(toUser).emit('friendRequestReceived', {
-          fromUser,
-          toUser,
-          invitation: newInvitation.id,
+        const values = await Promise.all([
+          db.user.getByEmail(toUser),
+          db.user.getByEmail(fromUser)
+        ])
+        const [toUserInfo, fromUserInfo] = values;
+
+        io.to(toUserInfo.socketId).emit('friendRequestReceived', {
+            user: fromUserInfo,
+            invitation: newInvitation
         });
       } catch (err) {
         // Error will occur if the user tries to add duplicate
@@ -128,14 +133,20 @@ const handleSocket = server => {
         const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
         console.log(newChatRoomId);
         await updateUserChatroom([userId, friendId], newChatRoomId);
+
+        const userInfo = await db.user.getById(userId);
+        io.to(userInfo.socketId).emit('requestDone', { invitationId });
       } catch (err) {
         console.error(err);
       }
     });
 
-    socket.on('friendRequestRejected', async ({ invitationId }) => {
+    socket.on('friendRequestRejected', async ({ userId, invitationId }) => {
       try {
         await db.invitation.deleteInvitation(invitationId);
+
+        const userInfo = await db.user.getById(userId);
+        io.to(userInfo.socketId).emit('requestDone', { id: invitationId });
       } catch (err) {
         console.error(err);
       }
@@ -145,9 +156,20 @@ const handleSocket = server => {
       try {
         const membersId = members.map(member => member._id);
         membersId.push(hostUser);
-
         const newChatRoomId = await db.chatroom.createChatroom(membersId);
         await updateUserChatroom(membersId, newChatRoomId);
+
+        const newChatRoom = await db.chatroom.getChatroomById(newChatRoomId);
+        const host = await db.user.getById(hostUser);
+        const usersWithOnlineStatus = formatData.convertSocketIdToStatus(newChatRoom.users);
+        const chatroomWithAvatar = formatData.addAvatarToDMChat(newChatRoom, hostUser);
+
+        io.to(host.socketId).emit('groupChatCreated', {
+          ...chatroomWithAvatar._doc,
+          chatId: newChatRoomId._id,
+          users: usersWithOnlineStatus,
+          unreadMessages: 0,
+        });
       } catch (err) {
         console.error(err);
       }
@@ -160,13 +182,14 @@ const handleSocket = server => {
 
     socket.on('searching', async body => {
       const data = await onSearch.search(body);
-
       socket.emit('searchResult', { data, tab: body.tab });
     });
 
-    socket.on('test', () => {
-      console.log('Connected sockets');
+    socket.on('updateActivity', async (userId, activeChatId) => {
+      console.log('ws: updateActivity received', activeChatId);
+      io.to(activeChatId).emit('updateActivity', userId);
     });
+
     socket.on('disconnect', reason => {
       console.log(`${socket.id} has left the site. ${reason}`);
       db.user.clearSocketId(socket.id);

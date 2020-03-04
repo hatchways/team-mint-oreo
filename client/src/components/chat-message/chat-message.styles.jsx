@@ -10,4 +10,16 @@ export const useStyles = makeStyles(theme => ({
     borderRadius: '20px 20px 1px 20px',
     marginLeft: 50,
   },
+  timestamp: {
+    fontSize: '0.65em',
+    opacity: '0.8',
+    padding: '0 0.5rem',
+  },
+  readAvatar: {
+    height: '15px',
+    width: '15px',
+    border: '1px solid black',
+  },
 }));
+
+export default useStyles;

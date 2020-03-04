@@ -4,12 +4,14 @@ import format from '../../utils/relativeDateFormat';
 import { useStyles } from './chat-message.styles';
 
 const ChatMessage = ({
+  name,
   message,
   originalText,
   timestamp,
   isSender,
   isPicture,
   isOriginal,
+  lastReadBy,
   avatar = '',
 }) => {
   const classes = useStyles();
@@ -36,20 +38,44 @@ const ChatMessage = ({
           justify="flex-start"
           alignItems={isSender ? 'flex-end' : 'flex-start'}
         >
-          <Grid item> {format(timestamp)}</Grid>
-          <Grid item>
+          <Box
+            display="flex"
+            alignItems="baseline"
+            flexDirection={isSender ? 'row-reverse' : 'row'}
+          >
+            <Box>{name}</Box>
+            <Box className={classes.timestamp}>{format(timestamp)}</Box>
+          </Box>
+          <Box
+            display="flex"
+            alignItems="flex-end"
+            flexDirection={isSender ? 'row-reverse' : 'row'}
+          >
             <Paper className={isSender ? classes.senderPaper : classes.chatPaper}>
               <Box p={2}>
-                {!isPicture ? (
-                  <Typography>{isOriginal ? originalText : message}</Typography>
-                ) : (
+                {isPicture ? (
                   <Card>
                     <CardMedia component="img" alt="PICTURE \o/" image={originalText} />
                   </Card>
+                ) : (
+                  <Typography>{isOriginal ? originalText : message}</Typography>
                 )}
               </Box>
             </Paper>
-          </Grid>
+            <Box>
+              {!!lastReadBy &&
+                lastReadBy.map(avatarURL => {
+                  return (
+                    <Avatar
+                      key={`read-notification-${name + timestamp}`}
+                      className={classes.readAvatar}
+                      src={avatarURL}
+                      fallback={name[0].toUpperCase()}
+                    />
+                  );
+                })}
+            </Box>
+          </Box>
         </Grid>
       </Grid>
     </Grid>
