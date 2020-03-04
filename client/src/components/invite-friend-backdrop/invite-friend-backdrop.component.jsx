@@ -29,7 +29,7 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
       placeholder,
     },
   ]);
-  const [urlField, setUrlField] = useState("");
+  const [urlField, setUrlField] = useState('');
   const [open, setOpen] = useState(false);
   const [messageInfo, setMessageInfo] = useState(undefined);
   const queueRef = useRef([]);
@@ -41,14 +41,14 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
   } = useContext(directoryStore);
 
   const processQueue = () => {
-    if(queueRef.current.length > 0) {
+    if (queueRef.current.length > 0) {
       setMessageInfo(queueRef.current.shift());
       setOpen(true);
     }
   };
 
   const handleCloseSnack = (event, reason) => {
-    if(reason === 'clickaway') {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
@@ -62,11 +62,10 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
     let isMounted = true;
     const fetchAndSetUrl = async () => {
       const request = await Client.request('/user/getUser');
-
-      if(isMounted) {
-        setUrlField('http://localhost:3000/invitation/' + request.inviteCode);
+      if (isMounted) {
+        setUrlField(`${process.env.REACT_APP_HOST_NAME}/invitation/` + request.inviteCode);
       }
-    }
+    };
     fetchAndSetUrl();
 
     return () => {
@@ -122,7 +121,7 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
       message: 'Email Sent Successfully!',
       key: new Date().getTime(),
     });
-    if(open) {
+    if (open) {
       setOpen(false);
     } else {
       processQueue();
@@ -149,7 +148,7 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
               <Box marginRight={7}>
                 <Grid container direction="column" justify="center" alignItems="center">
                   <Grid item>
-                    <h1>Invite friends to messenger</h1>
+                    <h1>Invite friends to Babl</h1>
                   </Grid>
                   <Grid item>
                     <h3> Send your friends an email</h3>
