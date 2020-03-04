@@ -5,15 +5,13 @@
 - [Preview](#preview)
 - [About](#about)
 - [Authors](#authors)
-- [Setup Guide](#setup-guide)
-	- [Prerequisites](#prerequisites)
-	- [Getting Started](#getting-started)
+- [Setup Guide](#setup-guide) - [Prerequisites](#prerequisites) - [Getting Started](#getting-started)
 
 # Preview
 
 This project is currently live at https://babl-babl.herokuapp.com/
 
-![Login Preview](./pics/login.PNG)
+![Login Preview](./pics/login.png)
 
 # About
 
