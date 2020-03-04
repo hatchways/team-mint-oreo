@@ -28,6 +28,7 @@ const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
 
   const handleRejection = (event, profile) => {
     socket.emit('friendRequestRejected', {
+      userId: currentUser.id,
       invitationId: profile.invitation._id,
     });
 

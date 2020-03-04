@@ -8,12 +8,12 @@ import theme from './themes/theme';
 // import Dashboard from './pages/dashboard/dashboard.component';
 // import Login from './pages/userform/Login';
 // import Register from './pages/userform/Register';
-
+import SnackbarMessage from './components/snackbar-message/snackbar-message.component';
 const WebsocketTesting = React.lazy(() => import('./websocketTesting'));
 const Login = React.lazy(() => import('./pages/userform/Login'));
 const Register = React.lazy(() => import('./pages/userform/Register'));
 const Dashboard = React.lazy(() => import('./pages/dashboard/dashboard.component'));
-import SnackbarMessage from './components/snackbar-message/snackbar-message.component';
+
 
 function App(props) {
   const [userId, setUserId] = useState(false);

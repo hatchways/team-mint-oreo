@@ -143,14 +143,36 @@ const Sidebar = ({ socket }) => {
       dispatch({ type: 'SET_USER', payload: { ...user, avatar: profilePic } });
     };
 
+    const updateInvitationList = invitation => {
+      invitesList.push(invitation);  // add the most recent invitation
+      dispatch({type: 'SET_INVITES', payload: invitesList });
+    }
+
+    const updateRequest = invitationId => {
+      const match = invitesList.findIndex(inv => inv.invitation._id === invitationId.id);
+      if(match !== -1) invitesList.splice(match, match + 1);
+      dispatch({type: 'SET_INVITES', payload: invitesList});
+    }
+
+    const updateChat = newChat => {
+      chatsList.unshift(newChat);
+      dispatch({type: 'SET_CHATS', payload: chatsList});
+    }
+
+    socket.on('groupChatCreated', updateChat);
+    socket.on('friendRequestReceived', updateInvitationList);
     socket.on('receiveMsg', updateChatLocation);
     socket.on('updateOwnProfilePic', updateUserAvatar);
     socket.on('updateFriendProfilePic', updateFriendsProfilePic);
+    socket.on('requestDone', updateRequest);
 
     return () => {
       socket.off('receiveMsg', updateChatLocation);
       socket.off('updateOwnProfilePic', updateUserAvatar);
       socket.off('updateFriendProfilePic', updateFriendsProfilePic);
+      socket.off('friendRequestReceived', updateInvitationList);
+      socket.off('requestDone', updateRequest);
+      socket.off('groupChatCreated', updateChat);
     };
   }, [chatsList, friendsList, user, socket]);
 
