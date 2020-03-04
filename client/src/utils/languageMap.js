@@ -7,6 +7,10 @@ const languageMap = {
     name: 'Chinese',
     flag: '',
   },
+  'zh-TW': {
+    name: 'Chinese',
+    flag: '',
+  },
   es: {
     name: 'Spanish',
     flag: '',

@@ -39,11 +39,11 @@ export default function Register({ invCode }) {
     const response = await Client.request('/auth/register', 'POST', values);
     if (response.status === 201) {
       history.push('/login', {
-          snackbar: {
-            status: 'success',
-            message: 'Successfully Created an Account!',
-            key: new Date().getTime()
-          }
+        snackbar: {
+          status: 'success',
+          message: 'Successfully Created an Account!',
+          key: new Date().getTime(),
+        },
       });
     } else {
       // TODO: handle error (500 vs 400)
@@ -54,7 +54,7 @@ export default function Register({ invCode }) {
       });
     }
 
-    if(open) {
+    if (open) {
       setOpen(false);
     } else {
       processQueue();
@@ -62,22 +62,22 @@ export default function Register({ invCode }) {
   };
 
   const processQueue = () => {
-    if(queueRef.current.length > 0) {
+    if (queueRef.current.length > 0) {
       setMessageInfo(queueRef.current.shift());
       setOpen(true);
     }
   };
 
   const handleClose = (event, reason) => {
-    if(reason === 'clickaway') {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
-  }
+  };
 
   const handleExited = () => {
     processQueue();
-  }
+  };
 
   const classes = useStyles();
 
@@ -217,7 +217,8 @@ export default function Register({ invCode }) {
                 <InputLabel className={classes.label}>Select primary language</InputLabel>
                 <NativeSelect value={values.language} onChange={handleChange} name="language">
                   <option value="en">English</option>
-                  <option value="zh">Chinese</option>
+                  <option value="zh">Chinese (Simplified)</option>
+                  <option value="zh-TW">Chinese (Traditional)</option>
                   <option value="es">Spanish</option>
                   <option value="fr">French</option>
                   <option value="ko">Korean</option>
