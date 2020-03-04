@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -18,6 +18,7 @@ import CopyField from '../copy-field/copy-field.component';
 
 import { useStyles } from './invite-friend-backdrop.styles';
 import Client from '../../utils/HTTPClient';
+import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
 
 const InviteFriendBackdrop = ({ socket, userId }) => {
   const placeholder = "Friend's email address";
@@ -29,12 +30,33 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
     },
   ]);
   const [urlField, setUrlField] = useState("");
+  const [open, setOpen] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
+  const queueRef = useRef([]);
 
   const classes = useStyles();
   const {
     state: { showBackdropInv },
     dispatch,
   } = useContext(directoryStore);
+
+  const processQueue = () => {
+    if(queueRef.current.length > 0) {
+      setMessageInfo(queueRef.current.shift());
+      setOpen(true);
+    }
+  };
+
+  const handleCloseSnack = (event, reason) => {
+    if(reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleExited = () => {
+    processQueue();
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -95,7 +117,16 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
     console.log(emailList);
     const userData = await Client.request('/user/data');
     socket.emit('friendRequestSent', { fromUser: userData.email, toUser: emailList[0] });
-    alert('Friend Request Sent!');
+
+    queueRef.current.push({
+      message: 'Email Sent Successfully!',
+      key: new Date().getTime(),
+    });
+    if(open) {
+      setOpen(false);
+    } else {
+      processQueue();
+    }
   };
 
   useEffect(() => {
@@ -147,6 +178,12 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
           </Card>
         </ClickAwayListener>
       )}
+      <SnackbarMessage
+        messageInfo={messageInfo}
+        open={open}
+        handleExited={handleExited}
+        handleClose={handleCloseSnack}
+      />
     </Backdrop>
   );
 };

@@ -1,7 +1,7 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Redirect, Switch, useLocation } from 'react-router-dom';
 import Client from './utils/HTTPClient';
 
 import theme from './themes/theme';
@@ -13,11 +13,17 @@ const WebsocketTesting = React.lazy(() => import('./websocketTesting'));
 const Login = React.lazy(() => import('./pages/userform/Login'));
 const Register = React.lazy(() => import('./pages/userform/Register'));
 const Dashboard = React.lazy(() => import('./pages/dashboard/dashboard.component'));
+import SnackbarMessage from './components/snackbar-message/snackbar-message.component';
 
-function App() {
+function App(props) {
   const [userId, setUserId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [invitationCode, setInvitationCode] = useState('');
+  const [snackbar, setSnackbar] = useState({
+    status: undefined,
+    message: undefined,
+    key: undefined
+  });
 
   useEffect(() => {
     let isMounted = true;
@@ -27,7 +33,6 @@ function App() {
         setIsLoading(false);
         setUserId(userId);
       }
-      console.log();
     };
     checkToken();
 
@@ -35,6 +40,16 @@ function App() {
       isMounted = false;
     };
   }, [userId]);
+
+  // const pushSnackbar = message => {
+  //
+  //   queueRef.current.push(message);
+  //   if(open) {
+  //     setOpen(false);
+  //   } else {
+  //     processQueue();
+  //   }
+  // };
 
   const handleInvitation = props => {
     if (props.match.params) {
@@ -73,20 +88,26 @@ function App() {
               <Route
                 exact
                 path="/login"
-                render={props =>
-                  userId ? (
+                render={props => {
+                  if (props.location.state) {
+                    setSnackbar(props.location.state.snackbar)
+                  }
+                  return userId ? (
                     <Redirect to="/dashboard" />
                   ) : (
-                    <Login invCode={invitationCode} setId={setUserId} />
+                    <Login invCode={invitationCode} setId={setUserId} snackbar={snackbar} />
                   )
-                }
+                }}
               />
               <Route
                 exact
                 path="/dashboard"
                 render={props => {
-                  if (props.location.state) setUserId(props.location.state.id);
-                  return userId ? <Dashboard userId={userId} /> : <Redirect to="/login" />;
+                  if (props.location.state) {
+                    setUserId(props.location.state.id);
+                    setSnackbar(props.location.state.snackbar)
+                  }
+                  return userId ? <Dashboard userId={userId} snackbar={snackbar} /> : <Redirect to="/login" />;
                 }}
               />
               <Route path="/register" render={() => <Register invCode={invitationCode} />} />

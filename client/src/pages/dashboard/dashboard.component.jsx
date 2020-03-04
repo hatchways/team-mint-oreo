@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useState, useContext, useEffect, useMemo, useRef } from 'react';
 import io from 'socket.io-client';
 import { Box, Grid, Hidden } from '@material-ui/core';
 import WithChatStates from '../../components/with-chat-states/with-chat-states.component';
@@ -8,18 +8,48 @@ import InviteFriendBackdrop from '../../components/invite-friend-backdrop/invite
 import GroupChatBackdrop from '../../components/group-chat-backdrop/group-chat-backdrop.component';
 import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
+import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
 
 const socket = io();
 
-const Dashboard = ({ userId }) => {
+const Dashboard = ({ userId, snackbar }) => {
+  const [open, setOpen] = useState(false);
+  const [messageInfo, setMessageInfo] = useState(undefined);
+  const queueRef = useRef([]);
   useEffect(() => {
     socket.emit('login', { userId });
+
+    if(snackbar.message) queueRef.current.push(snackbar);
+    if(open) {
+      setOpen(false);
+    } else {
+      processQueue();
+    }
+
     return () => {
       socket.disconnect();
     };
   }, [userId]);
 
   const memoSocket = useMemo(() => socket, []);
+
+  const processQueue = () => {
+    if(queueRef.current.length > 0) {
+      setMessageInfo(queueRef.current.shift());
+      setOpen(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if(reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  }
+
+  const handleExited = () => {
+    processQueue();
+  }
 
   return (
     <Box>
@@ -41,6 +71,12 @@ const Dashboard = ({ userId }) => {
           </Grid>
         </Grid>
       </Box>
+      <SnackbarMessage
+        messageInfo={messageInfo}
+        open={open}
+        handleExited={handleExited}
+        handleClose={handleClose}
+      />
     </Box>
   );
 };
