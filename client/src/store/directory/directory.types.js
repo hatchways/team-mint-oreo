@@ -10,6 +10,7 @@ const DirectoryActionTypes = {
   SET_LANGUAGE: 'SET_LANGUAGE',
   TOGGLE_PROFILE: 'TOGGLE_PROFILE',
   CLOSE_PROFILE: 'CLOSE_PROFILE',
+  SET_CHATS_LIST: 'SET_CHATS_LIST',
 };
 
 export default DirectoryActionTypes;

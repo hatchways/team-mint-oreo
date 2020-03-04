@@ -57,7 +57,7 @@ export default function Login({ invCode, snackbar }) {
   const onSubmitLogin = async event => {
     event.preventDefault();
 
-    const response = await Client.request('/user/login', 'POST', values);
+    const response = await Client.request('/auth/login', 'POST', values);
 
     if (response.status !== 200) {
       queueRef.current.push({

@@ -9,6 +9,7 @@ import ImageReader from '../image-reader/image-reader.component';
 
 const MessageField = ({ socket, chatId, userId }) => {
   const [msgContent, setMsgContent] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   const prefix = `SavedMessage`;
   const setLocalStorage = value => localStorage.setItem(`${prefix}-${chatId}`, value);
@@ -20,10 +21,19 @@ const MessageField = ({ socket, chatId, userId }) => {
     setMsgContent(getLocalStorage);
   }, [chatId]);
 
+  useEffect(() => {
+    socket.emit('typingStatus', userId, chatId, isTyping);
+  }, [isTyping, chatId, userId, socket]);
+
   const handleChange = e => {
-    const msgContent = e.target.value;
-    setMsgContent(msgContent);
-    setLocalStorage(msgContent);
+    const { value: msg } = e.target;
+    setMsgContent(msg);
+    setLocalStorage(msg);
+    if (!msg) {
+      setIsTyping(false);
+    } else if (!isTyping && msg) {
+      setIsTyping(true);
+    }
   };
 
   const onSubmit = e => {
@@ -34,6 +44,7 @@ const MessageField = ({ socket, chatId, userId }) => {
       socket.emit('sendMsg', { userId, chatId, originalText: msgContent });
       setMsgContent('');
       clearLocalStorage();
+      setIsTyping(false);
     }
   };
 

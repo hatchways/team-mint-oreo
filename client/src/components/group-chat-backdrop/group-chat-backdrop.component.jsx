@@ -47,22 +47,22 @@ const GroupChatBackdrop = ({ socket, userId }) => {
     let isMounted = true;
     const fetchExistingFriends = async () => {
       const request = await Client.request('/user/data');
-      if(isMounted) {
+      if (isMounted) {
         setFriendsList(request.friends);
       }
-    }
+    };
     fetchExistingFriends();
 
     return () => {
       isMounted = false;
-    }
+    };
   }, []);
 
   const handleSubmit = event => {
     event.preventDefault();
     socket.emit('createGroupChat', {
-        hostUser: userId,
-        members: groupChatUsers,
+      hostUser: userId,
+      members: groupChatUsers,
     });
 
     // This will be replaced into Snackbar
@@ -70,7 +70,7 @@ const GroupChatBackdrop = ({ socket, userId }) => {
     dispatch({
       type: DirectoryActionTypes.CLOSE_BACKDROP_GPCHAT,
     });
-  }
+  };
 
   return (
     <Backdrop className={classes.backdrop} open={showBackdropGp}>
@@ -99,7 +99,7 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                       // disableCloseOnSelect
                       getOptionLabel={option => option.displayName}
                       renderOption={(option, { selected }) => (
-                        <React.Fragment>
+                        <>
                           <Checkbox
                             icon={icon}
                             checkedIcon={checkedIcon}
@@ -107,11 +107,16 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                             checked={selected}
                           />
                           {option.displayName}
-                        </React.Fragment>
+                        </>
                       )}
                       className={classes.autocomplete}
                       renderInput={params => (
-                        <TextField {...params} variant="outlined" label="Friends List" placeholder="Favorites" />
+                        <TextField
+                          {...params}
+                          variant="outlined"
+                          label="Friends List"
+                          placeholder="Favorites"
+                        />
                       )}
                       onChange={(event, value) => setGroupChatUsers(value)}
                     />

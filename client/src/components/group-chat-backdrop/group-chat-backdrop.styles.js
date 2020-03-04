@@ -7,15 +7,17 @@ export const useStyles = makeStyles(theme => ({
     color: '#fff',
   },
   autocomplete: {
-    width: 500
+    width: 500,
   },
   checkbox: {
-    marginRight: 8
+    marginRight: 8,
   },
   root: {
     padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
     width: 'auto',
-  }
+  },
 }));
+
+export default useStyles;

@@ -3,12 +3,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route, Redirect, Switch, useLocation } from 'react-router-dom';
 import Client from './utils/HTTPClient';
-import WebsocketTesting from './websocketTesting';
+
 import theme from './themes/theme';
-import Dashboard from './pages/dashboard/dashboard.component';
-import Login from './pages/userform/Login';
-import Register from './pages/userform/Register';
-import SnackbarMessage from './components/snackbar-message/snackbar-message.component'; //
+// import Dashboard from './pages/dashboard/dashboard.component';
+// import Login from './pages/userform/Login';
+// import Register from './pages/userform/Register';
+
+const WebsocketTesting = React.lazy(() => import('./websocketTesting'));
+const Login = React.lazy(() => import('./pages/userform/Login'));
+const Register = React.lazy(() => import('./pages/userform/Register'));
+const Dashboard = React.lazy(() => import('./pages/dashboard/dashboard.component'));
+import SnackbarMessage from './components/snackbar-message/snackbar-message.component';
 
 function App(props) {
   const [userId, setUserId] = useState(false);
@@ -23,7 +28,7 @@ function App(props) {
   useEffect(() => {
     let isMounted = true;
     const checkToken = async () => {
-      const { userId = null } = await Client.request('/user/verify');
+      const { userId = null } = await Client.request('/auth/jwtLogin');
       if (isMounted) {
         setIsLoading(false);
         setUserId(userId);
@@ -71,45 +76,47 @@ function App(props) {
   return (
     <MuiThemeProvider theme={theme}>
       <CssBaseline />
-      {!isLoading && (
-        <BrowserRouter>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => (userId ? <Redirect to="/dashboard" /> : <Redirect to="/login" />)}
-            />
-            <Route
-              exact
-              path="/login"
-              render={props => {
-                if (props.location.state) {
-                  setSnackbar(props.location.state.snackbar)
-                }
-                return userId ? (
-                  <Redirect to="/dashboard" />
-                ) : (
-                  <Login invCode={invitationCode} setId={setUserId} snackbar={snackbar} />
-                )
-              }}
-            />
-            <Route
-              exact
-              path="/dashboard"
-              render={props => {
-                if (props.location.state) {
-                  setUserId(props.location.state.id);
-                  setSnackbar(props.location.state.snackbar)
-                }
-                return userId ? <Dashboard userId={userId} snackbar={snackbar} /> : <Redirect to="/login" />;
-              }}
-            />
-            <Route path="/register" render={() => <Register invCode={invitationCode} />} />
-            <Route path="/invitation/:code" render={props => handleInvitation(props)} />
-            <Route path="/testing" component={WebsocketTesting} />
-          </Switch>
-        </BrowserRouter>
-      )}
+      <React.Suspense fallback={<div />}>
+        {!isLoading && (
+          <BrowserRouter>
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => (userId ? <Redirect to="/dashboard" /> : <Redirect to="/login" />)}
+              />
+              <Route
+                exact
+                path="/login"
+                render={props => {
+                  if (props.location.state) {
+                    setSnackbar(props.location.state.snackbar)
+                  }
+                  return userId ? (
+                    <Redirect to="/dashboard" />
+                  ) : (
+                    <Login invCode={invitationCode} setId={setUserId} snackbar={snackbar} />
+                  )
+                }}
+              />
+              <Route
+                exact
+                path="/dashboard"
+                render={props => {
+                  if (props.location.state) {
+                    setUserId(props.location.state.id);
+                    setSnackbar(props.location.state.snackbar)
+                  }
+                  return userId ? <Dashboard userId={userId} snackbar={snackbar} /> : <Redirect to="/login" />;
+                }}
+              />
+              <Route path="/register" render={() => <Register invCode={invitationCode} />} />
+              <Route path="/invitation/:code" render={props => handleInvitation(props)} />
+              <Route path="/testing" component={WebsocketTesting} />
+            </Switch>
+          </BrowserRouter>
+        )}
+      </React.Suspense>
     </MuiThemeProvider>
   );
 }
