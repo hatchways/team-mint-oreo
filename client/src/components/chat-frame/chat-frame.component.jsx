@@ -79,6 +79,7 @@ const ChatFrame = ({ socket, userId }) => {
       const chatUsers = chatsList.find(chat => chat.chatId === chatId).users;
       const usersMap = chatUsers.reduce((a, user) => ({ ...a, [user._id]: user }), {});
       dispatch({ type: 'SET_USERS', payload: usersMap });
+      dispatch({ type: 'DONE_LOADING' });
     };
 
     try {
@@ -126,7 +127,6 @@ const ChatFrame = ({ socket, userId }) => {
   const memoMessages = useMemo(() => messages, [messages]);
   const memoUsers = useMemo(() => usersMap, [usersMap]);
 
-  console.log('MEMO USERS', memoUsers);
   return (
     <Box
       maxHeight="100vh"
@@ -135,7 +135,14 @@ const ChatFrame = ({ socket, userId }) => {
       flexDirection="column"
       onClick={() => Client.updateChatActivity({ userId, chatId, socket })}
     >
-      <ChatHeader toggleText={dispatch} chatId={chatId} users={memoUsers} userId={userId} />
+      <ChatHeader
+        toggleText={dispatch}
+        chatId={chatId}
+        users={memoUsers}
+        userId={userId}
+        language={language}
+        showOriginal={showOriginalText}
+      />
       <ChatMessages
         messages={memoMessages}
         showOriginalText={showOriginalText}
@@ -145,6 +152,7 @@ const ChatFrame = ({ socket, userId }) => {
         users={memoUsers}
         socket={socket}
       />
+
       <MessageField socket={socket} chatId={chatId} userId={userId} />
       <TypingStatus className={classes.typingStatus} users={memoUsers} />
     </Box>
