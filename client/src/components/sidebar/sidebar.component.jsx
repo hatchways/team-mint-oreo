@@ -143,20 +143,23 @@ const Sidebar = ({ socket }) => {
     };
 
     const updateInvitationList = invitation => {
-      invitesList.push(invitation);  // add the most recent invitation
-      dispatch({type: 'SET_INVITES', payload: invitesList });
-    }
+      invitesList.push(invitation); // add the most recent invitation
+      dispatch({ type: 'SET_INVITES', payload: invitesList });
+    };
 
     const updateRequest = invitationId => {
-      const match = invitesList.findIndex(inv => inv.invitation._id === invitationId.id);
-      if(match !== -1) invitesList.splice(match, match + 1);
-      dispatch({type: 'SET_INVITES', payload: invitesList});
-    }
+      const newInvites = [...invitesList];
+      const deletedInviteIndex = newInvites.findIndex(
+        inv => inv.invitation._id === invitationId.id
+      );
+      newInvites.splice(deletedInviteIndex, 1);
+
+      dispatch({ type: 'SET_INVITES', payload: newInvites });
+    };
 
     const updateChat = newChat => {
-      chatsList.unshift(newChat);
-      dispatch({type: 'SET_CHATS', payload: chatsList});
-    }
+      dispatch({ type: 'PREPEND_TO_CHATLIST', payload: newChat });
+    };
 
     socket.on('groupChatCreated', updateChat);
     socket.on('friendRequestReceived', updateInvitationList);
