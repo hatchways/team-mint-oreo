@@ -3,6 +3,8 @@ const sgMail = require('@sendgrid/mail');
 // Set api key for sendgrid
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
+const HOST_NAME = process.env.HOST_NAME || 'http://localhost:3000';
+
 const sendInvitationEmail = (fromUser, toUser, randomId, done) => {
   try {
     const msg = {
@@ -12,10 +14,10 @@ const sendInvitationEmail = (fromUser, toUser, randomId, done) => {
       text: 'New Invitation from user ' + fromUser + ' has arrived!',
       //html: `<p>Accept / Decline friend request in <a href='http://localhost:3000/invitation/' + ${randomId}>here</a></p>`,
       html: `<p>Accept / Decline friend request by logging in
-                <a href="http://localhost:3000/login">here</a>
-                or by registering in
-                <a href="http://localhost:3000/register">here</a>
-            </p>`
+                <a href="${HOST_NAME}/login">here</a>
+                or by registering
+                <a href="${HOST_NAME}/register">here</a>
+            </p>`,
     };
 
     sgMail.send(msg);
