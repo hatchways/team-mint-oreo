@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MuiThemeProvider } from '@material-ui/core';
 import { BrowserRouter, Route, Redirect, Switch, useLocation } from 'react-router-dom';
 import Client from './utils/HTTPClient';
+import SnackbarMessage from './components/snackbar-message/snackbar-message.component';
 
 import theme from './themes/theme';
 // import Dashboard from './pages/dashboard/dashboard.component';
@@ -14,7 +15,6 @@ const Login = React.lazy(() => import('./pages/userform/Login'));
 const Register = React.lazy(() => import('./pages/userform/Register'));
 const Dashboard = React.lazy(() => import('./pages/dashboard/dashboard.component'));
 
-
 function App(props) {
   const [userId, setUserId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +22,7 @@ function App(props) {
   const [snackbar, setSnackbar] = useState({
     status: undefined,
     message: undefined,
-    key: undefined
+    key: undefined,
   });
 
   useEffect(() => {
@@ -90,13 +90,13 @@ function App(props) {
                 path="/login"
                 render={props => {
                   if (props.location.state) {
-                    setSnackbar(props.location.state.snackbar)
+                    setSnackbar(props.location.state.snackbar);
                   }
                   return userId ? (
                     <Redirect to="/dashboard" />
                   ) : (
                     <Login invCode={invitationCode} setId={setUserId} snackbar={snackbar} />
-                  )
+                  );
                 }}
               />
               <Route
@@ -105,9 +105,13 @@ function App(props) {
                 render={props => {
                   if (props.location.state) {
                     setUserId(props.location.state.id);
-                    setSnackbar(props.location.state.snackbar)
+                    setSnackbar(props.location.state.snackbar);
                   }
-                  return userId ? <Dashboard userId={userId} snackbar={snackbar} /> : <Redirect to="/login" />;
+                  return userId ? (
+                    <Dashboard userId={userId} snackbar={snackbar} />
+                  ) : (
+                    <Redirect to="/login" />
+                  );
                 }}
               />
               <Route path="/register" render={() => <Register invCode={invitationCode} />} />

@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Grid, Typography, IconButton, Hidden, Avatar, Badge } from '@material-ui/core';
+import { Box, Grid, Typography, IconButton, Hidden } from '@material-ui/core';
 import Menu from '@material-ui/icons/Menu';
-import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import { store as directoryStore } from '../../store/directory/directory.provider';
-import { useStyles, IOSSwitch, AvatarWithBadge } from './chat-header.styles';
+import { useStyles, IOSSwitch } from './chat-header.styles';
 import languageMap from '../../utils/languageMap';
-
+import AvatarWithBadge from '../AvatarWithBadge/AvatarWithBadge';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal }) => {
@@ -56,7 +55,7 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
           </Hidden>
 
           <Grid item>
-            {userData && <AvatarWithBadge src={userData.avatar} isonline={userData.isOnline} />}
+            {userData && <AvatarWithBadge src={userData.avatar} active={userData.isOnline} />}
           </Grid>
           <Grid item>
             <Typography mx={1}>{title}</Typography>
@@ -75,12 +74,12 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
         {chatId && (
           <Grid item>
             <Grid component="label" container alignItems="center">
+              <Grid item>{showOriginal ? 'Original Text' : languageMap[language].name}</Grid>
               <IOSSwitch
                 value="checkedA"
                 color="primary"
                 onClick={() => toggleText({ type: 'TOGGLE_TRANSLATION' })}
               />
-              <Grid item>{showOriginal ? 'Original Text' : languageMap[language].name}</Grid>
             </Grid>
           </Grid>
         )}

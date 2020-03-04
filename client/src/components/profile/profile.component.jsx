@@ -15,7 +15,6 @@ const Profile = (
     avatar,
     handleApproval = null,
     handleRejection = null,
-    hideStatus = true,
     isOnline = false,
     onClick4More = () => {},
   },
@@ -35,7 +34,6 @@ const Profile = (
               overlap="circle"
               showZero
               variant="dot"
-              invisible={hideStatus}
               anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'right',
