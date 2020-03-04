@@ -10,8 +10,6 @@ function TypingStatus({ className, users }) {
       if (users[userId].isTyping) names.push(users[userId].displayName.split(' ')[0]);
     });
 
-    console.log(users, names);
-
     if (!names.length) return '';
     const [name1, name2] = names;
     if (names.length === 1) return `${name1} is typing...`;

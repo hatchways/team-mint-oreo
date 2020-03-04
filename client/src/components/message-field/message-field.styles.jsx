@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 export const useStyles = makeStyles(theme => ({
   root: {
     padding: '10px 30px',
-    margin: '8px 40px',
+    margin: '4px 40px',
     display: 'flex',
     alignItems: 'center',
     width: 'auto',

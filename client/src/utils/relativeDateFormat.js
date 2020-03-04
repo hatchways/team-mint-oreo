@@ -1,4 +1,11 @@
-import { format, differenceInSeconds, differenceInMinutes, differenceInDays } from 'date-fns';
+import {
+  format,
+  differenceInSeconds,
+  differenceInMinutes,
+  differenceInDays,
+  endOfYesterday,
+  isAfter,
+} from 'date-fns';
 
 // TODO: detect timezone and adjust times accordingly
 
@@ -11,7 +18,7 @@ const relativeDateFormat = timestamp => {
   //   displayString = `${diffInMinutes} min. ago`;
   // } else
 
-  if (differenceInDays(Date.now(), timestamp) < 1) {
+  if (isAfter(timestamp, endOfYesterday())) {
     displayString = format(timestamp, 'h:mm a');
   } else if (differenceInDays(Date.now(), timestamp) < 365) {
     displayString = format(timestamp, 'MMM dd h:mm a');

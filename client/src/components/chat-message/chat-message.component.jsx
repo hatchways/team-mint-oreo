@@ -38,7 +38,11 @@ const ChatMessage = ({
           justify="flex-start"
           alignItems={isSender ? 'flex-end' : 'flex-start'}
         >
-          <Box display="flex" alignItems="baseline">
+          <Box
+            display="flex"
+            alignItems="baseline"
+            flexDirection={isSender ? 'row-reverse' : 'row'}
+          >
             <Box>{name}</Box>
             <Box className={classes.timestamp}>{format(timestamp)}</Box>
           </Box>
