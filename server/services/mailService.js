@@ -37,16 +37,16 @@ const sendResetMail = (userMail, resetCode, done) => {
       //html: `<p>Accept / Decline friend request in <a href='http://localhost:3000/invitation/' + ${randomId}>here</a></p>`,
       html: `<p>Please note that you must change your password within one hour after
                 receiving this message</p>
-             <a href="http://localhost:3000/reset/${resetCode}">reset password</a>`
-      };
+             <a href="${HOST_NAME}/reset/${resetCode}">reset password</a>`,
+    };
 
-      sgMail.send(msg);
-      return done(null, true);
-  } catch(err) {
+    sgMail.send(msg);
+    return done(null, true);
+  } catch (err) {
     console.error(err);
     return done(err);
   }
-}
+};
 
 module.exports = {
   sendInvitationEmail,
