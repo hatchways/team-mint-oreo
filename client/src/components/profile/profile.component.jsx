@@ -4,6 +4,7 @@ import MoreHoriz from '@material-ui/icons/MoreHoriz';
 import Check from '@material-ui/icons/Check';
 import Clear from '@material-ui/icons/Clear';
 import { useStyles } from './profile.styles';
+import AvatarWithBadge from '../AvatarWithBadge/AvatarWithBadge';
 
 const Profile = (
   {
@@ -29,18 +30,7 @@ const Profile = (
       <Box p={2}>
         <Grid container spacing={2} alignItems="center">
           <Grid item>
-            <Badge
-              classes={{ badge: isOnline ? classes.badgeGreen : classes.badgeGrey }}
-              overlap="circle"
-              showZero
-              variant="dot"
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
-              }}
-            >
-              <Avatar {...{ src: url, alt: name }} />
-            </Badge>
+            <AvatarWithBadge src={url} active={isOnline} />
           </Grid>
           <Grid item xs>
             {secondary === '' ? (

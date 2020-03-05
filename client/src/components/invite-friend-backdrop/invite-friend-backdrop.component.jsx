@@ -146,11 +146,9 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
                 </Grid>
               </Grid>
               <Box marginRight={7}>
-                <Grid container direction="column" justify="center" alignItems="center">
-                  <Grid item>
-                    <h1>Invite friends to Babl</h1>
-                  </Grid>
-                  <Grid item>
+                <Box display="flex" flexDirection="column" justify="center" alignItems="center">
+                  <h1>Invite friends to Babl</h1>
+                  <Box>
                     <h3> Send your friends an email</h3>
                     {emailFields.map(field => (
                       <EmailField
@@ -160,18 +158,17 @@ const InviteFriendBackdrop = ({ socket, userId }) => {
                         onChange={recordFieldChanges}
                       />
                     ))}
-                  </Grid>
-                  <Grid item>
+                  </Box>
+                  <Box>
                     <h3> Or share referral link:</h3>
                     <CopyField placeholder={urlField} />
-                  </Grid>
-                  <Grid item>
-                    <h3> </h3>
+                  </Box>
+                  <Box mt={3.5}>
                     <Button variant="contained" color="primary" onClick={composeEmails}>
                       Send Invite
                     </Button>
-                  </Grid>
-                </Grid>
+                  </Box>
+                </Box>
               </Box>
             </Box>
           </Card>

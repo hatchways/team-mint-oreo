@@ -12,7 +12,6 @@ import React from 'react';
 const ImageReader = ({ onRead, style }) => {
   const handleChange = e => {
     const input = e.target;
-
     const reader = new FileReader();
     reader.onload = () => {
       const dataUrl = reader.result;
@@ -22,7 +21,7 @@ const ImageReader = ({ onRead, style }) => {
     reader.readAsDataURL(input.files[0]);
   };
 
-  return <input type="file" accept="image/x-png," onChange={handleChange} style={style} />;
+  return <input type="file" accept="image/*" onChange={handleChange} style={style} />;
 };
 
 export default ImageReader;

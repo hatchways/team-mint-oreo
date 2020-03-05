@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Grid, Typography, IconButton, Hidden } from '@material-ui/core';
+import { Box, Grid, Typography, IconButton, Hidden, Avatar, Tooltip } from '@material-ui/core';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import Menu from '@material-ui/icons/Menu';
 import { store as directoryStore } from '../../store/directory/directory.provider';
 import { useStyles, IOSSwitch } from './chat-header.styles';
@@ -8,13 +9,10 @@ import AvatarWithBadge from '../AvatarWithBadge/AvatarWithBadge';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal }) => {
-  const {
-    dispatch,
-    state: { chatsList },
-  } = useContext(directoryStore);
+  const { dispatch } = useContext(directoryStore);
 
   const [title, setTitle] = useState('Select a chatroom');
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState([]);
 
   useEffect(() => {
     console.log('CHAT HEADER', users);
@@ -35,6 +33,23 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
     dispatch({
       type: DirectoryActionTypes.TOGGLE_SIDEBAR,
     });
+  };
+
+  const AvatarGroupComponent = ({ users }) => {
+    const largeGroupTitle = users.map(user => user.displayName).join('\n');
+
+    return (
+      <AvatarGroup>
+        {users.map((user, i) => {
+          if (i <= 4) return <AvatarWithBadge src={user.avatar} active={user.isOnline} />;
+        })}
+        {users.length > 5 ? (
+          <Tooltip title={largeGroupTitle} placement="bottom" arrow interactive>
+            <Avatar>+{users.length - 5}</Avatar>
+          </Tooltip>
+        ) : null}
+      </AvatarGroup>
+    );
   };
 
   const classes = useStyles();
@@ -60,6 +75,7 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
           <Grid item>
             <Typography mx={1}>{title}</Typography>
           </Grid>
+          <Grid item>{!!userData.length && <AvatarGroupComponent users={userData} />}</Grid>
         </Grid>
       </Grid>
 
