@@ -89,7 +89,15 @@ const useStyles = makeStyles(theme => ({
   },
   close: {
     padding: theme.spacing(0.5),
-  }
+  },
+  forgot: {
+    color: defaultColor,
+    textDecoration: 'none',
+    fontSize: 14,
+    '&:hover': {
+      textDecoration: 'underline',
+    }
+  },
 }));
 
 export { useStyles };

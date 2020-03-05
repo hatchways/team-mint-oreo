@@ -26,6 +26,28 @@ const sendInvitationEmail = (fromUser, toUser, randomId, done) => {
   }
 };
 
+const sendResetMail = (userMail, resetCode, done) => {
+  try {
+    const msg = {
+      to: userMail,
+      from: 'y7ahfd@hotmail.com',
+      subject: 'Reset Your Password',
+      text: 'Reset your password using the link below',
+      //html: `<p>Accept / Decline friend request in <a href='http://localhost:3000/invitation/' + ${randomId}>here</a></p>`,
+      html: `<p>Please note that you must change your password within one hour after
+                receiving this message</p>
+             <a href="http://localhost:3000/reset/${resetCode}">reset password</a>`
+      };
+
+      sgMail.send(msg);
+      return done(null, true);
+  } catch(err) {
+    console.error(err);
+    return done(err);
+  }
+}
+
 module.exports = {
   sendInvitationEmail,
+  sendResetMail,
 };

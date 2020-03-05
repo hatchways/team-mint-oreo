@@ -32,6 +32,12 @@ const userSchema = new Schema(
     inviteCode: {
       type: String,
       // required: true
+    },
+    resetCode: {
+      type: String,
+    },
+    resetTimeAllowed: {
+      type: Date,
     }
   },
   { timestamps: true }

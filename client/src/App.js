@@ -13,12 +13,15 @@ import theme from './themes/theme';
 const WebsocketTesting = React.lazy(() => import('./websocketTesting'));
 const Login = React.lazy(() => import('./pages/userform/Login'));
 const Register = React.lazy(() => import('./pages/userform/Register'));
+const Reset = React.lazy(() => import('./pages/userform/Reset'));
+const ResetPage = React.lazy(() => import('./pages/userform/ResetPage'));
 const Dashboard = React.lazy(() => import('./pages/dashboard/dashboard.component'));
 
 function App(props) {
   const [userId, setUserId] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [invitationCode, setInvitationCode] = useState('');
+  const [resetCode, setResetCode] = useState('');
   const [snackbar, setSnackbar] = useState({
     status: undefined,
     message: undefined,
@@ -41,40 +44,22 @@ function App(props) {
     };
   }, [userId]);
 
-  // const pushSnackbar = message => {
-  //
-  //   queueRef.current.push(message);
-  //   if(open) {
-  //     setOpen(false);
-  //   } else {
-  //     processQueue();
-  //   }
-  // };
-
   const handleInvitation = props => {
     if (props.match.params) {
       setInvitationCode(props.match.params.code);
     }
-
-    // const createInvitation = async () => {
-    //   if(userId && invitationCode) {
-    //     const invitationQuery = {
-    //       code: invitationCode,
-    //       toUserId: userId
-    //     }
-    //     const invResp = await Client.request('/invite', 'POST', invitationQuery);
-    //
-    //     return <Redirect to="/dashboard" />;
-    //   } else {
-    //     return <Redirect to="/login" />;
-    //   }
-    // }
-    // return createInvitation();
     if(userId) {
       return <Redirect to="/dashboard" />;
     }
     return <Redirect to="/login" />;
   };
+
+  const handleReset = props => {
+    if(props.match.params) {
+      setResetCode(props.match.params.code);
+    }
+    return <ResetPage resetCode={resetCode} />;
+  }
 
   return (
     <MuiThemeProvider theme={theme}>
@@ -117,6 +102,8 @@ function App(props) {
                   );
                 }}
               />
+              <Route exact path="/reset" render={() => <Reset />} />
+              <Route path="/reset/:code" render={props => handleReset(props)} />
               <Route path="/register" render={() => <Register invCode={invitationCode} />} />
               <Route path="/invitation/:code" render={props => handleInvitation(props)} />
               <Route path="/testing" component={WebsocketTesting} />
