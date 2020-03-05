@@ -150,7 +150,6 @@ export default function Login({ invCode, snackbar }) {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                autoFocus
                 value={values.email}
                 onChange={handleChange}
                 InputLabelProps={{
