@@ -53,6 +53,10 @@ const reducer = (state, action) => {
       return { ...state, chatsList: [...state.chatsList, payload] };
     case 'PREPEND_TO_CHATLIST':
       return { ...state, chatsList: [payload, ...state.chatsList] };
+    case 'PREPEND_TO_FRIENDLIST':
+      return { ...state, friendsList: [payload, ...state.friendsList] };
+    case 'APPEND_TO_INVITELIST':
+      return { ...state, invitesList: [...state.invitesList, payload] };
     default:
       throw new Error();
   }
@@ -143,8 +147,7 @@ const Sidebar = ({ socket }) => {
     };
 
     const updateInvitationList = invitation => {
-      invitesList.push(invitation); // add the most recent invitation
-      dispatch({ type: 'SET_INVITES', payload: invitesList });
+      dispatch({ type: 'APPEND_TO_INVITELIST', payload: invitation });
     };
 
     const updateRequest = invitationId => {
@@ -161,12 +164,23 @@ const Sidebar = ({ socket }) => {
       dispatch({ type: 'PREPEND_TO_CHATLIST', payload: newChat });
     };
 
+    const updateFriend = newFriend => {
+      dispatch({ type: 'PREPEND_TO_FRIENDLIST', payload: newFriend });
+    }
+
+    const updateAllSidebar = info => {
+      updateRequest(info.invitationId);
+      updateChat(info.chatroomWithAvatarInfo);
+      updateFriend(info.friendWithDmInfo);
+    }
+
     socket.on('groupChatCreated', updateChat);
     socket.on('friendRequestReceived', updateInvitationList);
     socket.on('receiveMsg', updateChatLocation);
     socket.on('updateOwnProfilePic', updateUserAvatar);
     socket.on('updateFriendProfilePic', updateFriendsProfilePic);
     socket.on('requestDone', updateRequest);
+    socket.on('requestAcceptDone', updateAllSidebar);
 
     return () => {
       socket.off('receiveMsg', updateChatLocation);
@@ -175,11 +189,13 @@ const Sidebar = ({ socket }) => {
       socket.off('friendRequestReceived', updateInvitationList);
       socket.off('requestDone', updateRequest);
       socket.off('groupChatCreated', updateChat);
+      socket.off('requestAcceptDone', updateAllSidebar);
     };
   }, [chatsList, friendsList, user, socket, activeChatId]);
 
   const changeActiveChat = async chatId => {
     Client.updateChatActivity({ userId: user.id, chatId: activeChatId, socket });
+    console.log("this is currently the active chat: ", chatsList);
     let retrievedChat = chatsList.find(chat => chat.chatId === chatId);
     if (!retrievedChat) {
       retrievedChat = await Client.request(`/chat/data/${chatId}`);
@@ -190,6 +206,10 @@ const Sidebar = ({ socket }) => {
     directoryDispatch({
       type: DirectoryActionTypes.SET_CURRENTLY_ACTIVE,
       payload: chatId,
+    });
+    directoryDispatch({
+      type: DirectoryActionTypes.SET_CHATS_LIST,
+      payload: chatsList
     });
     directoryDispatch({
       type: DirectoryActionTypes.CLOSE_SIDEBAR,

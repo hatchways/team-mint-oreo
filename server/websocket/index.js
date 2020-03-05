@@ -134,8 +134,36 @@ const handleSocket = server => {
         console.log(newChatRoomId);
         await updateUserChatroom([userId, friendId], newChatRoomId);
 
-        const userInfo = await db.user.getById(userId);
-        io.to(userInfo.socketId).emit('requestDone', { invitationId });
+        const values = await Promise.all([
+          db.user.getById(userId),
+          db.user.getById(friendId),
+          db.chatroom.getDmIdOfUsers(userId, friendId),
+          db.chatroom.getChatroomById(newChatRoomId),
+        ]);
+        const [userInfo, friendInfo, dmId, newChatRoom] = values;
+
+        // for friend
+        const [formattedFriend] = formatData.convertSocketIdToStatus([friendInfo]);
+        const friendWithDmInfo = {
+          ...formattedFriend._doc,
+          dmChatId: dmId
+        };
+
+        // for chatroom
+        const usersWithOnlineStatus = formatData.convertSocketIdToStatus(newChatRoom.users);
+        const chatroomWithAvatar = formatData.addAvatarToDMChat(newChatRoom, userId);
+        const chatroomWithAvatarInfo = {
+          ...chatroomWithAvatar._doc,
+          chatId: newChatRoomId,
+          users: usersWithOnlineStatus,
+          unreadMessages: 0,
+        }
+
+        io.to(userInfo.socketId).emit('requestAcceptDone', {
+          invitationId,
+          friendWithDmInfo,
+          chatroomWithAvatarInfo
+        });
       } catch (err) {
         console.error(err);
       }
@@ -166,7 +194,7 @@ const handleSocket = server => {
 
         io.to(host.socketId).emit('groupChatCreated', {
           ...chatroomWithAvatar._doc,
-          chatId: newChatRoomId._id,
+          chatId: newChatRoomId,
           users: usersWithOnlineStatus,
           unreadMessages: 0,
         });

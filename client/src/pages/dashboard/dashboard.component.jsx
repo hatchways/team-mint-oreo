@@ -9,10 +9,11 @@ import GroupChatBackdrop from '../../components/group-chat-backdrop/group-chat-b
 import SidebarDrawer from '../../components/sidebar/sidebar-drawer.container';
 import ProfileBackdrop from '../../components/profile-backdrop/profile-backdrop.component';
 import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
+import Client from '../../utils/HTTPClient';
 
 const socket = io.connect();
 
-const Dashboard = ({ userId, snackbar }) => {
+const Dashboard = ({ userId, snackbar, invCode }) => {
   const [open, setOpen] = useState(false);
   const [messageInfo, setMessageInfo] = useState(undefined);
   const queueRef = useRef([]);
@@ -30,6 +31,20 @@ const Dashboard = ({ userId, snackbar }) => {
       socket.disconnect();
     };
   }, [userId]);
+
+  useEffect(() => {
+    const handleInvitation = async (invCode) => {
+      if(invCode) {
+        const invitationQuery = {
+          code: invCode,
+          toUserId: userId,
+        };
+        const invResp = await Client.request('/invite', 'POST', invitationQuery);
+        console.log("Is this done? ", invResp);
+      }
+    }
+    handleInvitation(invCode);
+  }, [invCode]);
 
   const memoSocket = useMemo(() => socket, []);
 

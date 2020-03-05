@@ -70,6 +70,9 @@ function App(props) {
     //   }
     // }
     // return createInvitation();
+    if(userId) {
+      return <Redirect to="/dashboard" />;
+    }
     return <Redirect to="/login" />;
   };
 
@@ -108,7 +111,7 @@ function App(props) {
                     setSnackbar(props.location.state.snackbar);
                   }
                   return userId ? (
-                    <Dashboard userId={userId} snackbar={snackbar} />
+                    <Dashboard userId={userId} snackbar={snackbar} invCode={invitationCode} />
                   ) : (
                     <Redirect to="/login" />
                   );
