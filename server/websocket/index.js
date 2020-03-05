@@ -106,13 +106,13 @@ const handleSocket = server => {
         // TODO: need to search for socketID of toUser<email>
         const values = await Promise.all([
           db.user.getByEmail(toUser),
-          db.user.getByEmail(fromUser)
-        ])
+          db.user.getByEmail(fromUser),
+        ]);
         const [toUserInfo, fromUserInfo] = values;
-
+        if (!toUserInfo.socketId) return;
         io.to(toUserInfo.socketId).emit('friendRequestReceived', {
-            user: fromUserInfo,
-            invitation: newInvitation
+          user: fromUserInfo,
+          invitation: newInvitation,
         });
       } catch (err) {
         // Error will occur if the user tries to add duplicate
@@ -146,7 +146,7 @@ const handleSocket = server => {
         const [formattedFriend] = formatData.convertSocketIdToStatus([friendInfo]);
         const friendWithDmInfo = {
           ...formattedFriend._doc,
-          dmChatId: dmId
+          dmChatId: dmId,
         };
 
         // for chatroom
@@ -157,12 +157,12 @@ const handleSocket = server => {
           chatId: newChatRoomId,
           users: usersWithOnlineStatus,
           unreadMessages: 0,
-        }
+        };
 
         io.to(userInfo.socketId).emit('requestAcceptDone', {
           invitationId,
           friendWithDmInfo,
-          chatroomWithAvatarInfo
+          chatroomWithAvatarInfo,
         });
       } catch (err) {
         console.error(err);

@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, InputBase, IconButton } from '@material-ui/core';
 import Add from '@material-ui/icons/Add';
 
 import { useStyles } from './email-field.styles';
 
-const EmailField = ({ onAddClick, ...props }) => {
+const EmailField = ({ onAddClick, changeHandler, index, value }) => {
   const classes = useStyles();
 
-  const handleChange = e => {
+  const handleSubmit = e => {
     e.preventDefault();
   };
 
@@ -15,17 +15,21 @@ const EmailField = ({ onAddClick, ...props }) => {
     <Box
       component="form"
       className={classes.root}
-      onChange={handleChange}
-      onSubmit={handleChange}
+      onSubmit={handleSubmit}
       borderRadius={6}
       border={1}
     >
-      <InputBase className={classes.input} {...props} type="email" />
+      <InputBase
+        className={classes.input}
+        onChange={e => changeHandler(e, index)}
+        placeholder="example@email.com"
+        value={value}
+        type="email"
+      />
       <IconButton
-        id={props.id}
         type="submit"
         className={classes.iconButton}
-        aria-label="add"
+        aria-label="add email field"
         onClick={onAddClick}
       >
         <Add />
@@ -34,4 +38,4 @@ const EmailField = ({ onAddClick, ...props }) => {
   );
 };
 
-export default EmailField;
+export default React.memo(EmailField);
