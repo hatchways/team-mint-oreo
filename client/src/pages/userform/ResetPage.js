@@ -30,7 +30,7 @@ export default function Register({ resetCode }) {
     event.preventDefault();
 
     const resp = await Client.request(`/auth/reset/${resetCode}`, 'POST', values);
-    if(resp.status !== 200) {
+    if (resp.status !== 200) {
       queueRef.current.push({
         status: 'error',
         message: resp.error,
@@ -42,30 +42,30 @@ export default function Register({ resetCode }) {
           status: 'success',
           message: 'Password successfully changed!',
           key: new Date().getTime(),
-        }
+        },
       });
     }
 
-    if(open) {
+    if (open) {
       setOpen(false);
     } else {
       processQueue();
     }
-  }
+  };
 
   useEffect(() => {
     const checkInvitationExistence = async resetCode => {
       const response = await Client.request(`/auth/reset/${resetCode}`, 'GET');
-      if(response.status !== 200) {
+      if (response.status !== 200) {
         history.push('/login', {
           snackbar: {
             status: 'error',
             message: response.error,
             key: new Date().getTime(),
-          }
+          },
         });
       }
-    }
+    };
 
     checkInvitationExistence(resetCode);
   }, []);
@@ -155,11 +155,7 @@ export default function Register({ resetCode }) {
                 Reset Your Password
               </Typography>
             </Grid>
-            <form
-              method="POST"
-              className={classes.form}
-              onSubmit={event => onSubmitReset(event)}
-            >
+            <form method="POST" className={classes.form} onSubmit={event => onSubmitReset(event)}>
               <TextField
                 margin="normal"
                 required

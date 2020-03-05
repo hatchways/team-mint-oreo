@@ -11,7 +11,7 @@ const SidebarTabPanelContacts = ({ contactList, clickHandler }) => {
 
   const handleToggle = () => {
     dispatch({
-      type: DirectoryActionTypes.TOGGLE_BACKDROP,
+      type: DirectoryActionTypes.TOGGLE_BACKDROP_INVITE,
     });
   };
 

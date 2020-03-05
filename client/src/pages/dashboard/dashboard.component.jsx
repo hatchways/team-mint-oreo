@@ -20,8 +20,8 @@ const Dashboard = ({ userId, snackbar, invCode }) => {
   useEffect(() => {
     socket.emit('login', { userId });
 
-    if(snackbar.message) queueRef.current.push(snackbar);
-    if(open) {
+    if (snackbar.message) queueRef.current.push(snackbar);
+    if (open) {
       setOpen(false);
     } else {
       processQueue();
@@ -49,22 +49,22 @@ const Dashboard = ({ userId, snackbar, invCode }) => {
   const memoSocket = useMemo(() => socket, []);
 
   const processQueue = () => {
-    if(queueRef.current.length > 0) {
+    if (queueRef.current.length > 0) {
       setMessageInfo(queueRef.current.shift());
       setOpen(true);
     }
   };
 
   const handleClose = (event, reason) => {
-    if(reason === 'clickaway') {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
-  }
+  };
 
   const handleExited = () => {
     processQueue();
-  }
+  };
 
   return (
     <Box>
