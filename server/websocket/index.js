@@ -145,7 +145,7 @@ const handleSocket = server => {
         // for friend
         const [formattedFriend] = formatData.convertSocketIdToStatus([friendInfo]);
         const friendWithDmInfo = {
-          ...formattedFriend._doc,
+          ...formattedFriend,
           dmChatId: dmId,
         };
 
@@ -153,13 +153,19 @@ const handleSocket = server => {
         const usersWithOnlineStatus = formatData.convertSocketIdToStatus(newChatRoom.users);
         const chatroomWithAvatar = formatData.addAvatarToDMChat(newChatRoom, userId);
         const chatroomWithAvatarInfo = {
-          ...chatroomWithAvatar._doc,
+          ...chatroomWithAvatar,
           chatId: newChatRoomId,
           users: usersWithOnlineStatus,
           unreadMessages: 0,
         };
 
         io.to(userInfo.socketId).emit('requestAcceptDone', {
+          invitationId,
+          friendWithDmInfo,
+          chatroomWithAvatarInfo,
+        });
+
+        io.to(friendInfo.socketId).emit('requestAcceptDone', {
           invitationId,
           friendWithDmInfo,
           chatroomWithAvatarInfo,
@@ -193,7 +199,7 @@ const handleSocket = server => {
         const chatroomWithAvatar = formatData.addAvatarToDMChat(newChatRoom, hostUser);
 
         io.to(host.socketId).emit('groupChatCreated', {
-          ...chatroomWithAvatar._doc,
+          ...chatroomWithAvatar,
           chatId: newChatRoomId,
           users: usersWithOnlineStatus,
           unreadMessages: 0,

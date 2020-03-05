@@ -44,7 +44,6 @@ const ChatHeader = ({ chatId, toggleText, users = [], userId, language, showOrig
   const [userData, setUserData] = useState([]);
 
   useEffect(() => {
-    console.log('CHAT HEADER', users);
     const filteredIds = Object.keys(users).filter(id => id !== userId);
     if (filteredIds.length === 1) {
       const friendId = filteredIds[0];

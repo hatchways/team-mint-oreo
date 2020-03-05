@@ -93,7 +93,9 @@ const ChatFrame = ({ socket, userId }) => {
 
   useEffect(() => {
     const updateMessages = msg => {
+      console.log('msg received for ', msg.chatId);
       if (msg.chatId === chatId) {
+        console.log('msg received!');
         dispatch({ type: 'ADD_MESSAGE', payload: msg });
       }
     };

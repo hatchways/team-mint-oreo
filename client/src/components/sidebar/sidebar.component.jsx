@@ -165,14 +165,16 @@ const Sidebar = ({ socket }) => {
     };
 
     const updateFriend = newFriend => {
+      console.log('NEW FRIEND', newFriend);
       dispatch({ type: 'PREPEND_TO_FRIENDLIST', payload: newFriend });
-    }
+    };
 
     const updateAllSidebar = info => {
+      console.log('FRIEND REQEUST ACCEPTED', info);
       updateRequest(info.invitationId);
       updateChat(info.chatroomWithAvatarInfo);
       updateFriend(info.friendWithDmInfo);
-    }
+    };
 
     socket.on('groupChatCreated', updateChat);
     socket.on('friendRequestReceived', updateInvitationList);
@@ -191,11 +193,11 @@ const Sidebar = ({ socket }) => {
       socket.off('groupChatCreated', updateChat);
       socket.off('requestAcceptDone', updateAllSidebar);
     };
-  }, [chatsList, friendsList, user, socket, activeChatId]);
+  }, [chatsList, friendsList, user, socket, activeChatId, invitesList]);
 
   const changeActiveChat = async chatId => {
     Client.updateChatActivity({ userId: user.id, chatId: activeChatId, socket });
-    console.log("this is currently the active chat: ", chatsList);
+    console.log('this is currently the active chat: ', chatsList);
     let retrievedChat = chatsList.find(chat => chat.chatId === chatId);
     if (!retrievedChat) {
       retrievedChat = await Client.request(`/chat/data/${chatId}`);
@@ -209,7 +211,7 @@ const Sidebar = ({ socket }) => {
     });
     directoryDispatch({
       type: DirectoryActionTypes.SET_CHATS_LIST,
-      payload: chatsList
+      payload: chatsList,
     });
     directoryDispatch({
       type: DirectoryActionTypes.CLOSE_SIDEBAR,

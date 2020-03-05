@@ -22,14 +22,14 @@ export default function Login({ invCode, snackbar }) {
   const queueRef = useRef([]);
 
   useEffect(() => {
-    if(snackbar.message) queueRef.current.push(snackbar);
-    if(open) {
-        setOpen(false);
+    if (snackbar.message) queueRef.current.push(snackbar);
+    if (open) {
+      setOpen(false);
     } else {
-        processQueue();
+      processQueue();
     }
     console.log('open status: ', open);
-  }, [])
+  }, []);
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -40,7 +40,7 @@ export default function Login({ invCode, snackbar }) {
   const classes = useStyles();
 
   const processQueue = () => {
-    if(queueRef.current.length > 0) {
+    if (queueRef.current.length > 0) {
       setMessageInfo(queueRef.current.shift());
       setOpen(true);
     }
@@ -64,19 +64,27 @@ export default function Login({ invCode, snackbar }) {
           toUserId: response.userData._id,
         };
         const invResp = await Client.request('/invite', 'POST', invitationQuery);
+        console.log('invResp: ', invResp);
+        // if (invResp.status !== 200) {
+        //   queueRef.current.push({
+        //     status: 'error',
+        //     message: invResp.error,
+        //     key: new Date().getTime(),
+        //   });
+        // }
       }
 
       history.push('/dashboard', {
-          id: response.userData.id,
-          snackbar: {
-            status: 'success',
-            message: 'Successfully Logged In!',
-            key: new Date().getTime()
-          }
+        id: response.userData.id,
+        snackbar: {
+          status: 'success',
+          message: 'Successfully Logged In!',
+          key: new Date().getTime(),
+        },
       });
     }
 
-    if(open) {
+    if (open) {
       setOpen(false);
     } else {
       processQueue();
@@ -84,15 +92,15 @@ export default function Login({ invCode, snackbar }) {
   };
 
   const handleClose = (event, reason) => {
-    if(reason === 'clickaway') {
+    if (reason === 'clickaway') {
       return;
     }
     setOpen(false);
-  }
+  };
 
   const handleExited = () => {
     processQueue();
-  }
+  };
 
   return (
     <Grid container component="main" className={classes.root}>

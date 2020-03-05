@@ -33,16 +33,22 @@ const Dashboard = ({ userId, snackbar, invCode }) => {
   }, [userId]);
 
   useEffect(() => {
-    const handleInvitation = async (invCode) => {
-      if(invCode) {
+    const handleInvitation = async invCode => {
+      if (invCode) {
         const invitationQuery = {
           code: invCode,
           toUserId: userId,
         };
         const invResp = await Client.request('/invite', 'POST', invitationQuery);
-        console.log("Is this done? ", invResp);
+        if (invResp.status !== 200) {
+          queueRef.current.push({
+            status: 'error',
+            message: invResp.error,
+            key: new Date().getTime(),
+          });
+        }
       }
-    }
+    };
     handleInvitation(invCode);
   }, [invCode]);
 
