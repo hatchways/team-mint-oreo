@@ -8,7 +8,36 @@ import languageMap from '../../utils/languageMap';
 import AvatarWithBadge from '../AvatarWithBadge/AvatarWithBadge';
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
-const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal }) => {
+const renderNames = users => {
+  return (
+    <Box display="flex" flexDirection="column ">
+      {users.map(user => (
+        <div>{user.displayName}</div>
+      ))}
+    </Box>
+  );
+};
+const AvatarGroupComponent = ({ users }) => {
+  return (
+    <AvatarGroup>
+      {users.map((user, i) => {
+        if (i <= 4)
+          return (
+            <Tooltip title={user.displayName} placement="bottom" interactive>
+              <Avatar src={user.avatar} />
+            </Tooltip>
+          );
+      })}
+      {users.length > 5 ? (
+        <Tooltip title={renderNames(users.slice(5))} placement="bottom" arrow interactive>
+          <Avatar>+{users.length - 5}</Avatar>
+        </Tooltip>
+      ) : null}
+    </AvatarGroup>
+  );
+};
+
+const ChatHeader = ({ chatId, toggleText, users = [], userId, language, showOriginal }) => {
   const { dispatch } = useContext(directoryStore);
 
   const [title, setTitle] = useState('Select a chatroom');
@@ -21,7 +50,7 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
       const friendId = filteredIds[0];
       const { displayName } = users[friendId];
       setTitle(displayName);
-      setUserData(users[friendId]);
+      setUserData([users[friendId]]);
     } else if (filteredIds.length > 1) {
       setTitle('Group Chat');
       const _userData = Object.keys(users).map(userId => users[userId]);
@@ -33,23 +62,6 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
     dispatch({
       type: DirectoryActionTypes.TOGGLE_SIDEBAR,
     });
-  };
-
-  const AvatarGroupComponent = ({ users }) => {
-    const largeGroupTitle = users.map(user => user.displayName).join('\n');
-
-    return (
-      <AvatarGroup>
-        {users.map((user, i) => {
-          if (i <= 4) return <AvatarWithBadge src={user.avatar} active={user.isOnline} />;
-        })}
-        {users.length > 5 ? (
-          <Tooltip title={largeGroupTitle} placement="bottom" arrow interactive>
-            <Avatar>+{users.length - 5}</Avatar>
-          </Tooltip>
-        ) : null}
-      </AvatarGroup>
-    );
   };
 
   const classes = useStyles();
@@ -70,14 +82,20 @@ const ChatHeader = ({ chatId, toggleText, users, userId, language, showOriginal 
           </Hidden>
 
           <Grid item>
-            {userData && <AvatarWithBadge src={userData.avatar} active={userData.isOnline} />}
+            {userData.length === 1 && (
+              <AvatarWithBadge src={userData[0].avatar} active={userData[0].isOnline} />
+            )}
           </Grid>
           <Grid item>
             <Typography mx={1}>{title}</Typography>
           </Grid>
-          <Grid item>{!!userData.length && <AvatarGroupComponent users={userData} />}</Grid>
         </Grid>
       </Grid>
+      {userData.length > 1 && (
+        <Grid item>
+          <AvatarGroupComponent users={userData} />
+        </Grid>
+      )}
 
       <Grid
         container
