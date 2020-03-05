@@ -1,6 +1,8 @@
 const User = require('../models/User');
 const Error = require('../utils/Error');
 const ValidationError = require('mongoose').Error.ValidationError;
+const bcrypt = require('../services/bcryptService');
+const { validatePasswords } = require('../services/validationService');
 
 /**USER METHODS */
 
@@ -16,7 +18,10 @@ const createUser = async userData => {
     return savedUser;
   } catch (err) {
     if (err instanceof ValidationError) {
-      throw new Error(400, 'createUser: ' + err.message, err);
+      if(err.code === 11000) {
+        throw new Error(400, 'User already exists!');
+      }
+      throw new Error(400, 'Required fields are missing', err);
     }
     throw new Error(500, 'Internal Server Error occured in createUser()', err);
   }
@@ -254,6 +259,68 @@ const getAvatar = async userId => {
   return user.avatar;
 };
 
+const updatePasswordReset = async (userEmail, randomId, timeAllowed) => {
+  try {
+    console.log('starting...')
+    const user = await User.findOneAndUpdate({ email: userEmail }, {
+      resetCode: randomId,
+      resetTimeAllowed: timeAllowed,
+    }, { new: true });
+    console.log("reset updated: ", user);
+    if(!user) {
+      throw new Error(400, 'No user was found!');
+    } else {
+      return user;
+    }
+  } catch(err) {
+    if (err instanceof ValidationError) {
+      throw new Error(400, 'Required fields are missing', err);
+    }
+    if(err.status === 400) {
+      throw err;
+    }
+    throw new Error(500, 'Internal Server Error occured in createUser()', err);
+  }
+}
+
+const getUserByResetCode = async (code) => {
+  try {
+    const user = await User.findOne({
+      resetCode: code,
+      resetTimeAllowed: { $gt: Date.now() }
+    });
+    if(!user) throw new Error(400, "Page doesn't exist: session expired or code is invalid");
+    return user;
+  } catch(err) {
+    if(err instanceof ValidationError) {
+      throw new Error(400, 'Required fields are missing', err);
+    }
+    if(err.status === 400) throw err;
+    throw new Error(500, 'Internal Server Error Occurred', err);
+  }
+}
+
+const resetUserPassword = async (code, password, passwordConfirm) => {
+  try {
+    validatePasswords(password, passwordConfirm);
+    const hashedPassword = await bcrypt.encrypt(password);
+    const user = await User.findOneAndUpdate({ resetCode: code }, {
+      password: hashedPassword,
+      resetCode: undefined,
+      resetTimeAllowed: undefined,
+    }, { new: true });
+
+    if(!user) throw new Error(400, 'Unable to find the correct user');
+    return user;
+  } catch(err) {
+    if(err instanceof ValidationError) {
+      throw new Error(400, 'Required fields are missing', err);
+    }
+    if(err.status === 401 || err.status === 400) throw err;
+    throw new Error(500, 'Internal Server Error Occurred', err);
+  }
+}
+
 module.exports = {
   createUser,
   addChatById,
@@ -276,4 +343,7 @@ module.exports = {
   getAvatar,
   searchByName,
   deleteFriends,
+  updatePasswordReset,
+  getUserByResetCode,
+  resetUserPassword,
 };

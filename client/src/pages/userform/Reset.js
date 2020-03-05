@@ -14,22 +14,21 @@ import { useStyles } from './loginStyles';
 import SnackbarMessage from '../../components/snackbar-message/snackbar-message.component';
 import Client from '../../utils/HTTPClient';
 
-export default function Login({ invCode, snackbar }) {
-  const [values, setValues] = useState({ email: '', password: '' });
-  const history = useHistory();
+export default function Reset() {
+  const [values, setValues] = useState({ email: '' });
   const [open, setOpen] = useState(false);
   const [messageInfo, setMessageInfo] = useState(undefined);
   const queueRef = useRef([]);
 
-  useEffect(() => {
-    if(snackbar.message) queueRef.current.push(snackbar);
-    if(open) {
-        setOpen(false);
-    } else {
-        processQueue();
-    }
-    console.log('open status: ', open);
-  }, [])
+  // useEffect(() => {
+  //   if(snackbar.message) queueRef.current.push(snackbar);
+  //   if(open) {
+  //       setOpen(false);
+  //   } else {
+  //       processQueue();
+  //   }
+  //   console.log('open status: ', open);
+  // }, [])
 
   const handleChange = event => {
     const { name, value } = event.target;
@@ -39,47 +38,65 @@ export default function Login({ invCode, snackbar }) {
   // use login form as default form
   const classes = useStyles();
 
-  const processQueue = () => {
-    if(queueRef.current.length > 0) {
-      setMessageInfo(queueRef.current.shift());
-      setOpen(true);
-    }
-  };
-
-  const onSubmitLogin = async event => {
+  const onSubmitSend = async event => {
     event.preventDefault();
+    const response = await Client.request('/auth/reset', 'POST', values);
 
-    const response = await Client.request('/auth/login', 'POST', values);
-
-    if (response.status !== 200) {
+    if(response.status !== 200) {
       queueRef.current.push({
         status: 'error',
-        message: 'Invalid credentials',
+        message: response.error,
         key: new Date().getTime(),
       });
     } else {
-      if (invCode) {
-        const invitationQuery = {
-          code: invCode,
-          toUserId: response.userData._id,
-        };
-        const invResp = await Client.request('/invite', 'POST', invitationQuery);
-      }
-
-      history.push('/dashboard', {
-          id: response.userData.id,
-          snackbar: {
-            status: 'success',
-            message: 'Successfully Logged In!',
-            key: new Date().getTime()
-          }
+      queueRef.current.push({
+        status: 'success',
+        message: 'Email successfully sent!',
+        key: new Date().getTime(),
       });
     }
-
     if(open) {
       setOpen(false);
     } else {
       processQueue();
+    }
+  }
+  // const onSubmitLogin = async event => {
+  //   event.preventDefault();
+  //
+  //   const response = await Client.request('/auth/login', 'POST', values);
+  //
+  //   if (response.status !== 200) {
+  //     queueRef.current.push({
+  //       status: 'error',
+  //       message: 'Invalid credentials',
+  //       key: new Date().getTime(),
+  //     });
+  //   } else {
+  //     if (invCode) {
+  //       const invitationQuery = {
+  //         code: invCode,
+  //         toUserId: response.userData._id,
+  //       };
+  //       const invResp = await Client.request('/invite', 'POST', invitationQuery);
+  //     }
+  //
+  //     history.push('/dashboard', {
+  //         id: response.userData.id,
+  //         snackbar: {
+  //           status: 'success',
+  //           message: 'Successfully Logged In!',
+  //           key: new Date().getTime()
+  //         }
+  //     });
+  //   }
+  //
+
+  // };
+  const processQueue = () => {
+    if(queueRef.current.length > 0) {
+      setMessageInfo(queueRef.current.shift());
+      setOpen(true);
     }
   };
 
@@ -120,26 +137,25 @@ export default function Login({ invCode, snackbar }) {
       >
         <div className={classes.paper}>
           <Grid container className={classes.createAccount}>
-            <Grid className={classes.accountText}>Don't have an account?</Grid>
-            <Link to="/register">
+            <Link to="/login">
               <Button type="submit" variant="contained" color="primary" className={classes.switch}>
-                Create Account
+                Back to Login
               </Button>
             </Link>
           </Grid>
           <Grid container className={classes.mainContent}>
             <Grid container>
               <Typography component="h1" variant="h5">
-                Welcome Back!
+                Reset your password
               </Typography>
             </Grid>
-            <form method="POST" className={classes.form} onSubmit={event => onSubmitLogin(event)}>
+            <form method="POST" className={classes.form} onSubmit={event => onSubmitSend(event)}>
               <TextField
                 margin="normal"
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="Email Address for Password Reset Link"
                 name="email"
                 autoComplete="email"
                 value={values.email}
@@ -156,33 +172,6 @@ export default function Login({ invCode, snackbar }) {
                   },
                 }}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={values.password}
-                onChange={handleChange}
-                InputLabelProps={{
-                  classes: {
-                    root: classes.label,
-                    focused: classes.focusedLabel,
-                  },
-                }}
-                InputProps={{
-                  classes: {
-                    root: classes.underline,
-                  },
-                }}
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label={<Typography className={classes.rememberMe}>Remember Me</Typography>}
-              />
               <Grid container className={classes.alignCenter}>
                 <Button
                   type="submit"
@@ -190,15 +179,8 @@ export default function Login({ invCode, snackbar }) {
                   color="primary"
                   className={classes.submit}
                 >
-                  Log in
+                  Send Email
                 </Button>
-              </Grid>
-              <Grid container>
-                <Grid item xs>
-                  <Link to="/reset" className={classes.forgot} underline="hover">
-                    Forgot password?
-                  </Link>
-                </Grid>
               </Grid>
             </form>
           </Grid>
