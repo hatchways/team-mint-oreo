@@ -205,6 +205,17 @@ const getChatsIdsById = async (userId, limit = 50, skip = 0) => {
   }
 };
 
+const getUserLanguage = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    if(!user) throw new Error(400, 'No user was found');
+    return user.language;
+  } catch(err) {
+    if(err.status === 400) throw err;
+    throw new Error(500, 'Internal Server Error Occurred', err);
+  }
+}
+
 const addChatById = async (userId, chatId) => {
   try {
     const user = await User.findByIdAndUpdate(
@@ -337,6 +348,7 @@ module.exports = {
   getAllUsers,
   getFriendsFieldsById,
   getChatsIdsById,
+  getUserLanguage,
   removeUser,
   clearChatrooms,
   addAvatar,

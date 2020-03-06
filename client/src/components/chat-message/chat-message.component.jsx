@@ -67,10 +67,10 @@ const ChatMessage = ({
                 lastReadBy.map(avatarURL => {
                   return (
                     <Avatar
-                      key={`read-notification-${name + timestamp}`}
+                      key={name ? `read-notification-${name + timestamp}` : `read-notification-${timestamp}`}
                       className={classes.readAvatar}
                       src={avatarURL}
-                      fallback={name[0].toUpperCase()}
+                      fallback={name ? name[0].toUpperCase() : undefined}
                     />
                   );
                 })}
