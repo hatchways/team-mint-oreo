@@ -118,14 +118,15 @@ router.post('/avatar', async (req, res) => {
     // to prevent storage overflow, deleting old avatars
     const oldPicURL = await db.user.getAvatar(userId);
     // convert old pic full URL into just picture data after the front url
-    const oldPicInbucket = oldPicURL.replace('https://mint-oreo.s3.amazonaws.com/', '');
-    console.log('old Pic URL', oldPicInbucket);
-    try {
-      await deletePic(oldPicInbucket);
-    } catch (error) {
-      console.log('deletion error:', error);
+    if (oldPicURL) {
+      try {
+        const oldPicInbucket = oldPicURL.replace('https://mint-oreo.s3.amazonaws.com/', '');
+        console.log('old Pic URL', oldPicInbucket);
+        await deletePic(oldPicInbucket);
+      } catch (error) {
+        console.log('deletion error:', error);
+      }
     }
-
     // we got the pic location now, time to update avatar
     const pic = req.body;
     const awsResult = await uploadSaltedPic(pic);
