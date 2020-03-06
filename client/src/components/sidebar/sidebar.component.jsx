@@ -111,6 +111,7 @@ const Sidebar = ({ socket }) => {
       dispatch({ type: 'SET_USER', payload: { ...user, avatar: profilePic } });
     };
     const updateChat = newChat => {
+      socket.emit('friendRequestPing', { chatId: newChat._id });
       dispatch({ type: 'PREPEND_TO_CHATLIST', payload: newChat });
     };
 

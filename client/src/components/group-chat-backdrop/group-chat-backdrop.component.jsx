@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import {
   Button,
   Box,
@@ -23,6 +23,7 @@ import CopyField from '../copy-field/copy-field.component';
 
 import { useStyles } from './group-chat-backdrop.styles';
 import Client from '../../utils/HTTPClient';
+import SnackbarMessage from '../snackbar-message/snackbar-message.component';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -30,6 +31,9 @@ const checkedIcon = <CheckBoxIcon fontSize="small" />;
 const GroupChatBackdrop = ({ socket, userId }) => {
   const [friendsList, setFriendsList] = useState([]);
   const [groupChatUsers, setGroupChatUsers] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [snackbarInfo, setSnackbarInfo] = useState(undefined);
+  const queueRef = useRef([]);
 
   const classes = useStyles();
   const {
@@ -65,11 +69,36 @@ const GroupChatBackdrop = ({ socket, userId }) => {
       members: groupChatUsers,
     });
 
-    // This will be replaced into Snackbar
-    alert('Group Chat Created!');
-    dispatch({
-      type: DirectoryActionTypes.CLOSE_BACKDROP_GPCHAT,
+    queueRef.current.push({
+      message: 'Groupchat is created!',
+      key: Date.now(),
     });
+    if (open) {
+      setOpen(false);
+    } else {
+      processQueue();
+    }
+    // dispatch({
+    //   type: DirectoryActionTypes.CLOSE_BACKDROP_GPCHAT,
+    // });
+  };
+
+  const processQueue = () => {
+    if (queueRef.current.length > 0) {
+      setSnackbarInfo(queueRef.current.shift());
+      setOpen(true);
+    }
+  };
+
+  const handleCloseSnack = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const handleExited = () => {
+    processQueue();
   };
 
   return (
@@ -115,7 +144,7 @@ const GroupChatBackdrop = ({ socket, userId }) => {
                           {...params}
                           variant="outlined"
                           label="Friends List"
-                          placeholder="Favorites"
+                          placeholder="Search by typing or using dropdown"
                         />
                       )}
                       onChange={(event, value) => setGroupChatUsers(value)}
@@ -133,6 +162,12 @@ const GroupChatBackdrop = ({ socket, userId }) => {
           </Card>
         </ClickAwayListener>
       )}
+      <SnackbarMessage
+        messageInfo={snackbarInfo}
+        open={open}
+        handleExited={handleExited}
+        handleClose={handleCloseSnack}
+      />
     </Backdrop>
   );
 };
