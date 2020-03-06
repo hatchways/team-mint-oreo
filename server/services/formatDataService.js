@@ -105,7 +105,6 @@ const messagesData = messages => {
 module.exports = {
   convertSocketIdToStatus,
   addAvatarToDMChat,
-  convertSocketIdToStatus,
   convertActivityMapToUnread,
   flattenArray,
   chatroomData,
@@ -113,4 +112,5 @@ module.exports = {
   friendsData,
   invitationsData,
   messagesData,
+  formatChatroomUsers,
 };
