@@ -35,6 +35,9 @@ const languageMap = {
     name: 'Japanese',
     flag: '',
   },
+  pt: {
+    name: 'Portuguese',
+  },
 };
 
 export default languageMap;

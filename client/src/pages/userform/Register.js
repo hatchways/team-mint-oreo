@@ -225,6 +225,7 @@ export default function Register({ invCode }) {
                   <option value="hi">Hindi</option>
                   <option value="de">German</option>
                   <option value="ja">Japanese</option>
+                  <option value="pt">Portuguese</option>
                 </NativeSelect>
               </FormControl>
               <Grid container className={classes.alignCenter}>
