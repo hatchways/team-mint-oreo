@@ -7,9 +7,17 @@ const translateLang = async (originalText, incomingLang, language) => {
       // Instantiates a client
       const translate = new Translate();
 
-      console.log('incomingLang: ', translate.translate);
-      const [translation] = await translate.translate(originalText, language);
-      return translation;
+      if (incomingLang !== language) {
+          const options = {
+              from: incomingLang,
+              to: language,
+          };
+          const [translation] = await translate.translate(originalText, options);
+          return translation;
+      } else {
+          return originalText;
+      }
+
   } catch(err) {
       console.error(err);
   }
