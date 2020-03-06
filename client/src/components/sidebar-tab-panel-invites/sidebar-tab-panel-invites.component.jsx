@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import ProfileWithBorder from '../profile/profile-with-border.container';
 import { Grid, Button } from '@material-ui/core';
@@ -7,10 +7,9 @@ import { store as directoryStore } from '../../store/directory/directory.provide
 import DirectoryActionTypes from '../../store/directory/directory.types';
 
 const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
-  const { dispatch } = useContext(directoryStore);
-
+  const { dispatch: directoryDispatch } = useContext(directoryStore);
   const handleToggle = () => {
-    dispatch({
+    directoryDispatch({
       type: DirectoryActionTypes.TOGGLE_BACKDROP_INVITE,
     });
   };
@@ -18,11 +17,9 @@ const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
   const handleApproval = (event, profile) => {
     socket.emit('friendRequestAccepted', {
       userId: currentUser.id,
-      friendId: profile.id,
+      friendId: profile.user._id,
       invitationId: profile.invitation._id,
     });
-    // console.log('profile: ', profile);
-    // console.log('currentUser: ', currentUser)
     alert('Friend Request Accepted!');
   };
 
@@ -43,15 +40,13 @@ const SidebarTabPanelInvites = ({ profilesList, socket, currentUser }) => {
         </Button>
       </Grid>
       {profilesList.map(profile => (
-        <Grid item key={profile.id}>
-          <Grid item key={profile.id}>
-            <ProfileWithBorder
-              id={profile.id}
-              {...profile}
-              handleApproval={event => handleApproval(event, profile)}
-              handleRejection={event => handleRejection(event, profile)}
-            />
-          </Grid>
+        <Grid item key={profile.user._id}>
+          <ProfileWithBorder
+            {...profile.user}
+            name={profile.user.displayName}
+            handleApproval={event => handleApproval(event, profile)}
+            handleRejection={event => handleRejection(event, profile)}
+          />
         </Grid>
       ))}
     </Grid>

@@ -13,7 +13,6 @@ const translateLang = async (originalText, incomingLang, language) => {
   } catch(err) {
       console.error(err);
   }
-
 };
 
 
