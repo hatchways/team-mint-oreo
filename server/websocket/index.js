@@ -134,16 +134,38 @@ const handleSocket = server => {
         await updateUserChatroom(membersId, newChatRoomId);
 
         const newChatRoom = await db.chatroom.getChatroomById(newChatRoomId);
-        const host = await db.user.getById(hostUser);
+        // const host = await db.user.getById(hostUser);
+        // const values = await Promise.all([
+        //   membersId.map(member => await db.user.getById(member))
+        // ]);
+        // const allMembers = await membersId.map(async member => await db.user.getById);
+        const allMembersTemp = [];
+        for(var i = 0; i < membersId.length; i++) {
+          const user = db.user.getById(membersId[i]);
+          allMembersTemp.push(user);
+        }
+        const allMembers = await Promise.all(allMembersTemp);
+        // console.log('await values: ', allMembers);
+
         const usersWithOnlineStatus = formatData.convertSocketIdToStatus(newChatRoom.users);
         const chatroomWithAvatar = formatData.addAvatarToDMChat(newChatRoom, hostUser);
 
-        io.to(host.socketId).emit('groupChatCreated', {
-          ...chatroomWithAvatar,
-          chatId: newChatRoomId,
-          users: usersWithOnlineStatus,
-          unreadMessages: 0,
+        socket.join(newChatRoomId);
+
+        allMembers.forEach(member => {
+          io.to(member.socketId).emit('groupChatCreated', {
+            ...chatroomWithAvatar,
+            chatId: newChatRoomId,
+            users: usersWithOnlineStatus,
+            unreadMessages: 0
+          });
         });
+        // io.to(host.socketId).emit('groupChatCreated', {
+        //   ...chatroomWithAvatar,
+        //   chatId: newChatRoomId,
+        //   users: usersWithOnlineStatus,
+        //   unreadMessages: 0,
+        // });
       } catch (err) {
         console.error(err);
       }
