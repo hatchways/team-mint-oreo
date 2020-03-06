@@ -79,6 +79,7 @@ const accept = async (userId, friendId, invitationId) => {
       returnToInviter,
       returnToUser,
       socketIds: { user: userInfo.socketId, inviter: friendInfo.socketId },
+      chatId: newChatroom._id,
     };
   } catch (err) {
     console.error(err);

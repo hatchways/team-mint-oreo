@@ -107,12 +107,12 @@ const handleSocket = server => {
     });
 
     socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
-      const { returnToUser, returnToInviter, socketIds } = await onFriendReq.accept(
+      const { returnToUser, returnToInviter, socketIds, chatId } = await onFriendReq.accept(
         userId,
         friendId,
         invitationId
       );
-
+      socket.join(chatId);
       io.to(socketIds.user).emit('requestAcceptDone', returnToUser);
       io.to(socketIds.inviter).emit('requestAcceptDone', returnToInviter);
     });
@@ -120,6 +120,10 @@ const handleSocket = server => {
     socket.on('friendRequestRejected', async ({ userId, invitationId }) => {
       onFriendReq.reject(invitationId);
       socket.emit('requestDone', { id: invitationId });
+    });
+
+    socket.on('friendRequestPing', chatId => {
+      socket.join(chatId);
     });
 
     socket.on('createGroupChat', async ({ hostUser, members }) => {
