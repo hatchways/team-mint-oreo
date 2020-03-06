@@ -34,7 +34,6 @@ const ChatMessages = ({ className, messages, userId, showOriginalText, language,
       const avatarArray = a[indexOfLastRead] ? [...a[indexOfLastRead], userAvatar] : [userAvatar];
       return { ...a, [indexOfLastRead]: avatarArray };
     }, {});
-
     setActivityMap(userActivity);
   }, [users, messages, userId]);
 

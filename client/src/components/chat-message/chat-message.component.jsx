@@ -62,12 +62,16 @@ const ChatMessage = ({
                 )}
               </Box>
             </Paper>
-            <Box>
+            <Box display="flex">
               {!!lastReadBy &&
                 lastReadBy.map(avatarURL => {
                   return (
                     <Avatar
-                      key={name ? `read-notification-${name + timestamp}` : `read-notification-${timestamp}`}
+                      key={
+                        name
+                          ? `read-notification-${name + timestamp}`
+                          : `read-notification-${timestamp}`
+                      }
                       className={classes.readAvatar}
                       src={avatarURL}
                       fallback={name ? name[0].toUpperCase() : undefined}

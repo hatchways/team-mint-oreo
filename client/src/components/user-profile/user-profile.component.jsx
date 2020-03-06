@@ -35,7 +35,7 @@ const UserProfile = ({ user }) => {
 
   return (
     <div>
-      <Profile {...user} moreOptions={{ exists: true }} onClick4More={handleExpand} />
+      <Profile {...user} isOnline moreOptions={{ exists: true }} onClick4More={handleExpand} />
       <Menu
         id="simple-menu"
         anchorEl={anchorEl}
