@@ -16,13 +16,13 @@ const joinChatrooms = async (socket, userId) => {
   socket.join(chatroomList);
 };
 
-const notifyFriends = async (socket, userId) => {
+const notifyFriends = async (io, userId) => {
   const friendSocketList = await db.user.getFriendsSocketsById(userId);
   if (!friendSocketList || !friendSocketList.length) {
     console.log('No friends are online');
     return;
   }
-  friendSocketList.forEach(friend => socket.to(friend).emit('userOnline', { userId }));
+  friendSocketList.forEach(friend => io.to(friend).emit('userOnline', { userId }));
 };
 
 module.exports = {

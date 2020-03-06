@@ -9,13 +9,7 @@ const mailService = require('../services/mailService');
 const onSearch = require('./search');
 const formatData = require('../services/formatDataService');
 
-/* SOCKET METHODS */
-
-const acceptInvitation = async (socket, userId, friendId) => {
-  await db.user.addFriend(userId, friendId);
-};
-
-const updateUserChatroom = async (userIds, chatId) => {
+const updateUserChatroom = async (userIds = [], chatId) => {
   try {
     const updatedUserInfos = await Promise.all(
       userIds.map(userId => {
@@ -39,7 +33,7 @@ const handleSocket = server => {
       console.log('login ping');
       onLogin.registerSocketId(socket, userId);
       onLogin.joinChatrooms(socket, userId);
-      onLogin.notifyFriends(socket, userId);
+      onLogin.notifyFriends(io, userId);
     });
 
     /**
@@ -86,9 +80,7 @@ const handleSocket = server => {
         // check for friendship or existing invitation
         // If it does, we don't send notification mail in a first place
         if (invExists || alreadyFriends) throw new Error('Invitation / Friend already registered');
-
         const randomId = uuidv4();
-
         mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
           if (err) throw err;
           if (isSent) console.log('Email successfully sent');
@@ -96,11 +88,6 @@ const handleSocket = server => {
 
         const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
         console.log(newInvitation, ' has been created');
-
-        /* Maybe convert the userId into email? */
-        /* Or we can possibly send the whole User query to fromUser & toUser
-                that was returned from mongo */
-
         // This socket identifies from who, to who, and the identifier of invitation itself
 
         // TODO: need to search for socketID of toUser<email>
@@ -115,75 +102,24 @@ const handleSocket = server => {
           invitation: newInvitation,
         });
       } catch (err) {
-        // Error will occur if the user tries to add duplicate
-        // invitation, or internal server error
         console.error(err);
       }
     });
-    // socket.on('friendRequestReceived', () => {});
 
     socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
-      try {
-        await Promise.all([
-          acceptInvitation(socket, userId, friendId),
-          db.invitation.deleteInvitation(invitationId),
-        ]);
+      const { returnToUser, returnToInviter, socketIds } = await onFriendReq.accept(
+        userId,
+        friendId,
+        invitationId
+      );
 
-        // Automatically creates a chatroom, and assign users in there
-        const newChatRoomId = await db.chatroom.createChatroom([userId, friendId]);
-        console.log(newChatRoomId);
-        await updateUserChatroom([userId, friendId], newChatRoomId);
-
-        const values = await Promise.all([
-          db.user.getById(userId),
-          db.user.getById(friendId),
-          db.chatroom.getDmIdOfUsers(userId, friendId),
-          db.chatroom.getChatroomById(newChatRoomId),
-        ]);
-        const [userInfo, friendInfo, dmId, newChatRoom] = values;
-
-        // for friend
-        const [formattedFriend] = formatData.convertSocketIdToStatus([friendInfo]);
-        const friendWithDmInfo = {
-          ...formattedFriend,
-          dmChatId: dmId,
-        };
-
-        // for chatroom
-        const usersWithOnlineStatus = formatData.convertSocketIdToStatus(newChatRoom.users);
-        const chatroomWithAvatar = formatData.addAvatarToDMChat(newChatRoom, userId);
-        const chatroomWithAvatarInfo = {
-          ...chatroomWithAvatar,
-          chatId: newChatRoomId,
-          users: usersWithOnlineStatus,
-          unreadMessages: 0,
-        };
-
-        io.to(userInfo.socketId).emit('requestAcceptDone', {
-          invitationId,
-          friendWithDmInfo,
-          chatroomWithAvatarInfo,
-        });
-
-        io.to(friendInfo.socketId).emit('requestAcceptDone', {
-          invitationId,
-          friendWithDmInfo,
-          chatroomWithAvatarInfo,
-        });
-      } catch (err) {
-        console.error(err);
-      }
+      io.to(socketIds.user).emit('requestAcceptDone', returnToUser);
+      io.to(socketIds.inviter).emit('requestAcceptDone', returnToInviter);
     });
 
     socket.on('friendRequestRejected', async ({ userId, invitationId }) => {
-      try {
-        await db.invitation.deleteInvitation(invitationId);
-
-        const userInfo = await db.user.getById(userId);
-        io.to(userInfo.socketId).emit('requestDone', { id: invitationId });
-      } catch (err) {
-        console.error(err);
-      }
+      onFriendReq.reject(invitationId);
+      socket.emit('requestDone', { id: invitationId });
     });
 
     socket.on('createGroupChat', async ({ hostUser, members }) => {

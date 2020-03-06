@@ -120,11 +120,9 @@ const Sidebar = ({ socket }) => {
       console.log('updateFriendProfilePic', msgObject);
       const { friendId, profilePic } = msgObject;
 
-      let oldAvatar = '@.-1';
       const newFriendsList = friendsList.map(friend => {
         let { avatar } = friend;
         if (friend._id === friendId) {
-          oldAvatar = avatar;
           avatar = profilePic;
         }
         return {
@@ -134,10 +132,16 @@ const Sidebar = ({ socket }) => {
       });
       dispatch({ type: 'SET_FRIENDS', payload: newFriendsList });
       // need to update chatrooms where this specific profile avatar was used
-      const newChatroomsList = chatsList.map(room => ({
-        ...room,
-        avatar: room.avatar === oldAvatar ? profilePic : room.avatar,
-      }));
+      const newChatroomsList = chatsList.map(room => {
+        if (room.isDM && room.users.includes(_user => _user._id === friendId)) {
+          return {
+            ...room,
+            avatar: profilePic,
+          };
+        }
+        return room;
+      });
+
       dispatch({ type: 'SET_CHATS', payload: newChatroomsList });
     };
 
