@@ -10,6 +10,7 @@ import SidebarTabPanelChats from '../sidebar-tab-panel-chats/sidebar-tab-panel-c
 import SidebarTabPanelContacts from '../sidebar-tab-panel-contacts/sidebar-tab-panel-contacts.component';
 import SidebarTabPanelInvites from '../sidebar-tab-panel-invites/sidebar-tab-panel-invites.component';
 import UserProfile from '../user-profile/user-profile.component';
+import ws from '../../utils/websocket';
 
 const initialState = {
   isLoading: true,
@@ -98,58 +99,35 @@ const Sidebar = ({ socket }) => {
 
   useEffect(() => {
     const updateChatLocation = async msgObject => {
-      const { chatId } = msgObject;
-      console.log(`received msg in sidebar for chat ${chatId}`);
-      if (chatId === activeChatId) return; // take this out when implementing statusMsg/secondary
-      // updates location of chat in chatsList
-      const chatroomIndex = chatsList.findIndex(chatroom => chatroom.chatId === chatId);
-      if (chatroomIndex < 0) {
-        console.log('chat not found, retrieving from database');
-        const chatroom = await Client.request(`/chat/data/${chatId}`); // TODO fix data returned from this route
-        dispatch({ type: 'APPEND_TO_CHATLIST', payload: chatroom });
-      } else {
-        const newChatList = [...chatsList];
-        const updatedChat = newChatList.splice(chatroomIndex, 1)[0];
-        updatedChat.unreadMessages += 1;
-        newChatList.unshift(updatedChat);
-        dispatch({ type: 'SET_CHATS', payload: newChatList });
-      }
+      ws.sidebar.updateChatLocation(msgObject, dispatch, activeChatId, chatsList);
     };
 
     const updateFriendsProfilePic = msgObject => {
-      console.log('updateFriendProfilePic', msgObject);
-      const { friendId, profilePic } = msgObject;
-
-      const newFriendsList = friendsList.map(friend => {
-        let { avatar } = friend;
-        if (friend._id === friendId) {
-          avatar = profilePic;
-        }
-        return {
-          ...friend,
-          avatar,
-        };
-      });
-      dispatch({ type: 'SET_FRIENDS', payload: newFriendsList });
-      // need to update chatrooms where this specific profile avatar was used
-      const newChatroomsList = chatsList.map(room => {
-        if (room.isDM && room.users.includes(_user => _user._id === friendId)) {
-          return {
-            ...room,
-            avatar: profilePic,
-          };
-        }
-        return room;
-      });
-
-      dispatch({ type: 'SET_CHATS', payload: newChatroomsList });
+      ws.sidebar.updateFriendAvatar(msgObject, friendsList, chatsList, dispatch);
     };
 
     const updateUserAvatar = msgObject => {
       const { profilePic } = msgObject;
       dispatch({ type: 'SET_USER', payload: { ...user, avatar: profilePic } });
     };
+    const updateChat = newChat => {
+      dispatch({ type: 'PREPEND_TO_CHATLIST', payload: newChat });
+    };
 
+    socket.on('groupChatCreated', updateChat);
+    socket.on('receiveMsg', updateChatLocation);
+    socket.on('updateOwnProfilePic', updateUserAvatar);
+    socket.on('updateFriendProfilePic', updateFriendsProfilePic);
+
+    return () => {
+      socket.off('groupChatCreated', updateChat);
+      socket.off('receiveMsg', updateChatLocation);
+      socket.off('updateOwnProfilePic', updateUserAvatar);
+      socket.off('updateFriendProfilePic', updateFriendsProfilePic);
+    };
+  }, [chatsList, friendsList, user, socket, activeChatId]);
+
+  useEffect(() => {
     const updateInvitationList = invitation => {
       dispatch({ type: 'APPEND_TO_INVITELIST', payload: invitation });
     };
@@ -175,29 +153,21 @@ const Sidebar = ({ socket }) => {
 
     const updateAllSidebar = info => {
       console.log('FRIEND REQEUST ACCEPTED', info);
+      socket.emit('friendRequestPing', info.chatroomWithAvatarInfo._id);
       updateRequest(info.invitationId);
       updateChat(info.chatroomWithAvatarInfo);
       updateFriend(info.friendWithDmInfo);
     };
-
-    socket.on('groupChatCreated', updateChat);
     socket.on('friendRequestReceived', updateInvitationList);
-    socket.on('receiveMsg', updateChatLocation);
-    socket.on('updateOwnProfilePic', updateUserAvatar);
-    socket.on('updateFriendProfilePic', updateFriendsProfilePic);
     socket.on('requestDone', updateRequest);
     socket.on('requestAcceptDone', updateAllSidebar);
 
     return () => {
-      socket.off('receiveMsg', updateChatLocation);
-      socket.off('updateOwnProfilePic', updateUserAvatar);
-      socket.off('updateFriendProfilePic', updateFriendsProfilePic);
       socket.off('friendRequestReceived', updateInvitationList);
       socket.off('requestDone', updateRequest);
-      socket.off('groupChatCreated', updateChat);
       socket.off('requestAcceptDone', updateAllSidebar);
     };
-  }, [chatsList, friendsList, user, socket, activeChatId, invitesList]);
+  }, [invitesList, socket, user]);
 
   const changeActiveChat = async chatId => {
     Client.updateChatActivity({ userId: user.id, chatId: activeChatId, socket });
@@ -261,22 +231,11 @@ const Sidebar = ({ socket }) => {
         </SidebarTabPanel>
         <SidebarTabPanel value={tab} index={TabNames.INVITES}>
           <SidebarTabPanelInvites
-            profilesList={invitesList.map(
-              ({ user: { _id, displayName, avatar }, ...otherArgs }) => ({
-                id: _id,
-                name: displayName,
-                avatar,
-                ...otherArgs,
-              })
-            )}
+            profilesList={invitesList}
             socket={socket}
+            dispatch={dispatch}
             currentUser={user}
           />
-          {/* =====THIS IS A TEMPORARY CHANGE TO THE CODE====== */}
-          {/*<SidebarTabPanelInvites
-            profilesList={ invitesList }
-            socket={ socket }
-          />*/}
         </SidebarTabPanel>
       </Box>
     </Box>

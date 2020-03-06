@@ -1,10 +1,11 @@
 const router = require('express').Router();
-const bcrypt = require('../services/bcryptService');
 const uuidv4 = require('uuid/v4');
+const bcrypt = require('../services/bcryptService');
 const { validatePasswords, validateCredentials } = require('../services/validationService');
 const db = require('../controllers');
 const jwt = require('../services/jwtService');
 const mailService = require('../services/mailService');
+const Error = require('../utils/Error');
 
 router.post('/register', async (req, res) => {
   try {
@@ -72,12 +73,12 @@ router.post('/reset', async (req, res) => {
     return res.status(200).json({
       success: true,
       status: 200,
-      data: updatedUser
+      data: updatedUser,
     });
-  } catch(err) {
+  } catch (err) {
     return res.status(err.status).json({
       status: err.status,
-      error: err.message
+      error: err.message,
     });
   }
 });
@@ -91,10 +92,10 @@ router.get('/reset/:code', async (req, res) => {
       status: 200,
       data: foundUser,
     });
-  } catch(err) {
+  } catch (err) {
     return res.status(err.status).json({
       status: err.status,
-      error: err.message
+      error: err.message,
     });
   }
 });
@@ -108,12 +109,12 @@ router.post('/reset/:code', async (req, res) => {
     return res.status(200).json({
       success: true,
       status: 200,
-      data: updatedUser
+      data: updatedUser,
     });
-  } catch(err) {
+  } catch (err) {
     return res.status(err.status).json({
       status: err.status,
-      error: err.message
+      error: err.message,
     });
   }
 });
