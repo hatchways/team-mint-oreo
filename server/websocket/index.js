@@ -33,7 +33,7 @@ const handleSocket = server => {
       console.log('login ping');
       onLogin.registerSocketId(socket, userId);
       onLogin.joinChatrooms(socket, userId);
-      onLogin.notifyFriends(socket, userId);
+      onLogin.notifyFriends(io, userId);
     });
 
     /**
@@ -80,9 +80,7 @@ const handleSocket = server => {
         // check for friendship or existing invitation
         // If it does, we don't send notification mail in a first place
         if (invExists || alreadyFriends) throw new Error('Invitation / Friend already registered');
-
         const randomId = uuidv4();
-
         mailService.sendInvitationEmail(fromUser, toUser, randomId, (err, isSent) => {
           if (err) throw err;
           if (isSent) console.log('Email successfully sent');
@@ -90,11 +88,6 @@ const handleSocket = server => {
 
         const newInvitation = await db.invitation.createInvitation(fromUser, toUser, randomId);
         console.log(newInvitation, ' has been created');
-
-        /* Maybe convert the userId into email? */
-        /* Or we can possibly send the whole User query to fromUser & toUser
-                that was returned from mongo */
-
         // This socket identifies from who, to who, and the identifier of invitation itself
 
         // TODO: need to search for socketID of toUser<email>
@@ -109,12 +102,9 @@ const handleSocket = server => {
           invitation: newInvitation,
         });
       } catch (err) {
-        // Error will occur if the user tries to add duplicate
-        // invitation, or internal server error
         console.error(err);
       }
     });
-    // socket.on('friendRequestReceived', () => {});
 
     socket.on('friendRequestAccepted', async ({ userId, friendId, invitationId }) => {
       const { returnToUser, returnToInviter, socketIds } = await onFriendReq.accept(

@@ -23,10 +23,6 @@ const buildReturnObject = (
   { newChatroom, usersWithOnlineStatus, invitationId },
   otherUserInfo
 ) => {
-  console.log('*****BUILDRETURNOBJECT************');
-  console.log(newChatroom);
-  console.log('*****BUILDRETURNOBJECT************');
-
   const [formattedFriend] = formatData.convertSocketIdToStatus([otherUserInfo]);
   const friendWithDmInfo = {
     ...formattedFriend,
@@ -46,10 +42,6 @@ const buildReturnObject = (
     friendWithDmInfo,
     chatroomWithAvatarInfo,
   };
-  console.log('*****BUILDRETURNOBJECT************');
-  console.log(chatroomWithAvatarInfo);
-  console.log(friendWithDmInfo);
-  console.log('*****BUILDRETURNOBJECT************');
 
   return result;
 };
