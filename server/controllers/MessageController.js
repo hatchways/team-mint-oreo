@@ -16,7 +16,7 @@ const createMessage = async msg => {
     return newMessage;
   } catch (err) {
     if (err instanceof ValidationError) {
-      throw new Error(400, 'createMessage:' + err.message, err);
+      throw new Error(400, `createMessage:${err.message}`, err);
     }
     throw new Error(500, 'Internal Server Error at createMessage()', err);
   }

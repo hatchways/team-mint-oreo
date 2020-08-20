@@ -140,7 +140,7 @@ const handleSocket = server => {
         // ]);
         // const allMembers = await membersId.map(async member => await db.user.getById);
         const allMembersTemp = [];
-        for(var i = 0; i < membersId.length; i++) {
+        for (let i = 0; i < membersId.length; i++) {
           const user = db.user.getById(membersId[i]);
           allMembersTemp.push(user);
         }
@@ -157,7 +157,7 @@ const handleSocket = server => {
             ...chatroomWithAvatar,
             chatId: newChatRoomId,
             users: usersWithOnlineStatus,
-            unreadMessages: 0
+            unreadMessages: 0,
           });
         });
         // io.to(host.socketId).emit('groupChatCreated', {

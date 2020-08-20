@@ -1,5 +1,5 @@
 const Error = require('../utils/Error');
-const UserController = require('../controllers/UserController');
+const UserController = require('./UserController');
 const Invitation = require('../models/Invitation');
 const mailService = require('../services/mailService');
 

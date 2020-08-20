@@ -4,27 +4,22 @@ const { Translate } = require('@google-cloud/translate').v2;
 
 const translateLang = async (originalText, incomingLang, language) => {
   try {
-      // Instantiates a client
-      const translate = new Translate();
+    // Instantiates a client
+    const translate = new Translate();
 
-      if (incomingLang !== language) {
-          const options = {
-              from: incomingLang,
-              to: language,
-          };
-          const [translation] = await translate.translate(originalText, options);
-          return translation;
-      } else {
-          return originalText;
-      }
-
-  } catch(err) {
-      console.error(err);
+    if (incomingLang !== language) {
+      const options = {
+        from: incomingLang,
+        to: language,
+      };
+      const [translation] = await translate.translate(originalText, options);
+      return translation;
+    }
+    return originalText;
+  } catch (err) {
+    console.error(err);
   }
 };
-
-
-
 
 const FAKETranslateLang = (x, y) => {
   console.log('FAKE TRANSLATION');

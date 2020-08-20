@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 class Node {
   constructor(key, value, next = null, prev = null) {
     this.key = key;
@@ -54,8 +55,8 @@ class LRUCache {
 
   delete(key) {
     if (!this.cache[key]) return null;
-    const node = this.cache[key];
 
+    const node = this.cache[key];
     if (node.prev !== null) {
       node.prev.next = node.next;
     } else {

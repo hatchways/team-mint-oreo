@@ -10,7 +10,7 @@ const getLanguageList = async chatId => {
     return list;
   } catch (err) {
     if (err instanceof TypeError) {
-      throw new TypeError('getLanguageList:' + err.message, 400);
+      throw new TypeError(`getLanguageList:${err.message}`, 400);
     }
     throw new Error(500, 'Internal Server Error at getLanguageList()', err);
   }
@@ -23,7 +23,9 @@ const translateMessage = async ({ userId, language, chatId, originalText }) => {
 
     const translatedText = await Promise.all(
       // languageList.map(language => translateService.translateLang(originalText, language))
-      languageList.map(language => translateService.translateLang(originalText, incomingLang, language))
+      languageList.map(language =>
+        translateService.translateLang(originalText, incomingLang, language)
+      )
     );
 
     // returns an object with the shape {language: translatedText}
@@ -36,7 +38,7 @@ const translateMessage = async ({ userId, language, chatId, originalText }) => {
     return idTranslationMap;
   } catch (err) {
     if (err instanceof TypeError) {
-      throw new TypeError('translateMessage:' + err.message, 400);
+      throw new TypeError(`translateMessage:${err.message}`, 400);
     }
     throw new Error(500, 'Internal Server Error at translateMessage()', err);
   }
